@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">تفاصيل الأنمي</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* 🎨 الأساسيات والثوابت - تصميم محسن */
+    :root {
+      --bg-dark: #0f0f1a;
+      --bg-medium: rgba(26, 26, 46, 0.8);
+      --bg-light: rgba(38, 38, 58, 0.6);
+      --accent-color: #8b5cf6;
+      --accent-light: #a78bfa;
+      --secondary-color: #f97316;
+      --neon-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+      --gold-owner: #fbbf24;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg-dark);
+      color: white;
+      line-height: 1.6;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(249, 115, 22, 0.1) 0%, transparent 25%);
+    }
+
+    /* ⬆️ الهيدر وتفاصيل الأنمي - تصميم محسن */
+    .anime-header {
+      position: relative;
+      padding: 40px 20px 30px;
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(46, 16, 66, 0.9));
+      text-align: center;
+      overflow: hidden;
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--glass-border);
+      min-height: 65vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .anime-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.2), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(249, 115, 22, 0.2), transparent 40%);
+      z-index: 0;
+    }
+
+    /* 🔙 أزرار الرجوع في الأعلى */
+    .header-buttons {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 20;
+    }
+
+    .header-back-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      backdrop-filter: blur(15px);
+      box-shadow: var(--glass-shadow);
+    }
+
+    .header-back-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+    }
+
+    .header-back-btn.smart-back:hover {
+      background: var(--accent-color);
+      border-color: var(--accent-light);
+    }
+
+    .header-back-btn.fixed-back:hover {
+      background: var(--secondary-color);
+      border-color: #fb923c;
+    }
+
+    .anime-poster-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 25px;
+      z-index: 10;
+    }
+
+    .anime-header img {
+      width: 260px;
+      height: 360px;
+      object-fit: cover;
+      border-radius: 18px;
+      box-shadow: var(--neon-shadow);
+      transition: all 0.4s ease;
+      position: relative;
+      z-index: 10;
+      border: 2px solid var(--glass-border);
+    }
+
+    .anime-header img:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 40px var(--accent-light);
+    }
+
+    .anime-header h1 {
+      margin: 20px 0 15px;
+      font-size: 2.6rem;
+      color: white;
+      text-shadow: 0 0 15px rgba(139, 92, 246, 0.8);
+      position: relative;
+      z-index: 10;
+      background: linear-gradient(45deg, var(--accent-color), var(--accent-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .anime-meta {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 10;
+    }
+
+    .meta-item {
+      background: var(--glass-bg);
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-size: 0.95rem;
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      transition: all 0.3s ease;
+    }
+
+    .meta-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+    }
+
+    .anime-header .rating {
+      color: var(--gold-owner);
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+
+    /* 💖 زر المفضلة - تصميم محسن */
+    #favoriteBtn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: var(--glass-bg);
+        color: white;
+        border: 2px solid var(--glass-border);
+        border-radius: 50%;
+        width: 55px;
+        height: 55px;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: var(--glass-shadow);
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(15px);
+    }
+    
+    #favoriteBtn.is-fav {
+        background: linear-gradient(45deg, var(--accent-color), var(--secondary-color));
+        color: white;
+        border: 2px solid var(--accent-light);
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(139, 92, 246, 0.6); }
+      50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(139, 92, 246, 0.8); }
+    }
+    
+    #favoriteBtn:hover {
+        transform: scale(1.15);
+        box-shadow: 0 0 25px var(--accent-light);
+    }
+
+    /* 📝 الوصف - تصميم محسن */
+    .anime-desc {
+      padding: 30px;
+      background: var(--glass-bg);
+      border-top: 1px solid var(--glass-border);
+      line-height: 1.8;
+      font-size: 1.1rem;
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      backdrop-filter: blur(15px);
+      box-shadow: var(--glass-shadow);
+      border-radius: 0 0 20px 20px;
+      margin-top: 25px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .anime-desc::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--accent-color), var(--accent-light));
+      border-radius: 0 0 0 20px;
+    }
+
+    /* 💎 العناوين الجانبية - تصميم محسن */
+    .section-title {
+      font-size: 1.8rem;
+      padding: 22px 30px;
+      border-right: 6px solid var(--accent-color);
+      margin: 50px auto 25px;
+      background: var(--glass-bg);
+      max-width: 1200px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(15px);
+      border-radius: 0 20px 20px 0;
+      box-shadow: var(--glass-shadow);
+      border: 1px solid var(--glass-border);
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .section-title:hover::after {
+      transform: translateX(100%);
+    }
+
+    /* 🎬 الحلقات - تصميم محسن */
+    .episodes-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 25px;
+    }
+
+    .episodes {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 18px;
+      margin-bottom: 40px;
+    }
+
+    .episode {
+      background: var(--glass-bg);
+      padding: 18px 12px;
+      text-align: center;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--glass-shadow);
+      border: 2px solid transparent;
+      font-weight: 700;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(15px);
+      font-size: 1.05rem;
+    }
+
+    .episode::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .episode.watched {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.15));
+        border-color: var(--success-color);
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    }
+    
+    .episode.watched::after {
+        content: '✓';
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: rgba(16, 185, 129, 0.3);
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        color: var(--success-color);
+        font-weight: bold;
+    }
+    
+    .episode:hover {
+      background: var(--accent-color);
+      color: #fff;
+      transform: translateY(-5px) scale(1.03);
+      border-color: var(--accent-light);
+      box-shadow: 0 12px 25px rgba(139, 92, 246, 0.4);
+    }
+    
+    .episode:hover::before {
+      opacity: 1;
+    }
+
+    /* 🌟 نظام التقييم - تصميم محسن */
+    .rating-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 25px;
+    }
+
+    .rating-stars {
+      text-align: center;
+      margin: 25px 0;
+      padding: 25px;
+      background: var(--glass-bg);
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      box-shadow: var(--glass-shadow);
+      border: 1px solid var(--glass-border);
+    }
+
+    .rating-stars i {
+      font-size: 2.8rem;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin: 0 8px;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .rating-stars i.active {
+      color: var(--gold-owner);
+      text-shadow: 0 0 20px gold;
+      transform: scale(1.2);
+    }
+    
+    .rating-stars i:hover {
+      transform: scale(1.25);
+      color: #fbbf24;
+    }
+
+    /* 💬 التعليقات - تصميم محسن */
+    .comments-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 25px 50px;
+    }
+
+    .comment-box {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 35px;
+      background: var(--glass-bg);
+      padding: 20px;
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      box-shadow: var(--glass-shadow);
+      border: 1px solid var(--glass-border);
+    }
+
+    .comment-box input {
+      flex: 1;
+      padding: 18px 20px;
+      border-radius: 30px;
+      border: 2px solid transparent;
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      font-size: 1.05rem;
+    }
+    
+    .comment-box input:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+        background: rgba(255, 255, 255, 0.18);
+    }
+
+    .comment-box button {
+      background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+      border: none;
+      padding: 18px 28px;
+      border-radius: 30px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+      font-size: 1.05rem;
+    }
+
+    .comment-box button:hover {
+      background: linear-gradient(135deg, var(--accent-light), var(--accent-color));
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(139, 92, 246, 0.5);
+    }
+    
+    .comment-box button:active {
+      transform: translateY(0);
+    }
+
+    .comment {
+      background: var(--glass-bg);
+      padding: 22px;
+      border-radius: 18px;
+      margin-bottom: 18px;
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(15px);
+      border-left: 5px solid var(--accent-color);
+      transition: all 0.3s ease;
+      border: 1px solid var(--glass-border);
+    }
+    
+    .comment:hover {
+      transform: translateX(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .comment span {
+      color: var(--accent-color);
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: 5px;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+    
+    .comment.owner-comment {
+        border-left-color: var(--gold-owner);
+        background: linear-gradient(90deg, rgba(251, 191, 36, 0.15), transparent);
+    }
+
+    .comment.owner-comment span {
+        color: var(--gold-owner);
+    }
+
+    .back-btn {
+      display: block;
+      margin: 40px auto;
+      background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+      color: white;
+      border: none;
+      border-radius: 15px;
+      padding: 15px 35px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: fit-content;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+      font-weight: 700;
+    }
+
+    .back-btn:hover {
+      background: linear-gradient(135deg, var(--accent-light), var(--accent-color));
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(139, 92, 246, 0.5);
+    }
+    
+    .back-btn:active {
+      transform: translateY(0);
+    }
+
+    /* 🔔 الإشعارات - تصميم محسن */
+    .toast {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      color: #fff;
+      padding: 18px 28px;
+      border-radius: 15px;
+      box-shadow: var(--glass-shadow);
+      border-left: 5px solid var(--accent-color);
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      max-width: 380px;
+      border: 1px solid var(--glass-border);
+      font-size: 1.05rem;
+    }
+    
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    .toast.success {
+      border-left-color: var(--success-color);
+    }
+    
+    .toast.error {
+      border-left-color: var(--danger-color);
+    }
+    
+    .toast.warning {
+      border-left-color: var(--warning-color);
+    }
+
+    /* 🏷️ علامة الأنمي الجديد */
+    .new-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+      color: white;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      z-index: 15;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* 📊 شريط التقدم */
+    .progress-container {
+      max-width: 1200px;
+      margin: 25px auto;
+      padding: 0 25px;
+    }
+    
+    .progress-bar {
+      background: var(--glass-bg);
+      border-radius: 12px;
+      height: 24px;
+      margin: 12px 0;
+      overflow: hidden;
+      box-shadow: var(--glass-shadow);
+      border: 1px solid var(--glass-border);
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-color), var(--accent-light));
+      border-radius: 12px;
+      transition: width 0.5s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .progress-text {
+      text-align: center;
+      font-size: 1rem;
+      opacity: 0.9;
+      font-weight: 600;
+    }
+
+    /* 🎭 تأثيرات إضافية */
+    .floating-elements {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .floating-element {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: var(--glass-bg);
+      border-radius: 50%;
+      animation: float 18s infinite linear;
+      opacity: 0.4;
+    }
+    
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(60px, 60px) rotate(90deg); }
+      50% { transform: translate(120px, 0) rotate(180deg); }
+      75% { transform: translate(60px, -60px) rotate(270deg); }
+      100% { transform: translate(0, 0) rotate(360deg); }
+    }
+
+    /* تحسينات للشاشات الصغيرة */
+    @media (max-width: 768px) {
+      .anime-header h1 {
+        font-size: 2rem;
+      }
+      
+      .anime-header img {
+        width: 220px;
+        height: 300px;
+      }
+      
+      .episodes {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      }
+      
+      .rating-stars i {
+        font-size: 2.2rem;
+      }
+      
+      .comment-box {
+        flex-direction: column;
+      }
+      
+      .comment-box button {
+        justify-content: center;
+      }
+      
+      .anime-header {
+        min-height: 55vh;
+        padding: 35px 15px 25px;
+      }
+      
+      .header-buttons {
+        top: 15px;
+        left: 15px;
+        gap: 8px;
+      }
+      
+      .header-back-btn {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+      }
+      
+      #favoriteBtn {
+        top: 15px;
+        right: 15px;
+        width: 48px;
+        height: 48px;
+      }
+      
+      .section-title {
+        font-size: 1.5rem;
+        padding: 18px 22px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .anime-header {
+        padding: 25px 12px 20px;
+      }
+      
+      .anime-header h1 {
+        font-size: 1.7rem;
+      }
+      
+      .anime-header img {
+        width: 190px;
+        height: 260px;
+      }
+      
+      .episodes {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 12px;
+      }
+      
+      .section-title {
+        font-size: 1.3rem;
+        padding: 15px 18px;
+      }
+      
+      .anime-meta {
+        gap: 8px;
+      }
+      
+      .meta-item {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+      }
+      
+      .anime-header {
+        min-height: 45vh;
+      }
+      
+      .header-buttons {
+        flex-direction: column;
+        gap: 6px;
+      }
+      
+      .header-back-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+      }
+      
+      .header-back-btn span {
+        display: none;
+      }
+      
+      .back-btn {
+        padding: 12px 25px;
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="anime-header">
+    <!-- عناصر عائمة للخلفية -->
+    <div class="floating-elements">
+      <div class="floating-element" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+      <div class="floating-element" style="top: 60%; left: 80%; animation-delay: 2s;"></div>
+      <div class="floating-element" style="top: 80%; left: 30%; animation-delay: 4s;"></div>
+      <div class="floating-element" style="top: 30%; left: 70%; animation-delay: 6s;"></div>
+    </div>
+    
+    <!-- أزرار الرجوع في الأعلى -->
+    <div class="header-buttons">
+      <button class="header-back-btn smart-back" onclick="goBackSmart()" title="العودة للصفحة السابقة">
+        <i class="fa-solid fa-rotate-left"></i>
+        <span>رجوع ذكي</span>
+      </button>
+      
+      <button class="header-back-btn fixed-back" onclick="goToHome()" title="العودة للصفحة الرئيسية">
+        <i class="fa-solid fa-house"></i>
+        <span>الرئيسية</span>
+      </button>
+    </div>
+    
+    <button id="favoriteBtn" title="إضافة للمفضلة">
+        <i class="fa-regular fa-heart"></i>
+    </button>
+    
+    <div class="anime-poster-container">
+      <img id="animeImg" src="" alt="صورة الأنمي" onerror="handleImageError(this)">
+      <div class="new-badge" id="newBadge" style="display: none;">🆕 جديد</div>
+    </div>
+    
+    <h1 id="animeTitle">جارٍ التحميل...</h1>
+    
+    <div class="anime-meta">
+      <div class="meta-item rating" id="animeRating"></div>
+      <div class="meta-item" id="animeEpisodes"></div>
+      <div class="meta-item" id="animeStatus"></div>
+      <div class="meta-item" id="animeYear"></div>
+    </div>
+  </div>
+
+  <!-- شريط تقدم المشاهدة -->
+  <div class="progress-container">
+    <div class="progress-text" id="progressText">لم تبدأ المشاهدة بعد</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <div class="anime-desc" id="animeDesc">
+    📝 لا يوجد وصف بعد لهذا الأنمي.
+  </div>
+
+  <h2 class="section-title">⭐ تقييم الأنمي</h2>
+  <div class="rating-container">
+    <div class="rating-stars" id="ratingStars">
+      <i class="fa-solid fa-star" data-rate="1"></i>
+      <i class="fa-solid fa-star" data-rate="2"></i>
+      <i class="fa-solid fa-star" data-rate="3"></i>
+      <i class="fa-solid fa-star" data-rate="4"></i>
+      <i class="fa-solid fa-star" data-rate="5"></i>
+    </div>
+  </div>
+
+  <h2 class="section-title">🎬 قائمة الحلقات</h2>
+  <div class="episodes-container">
+    <div class="episodes" id="episodesList"></div>
+  </div>
+
+  <h2 class="section-title">💬 التعليقات</h2>
+  <div class="comments-container">
+    <div class="comment-box">
+      <input type="text" id="commentInput" placeholder="أضف تعليقك هنا...">
+      <button id="sendComment">
+        <i class="fa-solid fa-paper-plane"></i>
+        إرسال
+      </button>
+    </div>
+    <div id="commentsContainer"></div>
+  </div>
+
+  <button class="back-btn" onclick="goBackOrHome()">
+    <i class="fa-solid fa-arrow-right"></i>
+    رجوع
+  </button>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // 💡 الثوابت والمتغيرات العامة
+    const OWNER_EMAIL = "itwix907@gmail.com";
+    const LOGGED_IN_EMAIL = localStorage.getItem("loggedInUser");
+    const IS_LOGGED_IN = !!LOGGED_IN_EMAIL;
+    const USER_NAME = localStorage.getItem("profileName") || "مجهول";
+    const USERS_STORAGE_KEY = 'oraaAnimeUsers';
+    
+    // 💽 بيانات الأنمي
+    let anime;
+    try {
+      anime = JSON.parse(localStorage.getItem("selectedAnime"));
+      if (anime) {
+          document.getElementById('pageTitle').textContent = anime.title;
+      }
+    } catch (e) {
+      console.error("خطأ في تحليل بيانات الأنمي:", e);
+      showToast("❌ حدث خطأ في تحميل بيانات الأنمي", "error");
+      anime = { title: "غير معروف", img: "", desc: "لا توجد بيانات متاحة" };
+    }
+    
+    const WATCH_STATUS_KEY = `watch_status_${anime?.title?.replace(/\s+/g, '_')}`;
+
+    // ------------------------------------------------------------------
+    // 1. وظائف المساعدة المحسنة
+    // ------------------------------------------------------------------
+    
+    // معالجة أخطاء الصور
+    function handleImageError(img) {
+      console.log('خطأ في تحميل الصورة، استخدام الصورة البديلة');
+      img.src = "https://placehold.co/300x400/1A1A2E/8B5CF6?text=صورة+الأنمي&font=cairo";
+      img.onerror = null; // منع التكرار اللانهائي
+    }
+    
+    // عرض الإشعارات
+    function showToast(msg, type = "info") {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast';
+      toast.classList.add(type);
+      
+      // إظهار الإشعار
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 10);
+      
+      // إخفاء الإشعار بعد 4 ثواني
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 4000);
+    }
+    
+    // تحديث شريط التقدم
+    function updateProgressBar() {
+      if (!anime) return;
+      
+      const watchedStatus = JSON.parse(localStorage.getItem(WATCH_STATUS_KEY)) || {};
+      const totalEpisodes = anime.totalEpisodes || anime.episodes || 12;
+      const watchedEpisodes = Object.keys(watchedStatus).filter(ep => watchedStatus[ep]).length;
+      const progressPercentage = totalEpisodes > 0 ? (watchedEpisodes / totalEpisodes) * 100 : 0;
+      
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('progressText');
+      
+      progressFill.style.width = `${progressPercentage}%`;
+      
+      if (watchedEpisodes === 0) {
+        progressText.textContent = 'لم تبدأ المشاهدة بعد';
+      } else if (watchedEpisodes === totalEpisodes) {
+        progressText.textContent = `مكتمل! (${watchedEpisodes}/${totalEpisodes})`;
+      } else {
+        progressText.textContent = `شاهدت ${watchedEpisodes} من ${totalEpisodes} حلقة (${Math.round(progressPercentage)}%)`;
+      }
+    }
+    
+    // ------------------------------------------------------------------
+    // 2. نظام الرجوع الذكي والثابت
+    // ------------------------------------------------------------------
+
+    // الرجوع الذكي للصفحة السابقة
+    function goBackSmart() {
+      const previousPageData = JSON.parse(localStorage.getItem('previousPage')) || {};
+      
+      // إذا كانت هناك صفحة سابقة محفوظة ونريد العودة إليها
+      if (previousPageData.url && previousPageData.url.includes(window.location.origin)) {
+        // التحقق من أن الصفحة السابقة ليست الصفحة الحالية
+        if (!previousPageData.url.includes('anime.html')) {
+          window.location.href = previousPageData.url;
+          return;
+        }
+      }
+      
+      // إذا كان هناك تاريخ تصفح، نرجع للخلف صفحة واحدة
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        // إذا لم يكن هناك تاريخ، نذهب للصفحة الرئيسية
+        goToHome();
+      }
+    }
+
+    // الرجوع الثابت للصفحة الرئيسية
+    function goToHome() {
+      window.location.href = 'index.html';
+    }
+
+    // حفظ الصفحة السابقة عند الدخول لـ anime.html
+    function savePreviousPageForAnime() {
+      const previousPage = document.referrer;
+      
+      // نحفظ فقط إذا كانت الصفحة السابقة من موقعنا وليست anime.html نفسها
+      if (previousPage && 
+          previousPage.includes(window.location.origin) &&
+          !previousPage.includes('anime.html')) {
+        
+        const pageData = {
+          url: previousPage,
+          timestamp: new Date().toISOString(),
+          type: 'previous'
+        };
+        
+        localStorage.setItem('previousPage', JSON.stringify(pageData));
+      }
+    }
+
+    // تحديث دالة الرجوع القديمة
+    window.goBackOrHome = function() {
+      goBackSmart();
+    }
+
+    // ------------------------------------------------------------------
+    // 3. تفعيل زر المفضلة المحسن
+    // ------------------------------------------------------------------
+    const favoriteBtn = document.getElementById("favoriteBtn");
+
+    function checkFavoriteStatus() {
+        if (!IS_LOGGED_IN || !anime) return false;
+        
+        const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY)) || [];
+        const currentUser = users.find(u => u.email === LOGGED_IN_EMAIL);
+        
+        if (currentUser && currentUser.favorites) {
+            return currentUser.favorites.some(fav => fav.title === anime.title);
+        }
+        return false;
+    }
+
+    function toggleFavorite() {
+        if (!IS_LOGGED_IN) {
+            showToast("🔒 يجب تسجيل الدخول إلى حسابك لاستخدام المفضلة!", "warning");
+            return;
+        }
+
+        if (!anime) {
+            showToast("❌ لا توجد بيانات الأنمي", "error");
+            return;
+        }
+
+        let isCurrentlyFav = checkFavoriteStatus();
+        const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY)) || [];
+        const userIndex = users.findIndex(u => u.email === LOGGED_IN_EMAIL);
+        
+        if (userIndex === -1) {
+            showToast("❌ لم يتم العثور على بيانات المستخدم", "error");
+            return;
+        }
+
+        users[userIndex].favorites = users[userIndex].favorites || [];
+
+        if (isCurrentlyFav) {
+            // إزالة من المفضلة
+            users[userIndex].favorites = users[userIndex].favorites.filter(fav => fav.title !== anime.title);
+            showToast(`💔 تم إزالة "${anime.title}" من المفضلة`, "info");
+        } else {
+            // إضافة للمفضلة
+            users[userIndex].favorites.push({ 
+                title: anime.title, 
+                img: anime.img || "https://placehold.co/300x400/1A1A2E/8B5CF6?text=صورة+الأنمي",
+                year: anime.year || "غير معروف",
+                addedAt: new Date().toISOString()
+            });
+            showToast(`💖 تم إضافة "${anime.title}" إلى المفضلة!`, "success");
+        }
+        
+        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+        updateFavoriteButtonUI(!isCurrentlyFav);
+    }
+    
+    function updateFavoriteButtonUI(isFav) {
+        const icon = favoriteBtn.querySelector('i');
+        if (isFav) {
+            favoriteBtn.classList.add('is-fav');
+            icon.className = 'fa-solid fa-heart';
+            favoriteBtn.title = "إزالة من المفضلة";
+        } else {
+            favoriteBtn.classList.remove('is-fav');
+            icon.className = 'fa-regular fa-heart';
+            favoriteBtn.title = "إضافة للمفضلة";
+        }
+    }
+
+    favoriteBtn.addEventListener('click', toggleFavorite);
+    
+    // ------------------------------------------------------------------
+    // 4. عرض تفاصيل الأنمي والحلقات وتتبع المشاهدة المحسن
+    // ------------------------------------------------------------------
+    function loadAnimeDetails() {
+      if (!anime) {
+        document.getElementById("animeTitle").textContent = "الأنمي غير موجود";
+        showToast("❌ لم يتم العثور على بيانات الأنمي", "error");
+        return;
+      }
+
+      // تحميل صورة الأنمي مع معالجة الأخطاء
+      const animeImg = document.getElementById("animeImg");
+      if (anime.img) {
+        animeImg.src = anime.img;
+      } else {
+        animeImg.src = "https://placehold.co/300x400/1A1A2E/8B5CF6?text=صورة+الأنمي";
+      }
+      animeImg.alt = `صورة ${anime.title}`;
+
+      document.getElementById("animeTitle").textContent = anime.title;
+      document.getElementById("animeRating").textContent = "⭐ " + (anime.rating || "غير متوفر");
+      document.getElementById("animeEpisodes").textContent = `الحلقات: ${anime.totalEpisodes || anime.episodes || 12}`;
+      document.getElementById("animeStatus").textContent = anime.status || "مستمر";
+      document.getElementById("animeYear").textContent = `السنة: ${anime.year || "غير معروفة"}`;
+      document.getElementById("animeDesc").textContent =
+        anime.desc || "قصة هذا الأنمي مليئة بالإثارة والتشويق.";
+
+      // عرض علامة "جديد" إذا كان الأنمي حديث
+      if (anime.year && parseInt(anime.year) >= 2023) {
+        document.getElementById("newBadge").style.display = "block";
+      }
+
+      updateFavoriteButtonUI(checkFavoriteStatus()); 
+
+      // تتبع حالة المشاهدة
+      const watchedStatus = JSON.parse(localStorage.getItem(WATCH_STATUS_KEY)) || {};
+
+      const episodes = document.getElementById("episodesList");
+      const totalEpisodes = anime.totalEpisodes || anime.episodes || 12;
+      
+      // إضافة رسالة إذا لم توجد حلقات
+      if (totalEpisodes <= 0) {
+        episodes.innerHTML = `<p style="text-align:center; padding: 30px; opacity: 0.7; font-size: 1.1rem;">لا توجد حلقات متاحة بعد</p>`;
+        return;
+      }
+      
+      for (let i = 1; i <= totalEpisodes; i++) {
+        const ep = document.createElement("div");
+        ep.classList.add("episode");
+        ep.textContent = `الحلقة ${i}`;
+        
+        // تمييز الحلقة إذا كانت مشاهدة
+        if (watchedStatus[i]) {
+            ep.classList.add('watched');
+        }
+
+        ep.addEventListener("click", () => {
+          // حفظ حالة الحلقة كمشاهدة عند النقر
+          watchedStatus[i] = true; 
+          localStorage.setItem(WATCH_STATUS_KEY, JSON.stringify(watchedStatus));
+          
+          localStorage.setItem("selectedEpisode", JSON.stringify({
+            animeTitle: anime.title,
+            episodeNumber: i
+          }));
+          
+          showToast(`▶️ تشغيل الحلقة ${i} من ${anime.title}`, "info");
+          
+          // تحديث شريط التقدم
+          updateProgressBar();
+          
+          // تأخير بسيط قبل الانتقال لرؤية الإشعار
+          setTimeout(() => {
+            window.location.href = "servers.html";
+          }, 1000);
+        });
+        episodes.appendChild(ep);
+      }
+      
+      // تحديث شريط التقدم بعد تحميل الحلقات
+      updateProgressBar();
+    }
+
+    // ------------------------------------------------------------------
+    // 5. نظام التقييم المحسن
+    // ------------------------------------------------------------------
+    const stars = document.querySelectorAll(".rating-stars i");
+    stars.forEach(star => {
+      star.addEventListener("click", () => {
+        if (!anime) {
+          showToast("❌ لا توجد بيانات الأنمي", "error");
+          return;
+        }
+        
+        const rate = star.dataset.rate;
+        localStorage.setItem(`rating_${anime.title.replace(/\s+/g, '_')}`, rate);
+        updateStars(rate);
+        showToast(`⭐ قيمت الأنمي بـ ${rate} نجوم`, "success");
+      });
+    });
+
+    function updateStars(rate) {
+      stars.forEach(star => {
+        star.classList.toggle("active", star.dataset.rate <= rate);
+      });
+    }
+
+    // ------------------------------------------------------------------
+    // 6. نظام التعليقات المحسن (مع تمييز المالك)
+    // ------------------------------------------------------------------
+    const commentInput = document.getElementById("commentInput");
+    const sendComment = document.getElementById("sendComment");
+    const commentsContainer = document.getElementById("commentsContainer");
+    const IS_OWNER = LOGGED_IN_EMAIL === OWNER_EMAIL;
+
+    function loadComments() {
+      if (!anime) return;
+      
+      const key = `comments_${anime.title.replace(/\s+/g, '_')}`;
+      let comments = JSON.parse(localStorage.getItem(key)) || [];
+      
+      commentsContainer.innerHTML = "";
+      if (comments.length === 0) {
+        commentsContainer.innerHTML = "<p style='opacity:0.6; text-align:center; padding: 30px; font-size: 1.1rem;'>لا توجد تعليقات بعد. كن أول المعلقين! ✍️</p>";
+      } else {
+        comments.forEach(c => {
+          const div = document.createElement("div");
+          let userDisplay = c.user;
+          let isCommentOwner = c.email === OWNER_EMAIL;
+          
+          // تمييز تعليق المالك
+          if (isCommentOwner) {
+            div.classList.add("owner-comment");
+            userDisplay = `<i class="fa-solid fa-crown" style="color:var(--gold-owner);"></i> المالك الذهبي`;
+          }
+
+          div.classList.add("comment");
+          div.innerHTML = `
+            <span>${userDisplay}</span>
+            <div style="font-size: 1.05rem; line-height: 1.7;">${c.text}</div>
+            <div style="font-size:0.85rem; opacity:0.7; margin-top:10px; text-align:left;">
+              ${new Date(c.timestamp || Date.now()).toLocaleString('ar-SA')}
+            </div>
+          `;
+          commentsContainer.appendChild(div);
+        });
+      }
+    }
+
+    function addComment() {
+      if (!anime) {
+        showToast("❌ لا توجد بيانات الأنمي", "error");
+        return;
+      }
+      
+      const text = commentInput.value.trim();
+      if (!text) {
+        showToast("🖊️ اكتب تعليقًا أولاً!", "warning");
+        return;
+      }
+      
+      if (!IS_LOGGED_IN) {
+        showToast("🔒 يجب تسجيل الدخول لإضافة تعليق!", "warning");
+        return;
+      }
+      
+      const key = `comments_${anime.title.replace(/\s+/g, '_')}`;
+      let comments = JSON.parse(localStorage.getItem(key)) || [];
+      
+      // حفظ التعليق مع اسم المستخدم وإيميله لتمييز المالك
+      comments.unshift({ 
+        user: USER_NAME, 
+        text, 
+        email: LOGGED_IN_EMAIL,
+        timestamp: new Date().toISOString()
+      });
+      localStorage.setItem(key, JSON.stringify(comments));
+      commentInput.value = "";
+      loadComments();
+      showToast("💬 تم إضافة تعليقك بنجاح!", "success");
+    }
+
+    sendComment.addEventListener("click", addComment);
+    
+    // السماح بإرسال التعليق بالضغط على Enter
+    commentInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        addComment();
+      }
+    });
+    
+    // ------------------------------------------------------------------
+    // 7. تحميل الصفحة مع تأثيرات ظهور
+    // ------------------------------------------------------------------
+    document.addEventListener('DOMContentLoaded', function() {
+      // حفظ الصفحة السابقة أولاً
+      savePreviousPageForAnime();
+      
+      // ثم تحميل باقي البيانات
+      loadAnimeDetails();
+      
+      // تحميل التقييم المحفوظ
+      if (anime) {
+        const savedRating = localStorage.getItem(`rating_${anime.title.replace(/\s+/g, '_')}`);
+        if (savedRating) updateStars(savedRating);
+      }
+      
+      // تحميل التعليقات
+      loadComments();
+      
+      // إضافة تأثيرات ظهور للحقول
+      const elements = document.querySelectorAll('.anime-header, .anime-desc, .section-title, .episode, .comment, .header-buttons, .progress-container, .rating-container, .comments-container');
+      elements.forEach((el, index) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(25px)';
+        
+        setTimeout(() => {
+          el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, index * 120);
+      });
+    });
+  </script>
+</body>
+</html>

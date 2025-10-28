@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌀 Oraa Anime - Loading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0F0F25, #1A1A3A);
+            font-family: 'Cairo', sans-serif;
+            color: #F8F8FF;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* تأثيرات الخلفية */
+        .bg-effects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .bg-effects::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(139, 123, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 123, 169, 0.1) 0%, transparent 50%);
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(139, 123, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            left: 80%;
+            animation-delay: -2s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            top: 80%;
+            left: 20%;
+            animation-delay: -4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* المحتوى الرئيسي */
+        .splash-container {
+            text-align: center;
+            z-index: 1;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #8B7BFF, #5FD8FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(139, 123, 255, 0.5));
+            animation: pulse 2s infinite;
+        }
+
+        .app-name {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #8B7BFF, #FF7BA9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
+
+        /* شريط التحميل */
+        .loading-bar {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #8B7BFF, #FF7BA9);
+            border-radius: 10px;
+            animation: loading 3s ease-in-out forwards;
+            box-shadow: 0 0 10px rgba(139, 123, 255, 0.5);
+        }
+
+        .loading-text {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* معلومات المطور */
+        .developer-info {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+        }
+
+        .developer-info a {
+            color: rgba(139, 123, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .developer-info a:hover {
+            color: #8B7BFF;
+        }
+
+        /* شاشة التحميل الاحتياطية */
+        .fallback-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0F0F25, #1A1A3A);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .fallback-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(139, 123, 255, 0.3);
+            border-top: 4px solid #8B7BFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* الرسوم المتحركة */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            20% { width: 30%; }
+            50% { width: 60%; }
+            80% { width: 90%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* تأثير التموج عند النقر */
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(139,123,255,0.8) 0%, transparent 70%);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(20);
+                opacity: 0;
+            }
+        }
+
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .logo { font-size: 3rem; }
+            .app-name { font-size: 2rem; }
+            .tagline { font-size: 1rem; }
+            .loading-bar { width: 250px; }
+        }
+
+        @media (max-width: 480px) {
+            .logo { font-size: 2.5rem; }
+            .app-name { font-size: 1.8rem; }
+            .tagline { font-size: 0.9rem; }
+            .loading-bar { width: 200px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- شاشة التحميل الاحتياطية -->
+    <div class="fallback-loading" id="fallbackLoading">
+        <div class="fallback-spinner"></div>
+    </div>
+
+    <!-- تأثيرات الخلفية -->
+    <div class="bg-effects">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="splash-container">
+        <div class="logo">🌀</div>
+        <h1 class="app-name">Oraa Slayer</h1>
+        <p class="tagline">أفضل منصة لمشاهدة الأنمي العربي</p>
+        
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        <p class="loading-text" id="loadingText">جاري تحميل أفضل الأنميات...</p>
+    </div>
+
+    <!-- معلومات المطور -->
+    <div class="developer-info">
+        <p>تم التطوير بـ <i class="fa-solid fa-heart" style="color: #FF7BA9;"></i> بواسطة <a href="https://github.com/yourusername" target="_blank">فريق Oraa</a></p>
+    </div>
+
+    <script>
+        // كود مبسط يعمل بدون مشاكل
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Oraa Anime Splash Screen Loaded');
+            
+            // إضافة تأثير التموج عند النقر
+            document.body.addEventListener('click', function(e) {
+                const ripple = document.createElement('div');
+                ripple.className = 'ripple-effect';
+                ripple.style.left = e.clientX - 10 + 'px';
+                ripple.style.top = e.clientY - 10 + 'px';
+                document.body.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+            
+            // تحديث نص التحميل
+            const loadingTexts = [
+                "جاري تحميل أفضل الأنميات...",
+                "تهيئة قاعدة البيانات...", 
+                "تحميل واجهة المستخدم...",
+                "جاري الإعداد النهائي..."
+            ];
+            
+            let currentTextIndex = 0;
+            const loadingTextElement = document.getElementById('loadingText');
+            
+            const updateLoadingText = () => {
+                if (currentTextIndex < loadingTexts.length) {
+                    loadingTextElement.textContent = loadingTexts[currentTextIndex];
+                    currentTextIndex++;
+                    setTimeout(updateLoadingText, 800);
+                }
+            };
+            
+            // بدء تحديث النص
+            setTimeout(updateLoadingText, 1000);
+            
+            // الانتقال بعد انتهاء التحميل
+            setTimeout(() => {
+                document.body.style.opacity = '0';
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 500);
+            }, 4000);
+            
+            // إمكانية التخطي بالضغط على أي مفتاح
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+
+        // التعامل مع الأخطاء
+        window.addEventListener('error', function() {
+            console.log('⚠️ حدث خطأ في التحميل');
+            document.getElementById('loadingText').textContent = "⚠️ حدث خطأ في التحميل، جاري إعادة المحاولة...";
+            
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

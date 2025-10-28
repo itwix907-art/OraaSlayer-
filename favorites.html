@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المفضلة - MIKAI Anime</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    /* 🎨 الأساسيات */
+    body {
+      background: radial-gradient(circle at top, #1a1b2e, #0b0b18 80%);
+      font-family: 'Tajawal', sans-serif;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ⬆️ الهيدر */
+    header {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      padding: 15px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 0 15px rgba(255, 0, 150, 0.3);
+      border-bottom: 3px solid #ff66cc; /* 🆕 خط فاصل جذاب */
+    }
+
+    header h1 {
+      color: #ff66cc;
+      font-size: 1.6rem; /* حجم أكبر */
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header a {
+      color: #ff99dd;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+      font-size: 1.1rem;
+    }
+    header a:hover { color: #fff; transform: scale(1.05); }
+
+    /* 🔸 شبكة الأنميات */
+    .anime-grid {
+      flex-grow: 1; /* للسماح للشبكة بالنمو */
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* عرض أكبر للبطاقة */
+      gap: 25px; /* مسافة أكبر */
+      padding: 30px 25px;
+      justify-items: center;
+    }
+
+    .anime-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 15px;
+      overflow: hidden;
+      width: 180px;
+      transition: 0.3s;
+      box-shadow: 0 0 15px rgba(255, 0, 150, 0.25);
+      position: relative;
+    }
+
+    .anime-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 0 25px rgba(255, 0, 150, 0.7); /* ظل نيون أقوى */
+    }
+
+    .anime-card img {
+      width: 100%;
+      height: 250px; /* طول أكبر للبوستر */
+      object-fit: cover;
+      border-bottom: 3px solid #ff66cc;
+    }
+
+    .anime-info {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .anime-info h4 {
+      margin: 5px 0 10px 0;
+      font-size: 1.05rem;
+      color: #ffb0ea;
+    }
+
+    .anime-info button {
+      background: linear-gradient(90deg, #ff0095, #ff66cc);
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px; /* حواف مستديرة بالكامل */
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .anime-info button:hover {
+      background: linear-gradient(90deg, #ff33aa, #ff80d6);
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(255, 0, 150, 0.5);
+    }
+
+    /* ❌ رسالة القائمة الفارغة */
+    #emptyMessage {
+      text-align: center;
+      padding: 50px;
+      font-size: 1.5rem;
+      color: #ff99dd;
+    }
+    #emptyMessage i {
+        color: #ff0095;
+        font-size: 3rem;
+        margin-bottom: 20px;
+        display: block;
+        animation: swing 6s infinite ease-in-out;
+    }
+    @keyframes swing {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(5deg); }
+    }
+
+    /* 👑 وضع المالك الذهبي */
+    .owner-mode header {
+      border-bottom: 3px solid gold;
+      box-shadow: 0 0 20px gold;
+      background: rgba(255, 215, 0, 0.1);
+    }
+    .owner-mode header h1 { color: gold; }
+    .owner-mode .owner-icon {
+      color: gold;
+      margin-right: 6px;
+      animation: shine 2s infinite linear;
+    }
+    .owner-mode .anime-card {
+        border: 2px solid gold;
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+    }
+    .owner-mode .anime-card:hover {
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+    }
+
+    @keyframes shine {
+      0%,100% { filter: brightness(1); }
+      50% { filter: brightness(1.7); }
+    }
+
+    /* 🔙 زر العودة */
+    .back-section {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .back-section a {
+      color: #ff99dd;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .back-section a:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1><i class="fa-solid fa-heart"></i> مفضلتي</h1>
+    <a href="profile.html"><i class="fa-solid fa-user"></i> البروفايل</a>
+  </header>
+
+  <section class="anime-grid" id="favoritesGrid">
+    </section>
+
+  <div id="emptyMessage" style="display:none;">
+    <i class="fa-regular fa-face-sad-tear"></i>
+    <p>قائمة مفضلتك فارغة! عد إلى الصفحة الرئيسية وأضف بعض الأنميات.</p>
+  </div>
+
+  <div class="back-section">
+    <a href="index.html"><i class="fa-solid fa-arrow-left"></i> العودة للرئيسية</a>
+  </div>
+
+  <script>
+    // 💡 الثوابت
+    const USERS_STORAGE_KEY = 'mikaiAnimeUsers';
+    const LOGGED_IN_EMAIL = localStorage.getItem("loggedInUser");
+    const OWNER_EMAIL = "itwix907@gmail.com";
+    const grid = document.getElementById("favoritesGrid");
+    const emptyMessage = document.getElementById("emptyMessage");
+
+    // ------------------------------------------------------------------
+    // 1. 🛠️ دالة تحديث قائمة المفضلة في localStorage
+    // ------------------------------------------------------------------
+    function updateFavoriteList(newFavorites) {
+        if (!LOGGED_IN_EMAIL) return; // لا يوجد مستخدم مسجل
+
+        const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY)) || [];
+        const userIndex = users.findIndex(u => u.email === LOGGED_IN_EMAIL);
+
+        if (userIndex !== -1) {
+            // تحديث قائمة المفضلة للمستخدم الحالي
+            users[userIndex].favorites = newFavorites;
+            localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // 2. 🖼️ دالة عرض البطاقات على الواجهة
+    // ------------------------------------------------------------------
+    function renderFavorites() {
+        // إفراغ الشبكة أولاً
+        grid.innerHTML = ''; 
+
+        // 1. جلب بيانات المستخدمين والمفضلة
+        const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY)) || [];
+        const currentUser = users.find(u => u.email === LOGGED_IN_EMAIL);
+        
+        // إذا لم يتم العثور على المستخدم أو لم تكن لديه قائمة مفضلة
+        const favoritesList = currentUser ? (currentUser.favorites || []) : [];
+
+        if (favoritesList.length === 0) {
+            emptyMessage.style.display = 'block';
+            return;
+        }
+
+        emptyMessage.style.display = 'none';
+
+        favoritesList.forEach(anime => {
+            const card = document.createElement("div");
+            card.classList.add("anime-card");
+            // استخدام اسم الأنمي كـ ID لإزالته بسهولة
+            card.setAttribute('data-title', anime.title); 
+
+            card.innerHTML = `
+                <img src="${anime.img}" alt="${anime.title}">
+                <div class="anime-info">
+                <h4>${anime.title}</h4>
+                <button onclick="removeAnime('${anime.title.replace(/'/g, "\\'")}')"><i class="fa-solid fa-trash"></i> إزالة</button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // 3. 🗑️ دالة الإزالة (متاحة عالمياً)
+    // ------------------------------------------------------------------
+    window.removeAnime = function(titleToRemove) {
+        const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY)) || [];
+        const userIndex = users.findIndex(u => u.email === LOGGED_IN_EMAIL);
+
+        if (userIndex !== -1) {
+            let currentFavorites = users[userIndex].favorites || [];
+            
+            // تصفية القائمة لإزالة الأنمي المطابق
+            const newFavorites = currentFavorites.filter(anime => anime.title !== titleToRemove);
+            
+            // 1. تحديث القائمة في localStorage
+            updateFavoriteList(newFavorites);
+
+            // 2. تحديث الواجهة
+            renderFavorites();
+
+            alert("✅ تم إزالة " + titleToRemove + " من مفضلتك بنجاح.");
+        }
+    }
+
+
+    // ------------------------------------------------------------------
+    // 4. 👑 سكريبت المالك الذهبي والتحميل الأولي
+    // ------------------------------------------------------------------
+    window.addEventListener("load", () => {
+        // 1. تحميل المفضلة وعرضها
+        if (!LOGGED_IN_EMAIL) {
+            // إذا لم يكن هناك مستخدم مسجل، اعرض رسالة مناسبة
+            grid.innerHTML = `<p style="text-align:center; font-size:1.2rem; padding: 50px;">يجب تسجيل الدخول لعرض المفضلة!</p>`;
+            emptyMessage.style.display = 'none';
+        } else {
+            renderFavorites();
+        }
+
+        // 2. تفعيل وضع المالك الذهبي
+        const isOwner = (LOGGED_IN_EMAIL === OWNER_EMAIL);
+
+        if (isOwner) {
+            // إضافة أيقونة التاج
+            const crown = document.createElement("i");
+            crown.className = "fa-solid fa-crown owner-icon";
+            const header = document.querySelector("header h1");
+            header.prepend(crown);
+            // تطبيق فئة المالك الذهبي على جسم الصفحة
+            document.body.classList.add("owner-mode");
+            
+            // (اختياري) إضافة رسالة ترحيب المالك
+            document.querySelector("header h1").appendChild(document.createTextNode(" (المالك)"));
+        }
+    });
+
+  </script>
+
+</body>
+</html>

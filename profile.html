@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👤 ملفي الشخصي - Oraa Anime</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root {
+  --primary-color: #8B7BFF;
+  --secondary-color: #FF7BA9;
+  --accent-color: #5FD8FF;
+  --bg-dark: #0F0F25;
+  --bg-card: rgba(26, 26, 60, 0.7);
+  --text-light: #FFFFFF;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --success-color: #3DD8A9;
+  --warning-color: #FFC14D;
+  --error-color: #FF6B82;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-light);
+  font-family: 'Cairo', sans-serif;
+  min-height: 100vh;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(139, 123, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 123, 169, 0.15) 0%, transparent 50%);
+  padding-bottom: 90px;
+}
+
+/* الهيدر */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(30, 30, 60, 0.8);
+  backdrop-filter: blur(20px);
+  padding: 15px 25px;
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* غلاف الصفحة */
+.cover {
+  height: 280px;
+  background: linear-gradient(135deg, rgba(139, 123, 255, 0.3), rgba(255, 123, 169, 0.3)), 
+              url('https://i.ibb.co/JrFz4b2/anime-banner.jpg') center/cover;
+  position: relative;
+  border-bottom: 1px solid var(--glass-border);
+  transition: all 0.5s ease;
+}
+
+.cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, var(--bg-dark) 100%);
+}
+
+/* الصندوق الرئيسي */
+.profile-box {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  max-width: 900px;
+  margin: -100px auto 30px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  z-index: 10;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 80px rgba(139, 123, 255, 0.3);
+}
+
+/* الصورة الشخصية */
+.profile-img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 4px solid var(--primary-color);
+  object-fit: cover;
+  margin-top: -100px;
+  transition: all 0.4s ease;
+  background: var(--bg-card);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 20;
+}
+
+.profile-img:hover { 
+  transform: scale(1.08) rotate(5deg);
+  border-color: var(--secondary-color);
+  box-shadow: 0 15px 40px rgba(255, 123, 169, 0.4);
+}
+
+/* الاسم والتوثيق */
+.username {
+  margin-top: 20px;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.verified {
+  color: var(--secondary-color);
+  animation: pulse 2s infinite alternate;
+  font-size: 1.4rem;
+  filter: drop-shadow(0 0 8px var(--secondary-color));
+  display: none;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.2); opacity: 1; }
+}
+
+.about {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1rem;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0 20px;
+}
+
+.about:hover {
+  color: var(--primary-color);
+}
+
+/* الإحصائيات */
+.stats {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.stat {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  padding: 20px 25px;
+  border-radius: 18px;
+  border: 1px solid var(--glass-border);
+  transition: all 0.3s ease;
+  min-width: 120px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  transition: width 0.3s ease;
+}
+
+.stat:hover {
+  background: rgba(139, 123, 255, 0.15);
+  transform: translateY(-5px);
+}
+
+.stat:hover::before {
+  width: 8px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+.stat span {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 5px;
+  display: block;
+}
+
+/* الأزرار */
+.btns {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  border: none;
+  color: white;
+  padding: 14px 24px;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.95rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: right 0.6s ease;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(139, 123, 255, 0.4);
+}
+
+.btn:hover::before {
+  right: 100%;
+}
+
+.btn i {
+  font-size: 1.1rem;
+}
+
+/* أقسام المحتوى */
+.section {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 25px;
+}
+
+.section-title {
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.section-title i {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* قائمة الأنمي المفضلة */
+.anime-list {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 10px 5px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) transparent;
+}
+
+.anime-list::-webkit-scrollbar {
+  height: 8px;
+}
+
+.anime-list::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.anime-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-radius: 10px;
+}
+
+.anime-card {
+  min-width: 140px;
+  text-align: center;
+  transition: all 0.4s ease;
+  background: var(--bg-card);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  position: relative;
+}
+
+.anime-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.anime-card:hover::before {
+  transform: scaleX(1);
+}
+
+.anime-card img {
+  width: 140px;
+  height: 200px;
+  object-fit: cover;
+  background: var(--bg-dark);
+  transition: transform 0.4s ease;
+}
+
+.anime-card:hover {
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 15px 35px rgba(139, 123, 255, 0.3);
+}
+
+.anime-card:hover img {
+  transform: scale(1.1);
+}
+
+.anime-card p {
+  padding: 12px 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.5);
+  margin: 0;
+}
+
+/* الأوسمة */
+.badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.badge {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  text-align: center;
+  padding: 25px 15px;
+  transition: all 0.4s ease;
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.badge::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  transition: all 0.6s ease;
+}
+
+.badge:hover::before {
+  left: 100%;
+}
+
+.badge:hover {
+  background: rgba(139, 123, 255, 0.15);
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.badge i {
+  font-size: 2.2rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.badge p {
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+/* الفوتر */
+footer {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 60px;
+  font-size: 0.9rem;
+  padding: 0 25px;
+}
+
+/* زر الرئيسية */
+.btn-home {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border: none;
+  border-radius: 50px;
+  padding: 16px 28px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(139, 123, 255, 0.5);
+  transition: all 0.3s ease;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Cairo', sans-serif;
+}
+
+.btn-home:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 35px rgba(139, 123, 255, 0.6);
+}
+
+/* الإشعارات */
+.notification {
+  position: fixed;
+  top: 100px;
+  right: 30px;
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  transform: translateX(150%);
+  transition: transform 0.4s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 350px;
+}
+
+.notification.show {
+  transform: translateX(0);
+}
+
+.notification i {
+  font-size: 1.3rem;
+}
+
+.notification.success i {
+  color: var(--success-color);
+}
+
+.notification.error i {
+  color: var(--error-color);
+}
+
+.notification.warning i {
+  color: var(--warning-color);
+}
+
+/* النافذة المنبثقة */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  padding: 20px;
+}
+
+.modal-overlay.show {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-box {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  padding: 30px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 450px;
+  text-align: right;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.show .modal-box {
+  transform: scale(1);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 16px 20px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: var(--text-light);
+  font-family: 'Cairo', sans-serif;
+  font-size: 1rem;
+  margin-bottom: 25px;
+  transition: all 0.3s ease;
+}
+
+.modal-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(139, 123, 255, 0.2);
+}
+
+.modal-btns {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+}
+
+.modal-btn {
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.95rem;
+}
+
+.modal-btn.confirm {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  color: white;
+}
+
+.modal-btn.confirm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(139, 123, 255, 0.4);
+}
+
+.modal-btn.cancel {
+  background: var(--glass-bg);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--glass-border);
+}
+
+.modal-btn.cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* تحسينات للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .profile-box {
+    margin: -80px 20px 30px;
+    padding: 25px 20px;
+  }
+  
+  .profile-img {
+    width: 130px;
+    height: 130px;
+    margin-top: -80px;
+  }
+  
+  .username {
+    font-size: 1.7rem;
+  }
+  
+  .stats {
+    gap: 15px;
+  }
+  
+  .stat {
+    padding: 15px 20px;
+    min-width: 100px;
+  }
+  
+  .stat strong {
+    font-size: 1.5rem;
+  }
+  
+  .btns {
+    gap: 12px;
+  }
+  
+  .btn {
+    padding: 12px 18px;
+    font-size: 0.9rem;
+  }
+  
+  .section {
+    padding: 0 20px;
+  }
+  
+  .btn-home {
+    bottom: 20px;
+    left: 20px;
+    padding: 14px 22px;
+  }
+  
+  .notification {
+    right: 20px;
+    left: 20px;
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .cover {
+    height: 220px;
+  }
+  
+  .profile-box {
+    margin: -70px 15px 25px;
+    padding: 20px 15px;
+  }
+  
+  .profile-img {
+    width: 110px;
+    height: 110px;
+    margin-top: -70px;
+  }
+  
+  .username {
+    font-size: 1.5rem;
+  }
+  
+  .stats {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .stat {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .btns {
+    flex-direction: column;
+  }
+  
+  .btn {
+    justify-content: center;
+  }
+  
+  .badges {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+<!-- الهيدر -->
+<header class="main-header">
+  <div class="header-left">
+    <div class="logo">🌀 Oraa Anime</div>
+  </div>
+</header>
+
+<!-- الغلاف -->
+<div class="cover" id="cover"></div>
+
+<!-- الصندوق الرئيسي -->
+<div class="profile-box">
+  <img src="https://i.ibb.co/YRShYmn/avatar.png" alt="avatar" class="profile-img" id="profileImg">
+  <h2 class="username" id="username">
+    <span class="name-text">Oraa</span>
+    <i class="fa-solid fa-crown verified" id="verifyIcon" title="حساب مميز"></i>
+  </h2>
+  <p class="about" id="about">عاشق الأنمي ✨ | مستكشف العوالم الخيالية 🚀 | محب للتحديات 🎯</p>
+
+  <div class="stats">
+    <div class="stat"><strong id="animeCount">156</strong><span>أنمي</span></div>
+    <div class="stat"><strong id="watchTime">1.2k</strong><span>ساعة مشاهدة</span></div>
+    <div class="stat"><strong id="followers">2.3k</strong><span>متابع</span></div>
+    <div class="stat"><strong id="achievements">18</strong><span>إنجاز</span></div>
+  </div>
+
+  <div class="btns">
+    <button class="btn" id="editName"><i class="fa-solid fa-user-pen"></i>تعديل الاسم</button>
+    <button class="btn" id="editAbout"><i class="fa-solid fa-comment-dots"></i>تعديل النبذة</button>
+    <button class="btn" id="changeImg"><i class="fa-solid fa-image"></i>تغيير الصورة</button>
+    <button class="btn" id="changeCover"><i class="fa-solid fa-panorama"></i>تغيير الغلاف</button>
+    <button class="btn" id="verifyBtn"><i class="fa-solid fa-shield-halved"></i>التفعيل المميز</button>
+  </div>
+</div>
+
+<!-- الأنمي المفضلة -->
+<section class="section">
+  <h3 class="section-title"><i class="fa-solid fa-heart"></i>أنمياتي المفضلة</h3>
+  <div class="anime-list" id="favoriteAnimeList">
+    <!-- سيتم تعبئتها ديناميكياً -->
+  </div>
+</section>
+
+<!-- الإنجازات -->
+<section class="section">
+  <h3 class="section-title"><i class="fa-solid fa-trophy"></i>إنجازاتي</h3>
+  <div class="badges">
+    <div class="badge"><i class="fa-solid fa-fire-flame-curved"></i><p>محترف المشاهدة</p></div>
+    <div class="badge"><i class="fa-solid fa-star-sharp"></i><p>الناقد المميز</p></div>
+    <div class="badge"><i class="fa-solid fa-gem"></i><p>جامع المفضلة</p></div>
+    <div class="badge"><i class="fa-solid fa-wand-magic-sparkles"></i><p>ساحر التصميم</p></div>
+    <div class="badge"><i class="fa-solid fa-clock"></i><p>بطل الساعات</p></div>
+    <div class="badge"><i class="fa-solid fa-users"></i><p>قائد المجتمع</p></div>
+  </div>
+</section>
+
+<footer>© 2025 Oraa Anime • صنع بكل حب 💜</footer>
+
+<button class="btn-home" onclick="location.href='index.html'">
+  <i class="fa-solid fa-house"></i> الرئيسية
+</button>
+
+<!-- الإشعار -->
+<div class="notification" id="notification">
+  <i class="fa-solid fa-circle-check"></i>
+  <span id="notificationText">تم تنفيذ العملية بنجاح!</span>
+</div>
+
+<!-- النافذة المنبثقة -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h3 class="modal-title" id="modalTitle"><i class="fa-solid fa-pen"></i>تعديل البيانات</h3>
+    <input type="text" class="modal-input" id="modalInput" placeholder="أدخل القيمة الجديدة...">
+    <div class="modal-btns">
+      <button class="modal-btn cancel" id="modalCancel">إلغاء</button>
+      <button class="modal-btn confirm" id="modalConfirm">تأكيد</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// عناصر DOM
+const username = document.getElementById('username');
+const about = document.getElementById('about');
+const profileImg = document.getElementById('profileImg');
+const coverImg = document.getElementById('cover');
+const verifyIcon = document.getElementById('verifyIcon');
+const favoriteAnimeList = document.getElementById('favoriteAnimeList');
+const notification = document.getElementById('notification');
+const notificationText = document.getElementById('notificationText');
+
+// عناصر النافذة المنبثقة
+const modalOverlay = document.getElementById('modalOverlay');
+const modalTitle = document.getElementById('modalTitle');
+const modalInput = document.getElementById('modalInput');
+const modalConfirm = document.getElementById('modalConfirm');
+const modalCancel = document.getElementById('modalCancel');
+
+let modalCallback = null;
+
+// بيانات الأنمي المفضلة
+const favoriteAnimeData = [
+  { 
+    title: "هجوم العمالقة", 
+    img: "https://cdn.myanimelist.net/images/anime/10/47347.jpg",
+    backupImg: "https://placehold.co/140x200/1a1a3a/8B7BFF?text=AOT"
+  },
+  { 
+    title: "قاتل الشياطين", 
+    img: "https://cdn.myanimelist.net/images/anime/1286/99889.jpg",
+    backupImg: "https://placehold.co/140x200/1a1a3a/FF7BA9?text=KNY"
+  },
+  { 
+    title: "ون بيس", 
+    img: "https://cdn.myanimelist.net/images/anime/6/73245.jpg",
+    backupImg: "https://placehold.co/140x200/1a1a3a/5FD8FF?text=OP"
+  },
+  { 
+    title: "مذكرة الموت", 
+    img: "https://cdn.myanimelist.net/images/anime/9/9453.jpg",
+    backupImg: "https://placehold.co/140x200/1a1a3a/8B7BFF?text=DN"
+  },
+  { 
+    title: "سباي × فاميلي", 
+    img: "https://cdn.myanimelist.net/images/anime/1441/122795.jpg",
+    backupImg: "https://placehold.co/140x200/1a1a3a/FF7BA9?text=SPY"
+  },
+  { 
+    title: "جوجوتسو كايسن", 
+    img: "https://cdn.myanimelist.net/images/anime/1171/109222.jpg",
+    backupImg: "https://placehold.co/140x200/1a1a3a/5FD8FF?text=JJK"
+  }
+];
+
+// إظهار الإشعار
+function showNotification(message, type = 'success') {
+  notificationText.textContent = message;
+  notification.className = `notification ${type} show`;
+  
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 4000);
+}
+
+// دوال النافذة المنبثقة
+function showModal(title, defaultValue, callback, inputType = 'text') {
+  modalTitle.innerHTML = `<i class="fa-solid fa-pen"></i>${title}`;
+  modalInput.value = defaultValue;
+  modalInput.type = inputType;
+  modalCallback = callback;
+  modalOverlay.classList.add('show');
+  modalInput.focus();
+}
+
+function hideModal() {
+  modalOverlay.classList.remove('show');
+  modalCallback = null;
+  modalInput.type = 'text';
+}
+
+modalConfirm.onclick = () => {
+  if (modalCallback && modalInput.value.trim() !== '') {
+    modalCallback(modalInput.value);
+  }
+  hideModal();
+};
+
+modalCancel.onclick = hideModal;
+
+modalOverlay.onclick = (e) => {
+  if (e.target === modalOverlay) {
+    hideModal();
+  }
+};
+
+// تحميل البيانات
+function loadData() {
+  const savedName = localStorage.getItem('profileName');
+  const savedAbout = localStorage.getItem('profileAbout');
+  const savedImg = localStorage.getItem('profileImg');
+  const savedCover = localStorage.getItem('profileCover');
+  const verified = localStorage.getItem('verified') === 'true';
+
+  if (savedName) {
+    const nameElement = username.querySelector('.name-text');
+    if (nameElement) {
+      nameElement.textContent = savedName;
+    }
+  }
+  
+  if (savedAbout) about.textContent = savedAbout;
+  if (savedImg) profileImg.src = savedImg;
+  if (savedCover) coverImg.style.backgroundImage = `url(${savedCover})`;
+  if (verified) verifyIcon.style.display = "inline";
+  
+  loadFavoriteAnime();
+}
+
+// تحميل الأنمي المفضلة
+function loadFavoriteAnime() {
+  favoriteAnimeList.innerHTML = '';
+  
+  favoriteAnimeData.forEach(anime => {
+    const animeCard = document.createElement('div');
+    animeCard.className = 'anime-card';
+    
+    animeCard.innerHTML = `
+      <img src="${anime.img}" alt="${anime.title}" 
+           onerror="this.src='${anime.backupImg}'">
+      <p>${anime.title}</p>
+    `;
+    
+    animeCard.addEventListener('click', () => {
+      localStorage.setItem('selectedAnime', JSON.stringify(anime));
+      window.location.href = 'anime.html';
+    });
+    
+    favoriteAnimeList.appendChild(animeCard);
+  });
+}
+
+// تعديل الاسم
+document.getElementById('editName').onclick = () => {
+  const currentName = username.querySelector('.name-text')?.textContent || 'Oraa';
+  
+  showModal("تعديل الاسم:", currentName, (newName) => {
+    const nameElement = username.querySelector('.name-text');
+    if (nameElement) {
+      nameElement.textContent = newName;
+      localStorage.setItem('profileName', newName);
+      showNotification('تم تحديث الاسم بنجاح! 🌟');
+    }
+  });
+};
+
+// تعديل النبذة
+document.getElementById('editAbout').onclick = () => {
+  const currentAbout = about.textContent;
+
+  showModal("تعديل النبذة:", currentAbout, (newAbout) => {
+    about.textContent = newAbout;
+    localStorage.setItem('profileAbout', newAbout);
+    showNotification('تم تحديث النبذة بنجاح! ✨');
+  });
+};
+
+// دالة مساعد لرفع الصور
+function handleImageUpload(file, maxMb, callback, errorMessage) {
+  if (!file) return;
+    
+  if (file.size > maxMb * 1024 * 1024) {
+    showNotification(errorMessage, 'error');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function() {
+    callback(reader.result);
+  };
+  reader.onerror = function() {
+    showNotification('حدث خطأ في تحميل الصورة', 'error');
+  };
+  reader.readAsDataURL(file);
+}
+
+// تغيير الصورة الشخصية
+document.getElementById('changeImg').onclick = () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  
+  input.onchange = e => {
+    handleImageUpload(e.target.files[0], 5, (imageData) => {
+      profileImg.src = imageData;
+      localStorage.setItem('profileImg', imageData);
+      showNotification('تم تحديث الصورة الشخصية بنجاح! 📸');
+    }, 'حجم الصورة يجب أن يكون أقل من 5MB');
+  };
+  
+  input.click();
+};
+
+// تغيير صورة الغلاف
+document.getElementById('changeCover').onclick = () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  
+  input.onchange = e => {
+    handleImageUpload(e.target.files[0], 8, (imageData) => {
+      coverImg.style.backgroundImage = `url(${imageData})`;
+      localStorage.setItem('profileCover', imageData);
+      showNotification('تم تحديث صورة الغلاف بنجاح! 🖼️');
+    }, 'حجم الصورة يجب أن يكون أقل من 8MB');
+  };
+  
+  input.click();
+};
+
+// التفعيل المميز
+document.getElementById('verifyBtn').onclick = () => {
+  showModal("أدخل كود التفعيل المميز:", "", (code) => {
+    if (code === "ORAA2025") {
+      verifyIcon.style.display = "inline";
+      localStorage.setItem('verified', 'true');
+      showNotification('🎉 تم تفعيل الحساب المميز بنجاح! استمتع بالمزايا الحصرية', 'success');
+    } else if (code) {
+      showNotification('❌ كود التفعيل غير صحيح', 'error');
+    }
+  }, 'password');
+};
+
+// معالجة أخطاء الصور
+document.addEventListener('error', function(e) {
+  if (e.target.tagName === 'IMG') {
+    const img = e.target;
+    const backup = img.getAttribute('data-backup');
+    if (backup && img.src !== backup) {
+      img.src = backup;
+    }
+  }
+}, true);
+
+// تهيئة الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+  loadData();
+  
+  // إضافة تأثيرات ظهور للعناصر
+  setTimeout(() => {
+    document.querySelectorAll('.stat, .badge, .anime-card').forEach((el, index) => {
+      setTimeout(() => {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }, index * 100);
+    });
+  }, 500);
+});
+
+// إضافة تأثيرات CSS للظهور
+const style = document.createElement('style');
+style.textContent = `
+  .stat, .badge, .anime-card {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-out;
+  }
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>

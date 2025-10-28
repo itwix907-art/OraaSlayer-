@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚙️ إعدادات الحساب | MIKAI Anime</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* 🎨 الخطوط والتوجيه */
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+    * { box-sizing: border-box; direction: rtl; }
+
+    /* 🌈 الجسم والخلفية */
+    body {
+      margin: 0;
+      font-family: 'Tajawal', sans-serif;
+      /* خلفية متدرجة حديثة */
+      background: radial-gradient(circle at top, #0a0a15 0%, #17172a 80%);
+      color: #f0f0f0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.6s, color 0.6s;
+    }
+
+    /* 🔹 الهيدر */
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 15px;
+      font-size: 1.7rem;
+      font-weight: bold;
+      color: #ff66cc; /* لون الأنمي البنفسجي */
+      background: rgba(10, 10, 21, 0.9); /* خلفية شبه شفافة داكنة */
+      box-shadow: 0 4px 15px rgba(255,0,150,0.4);
+      backdrop-filter: blur(15px);
+      position: sticky; /* تثبيت الهيدر */
+      top: 0;
+      z-index: 100;
+      border-bottom: 2px solid #ff66cc55;
+    }
+
+    /* 🔙 زر العودة */
+    .back-btn {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #ff66cc20;
+      border: 1px solid #ff66cc50;
+      border-radius: 50%; /* شكل دائري */
+      color: #ff66cc;
+      font-size: 1.1rem;
+      padding: 10px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .back-btn:hover {
+      background: #ff66cc40;
+      transform: translateY(-50%) scale(1.1);
+    }
+    
+    .back-btn span {
+        display: none; /* إخفاء النص لجعله دائرياً */
+    }
+
+    /* 🧩 حاوية الإعدادات */
+    .settings-container {
+      width: 95%;
+      max-width: 800px;
+      margin: 30px auto;
+      background: rgba(255,255,255,0.08); /* أغمق قليلاً */
+      border-radius: 25px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5); /* ظل أعمق */
+      border: 1px solid rgba(255,255,255,0.1);
+      animation: fadeIn 0.7s ease-out;
+    }
+
+    /* 📝 عنوان القسم */
+    .section-title {
+        color: #f5a4ff;
+        font-size: 1.4rem;
+        margin-top: 25px;
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid #f5a4ff33;
+    }
+
+    .setting {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 5px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      cursor: pointer; /* للإشارة إلى التفاعلية */
+    }
+
+    .setting:hover {
+      background: rgba(255,255,255,0.15);
+      margin: 0 -5px;
+      border-radius: 12px;
+    }
+
+    .setting:last-child { border: none; }
+
+    .setting .info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 1.15rem;
+      font-weight: 500;
+    }
+
+    .setting i {
+      font-size: 1.4rem;
+      color: #f5a4ff; /* لون أيقوني أكثر حيوية */
+    }
+
+    /* ⚙️ زر الإجراء */
+    button, .action-link {
+      background: linear-gradient(90deg, #ff00aa, #ff33cc);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: bold;
+      min-width: 120px;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    button:hover:not(:disabled), .action-link:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(255,0,150,0.5);
+    }
+    
+    /* ⚠️ زر الخروج */
+    #logoutBtn {
+        background: linear-gradient(90deg, #cc0000, #ff4444);
+    }
+    #logoutBtn:hover {
+        box-shadow: 0 5px 15px rgba(204,0,0,0.5);
+    }
+
+    /* 🔒 المميزات المقفولة (Premium) */
+    .locked {
+      opacity: 0.7;
+      position: relative;
+    }
+
+    .locked button, .locked .action-link {
+      background: #555;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    
+    .locked-badge {
+        font-size: 0.75rem;
+        color: gold;
+        border: 1px solid gold;
+        padding: 3px 8px;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    /* 👑 الشارات الديناميكية */
+    #ownerBadge, #userStatusBadge {
+      display: inline-block;
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 8px 15px;
+      border-radius: 15px;
+      text-shadow: 0 0 5px #fff3;
+      align-self: flex-start;
+    }
+    
+    #ownerBadge {
+        background: linear-gradient(45deg, gold, #f5d142);
+        color: #333;
+        box-shadow: 0 0 15px gold;
+    }
+    
+    #userStatusBadge {
+        background: linear-gradient(45deg, #007bff, #00bfff);
+        color: white;
+        box-shadow: 0 0 15px #007bff;
+    }
+
+    /* 💡 الوضع النهاري (Light Mode) */
+    .light-mode {
+      background: linear-gradient(135deg, #fefefe 0%, #eee 80%);
+      color: #1a1a1a;
+    }
+
+    .light-mode header {
+      color: #ff33aa;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 4px 15px rgba(255,51,170,0.2);
+      border-bottom: 2px solid #ff33aa55;
+    }
+    
+    .light-mode .settings-container {
+        background: #fff;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .light-mode .setting {
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .light-mode .setting:hover {
+        background: rgba(0,0,0,0.05);
+    }
+    
+    .light-mode .setting i {
+        color: #ff33aa;
+    }
+    
+    .light-mode .section-title {
+        color: #ff33aa;
+        border-bottom: 2px solid #ff33aa33;
+    }
+    
+    .light-mode .locked-badge {
+         color: #b8860b;
+         border: 1px solid #b8860b;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* ⚙️ نمط الإشعار المؤقت (Toast) */
+    #toast {
+        visibility: hidden;
+        min-width: 250px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 8px;
+        padding: 12px;
+        position: fixed;
+        z-index: 1000;
+        bottom: 30px;
+        right: 30px;
+        font-size: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        transition: visibility 0s, opacity 0.5s linear;
+    }
+
+    #toast.show {
+        visibility: visible;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
+    @keyframes fadeout { from { opacity: 1; } to { opacity: 0; } }
+  </style>
+</head>
+<body id="appBody">
+
+  <header>
+    ⚙️ إعدادات الحساب
+    <button class="back-btn" onclick="goBack()" title="عودة للصفحة السابقة"><i class="fa-solid fa-arrow-right"></i> <span>عودة</span></button>
+  </header>
+
+  <div class="settings-container">
+    
+    <div class="section-title"><i class="fa-solid fa-address-card"></i> الملف الشخصي</div>
+    
+    <div class="setting" id="profileNameSetting">
+      <div class="info"><i class="fa-solid fa-user"></i> <span>الاسم: <strong id="currentUserName">مستخدم مجهول</strong></span></div>
+      <button onclick="changeName()">تعديل</button>
+    </div>
+
+    <div class="setting" onclick="changePhoto()">
+      <div class="info"><i class="fa-solid fa-image"></i> <span>تغيير الصورة الشخصية</span></div>
+      <button>اختيار صورة</button>
+    </div>
+    
+    <div class="section-title"><i class="fa-solid fa-sliders"></i> تفضيلات التطبيق</div>
+
+    <div class="setting" id="themeSetting">
+      <div class="info"><i class="fa-solid fa-moon"></i> <span>الوضع الليلي / النهاري</span></div>
+      <button onclick="toggleTheme()" id="themeToggleButton">تبديل</button>
+    </div>
+    
+    <div class="setting">
+      <div class="info"><i class="fa-solid fa-language"></i> <span>لغة العرض</span></div>
+      <button onclick="changeLanguage()">العربية</button>
+    </div>
+    
+    <div class="section-title"><i class="fa-solid fa-crown"></i> البريميوم والمزايا الحصرية</div>
+
+    <div class="setting locked" onclick="showPremiumAlert()">
+      <div class="info"><i class="fa-solid fa-bolt"></i> <span>ميزة البانر الذهبي <span class="locked-badge">بريميوم</span></span></div>
+      <button disabled>مقفولة</button>
+    </div>
+
+    <div class="setting locked" onclick="showPremiumAlert()">
+      <div class="info"><i class="fa-solid fa-bell"></i> <span>إشعارات البريميوم الحصرية <span class="locked-badge">بريميوم</span></span></div>
+      <button disabled>مقفولة</button>
+    </div>
+
+    <div class="setting">
+      <div class="info"><i class="fa-solid fa-circle-check"></i> <span>شراء التوثيق الأزرق</span></div>
+      <button onclick="buyBlueVerify()">شراء (3$)</button>
+    </div>
+    
+    <div class="setting">
+        <div class="info"><i class="fa-solid fa-file-invoice-dollar"></i> <span>إدارة الاشتراكات</span></div>
+        <a href="subscription.html" class="action-link">إدارة</a>
+    </div>
+
+    <div class="section-title"><i class="fa-solid fa-shield-alt"></i> الأمان والحساب</div>
+
+    <div class="setting">
+      <div class="info"><i class="fa-solid fa-lock"></i> <span>تغيير كلمة المرور</span></div>
+      <button onclick="changePassword()">تغيير</button>
+    </div>
+
+    <div class="setting">
+      <div class="info"><i class="fa-solid fa-right-from-bracket"></i> <span>تسجيل خروج</span></div>
+      <button id="logoutBtn" onclick="logout()">خروج</button>
+    </div>
+    
+    <div class="setting">
+        <div class="info"><i class="fa-solid fa-trash-alt"></i> <span>حذف الحساب نهائياً</span></div>
+        <button onclick="deleteAccount()" style="background: #990000;">حذف</button>
+    </div>
+
+    <div style="display: flex; gap: 15px; margin-top: 25px;">
+        <div id="ownerBadge" style="display:none;">👑 المالك الذهبي</div>
+        <div id="userStatusBadge" style="display:none;">✨ مستخدم نشط</div>
+    </div>
+  </div>
+
+  <footer>© 2025 MIKAI Anime. جميع الحقوق محفوظة.</footer>
+  
+  <div id="toast"></div>
+
+  <script>
+    // ====================================================================
+    // 💡 الثوابت والمفاتيح
+    // ====================================================================
+    const LIGHT_MODE_CLASS = "light-mode";
+    const THEME_STORAGE_KEY = "userTheme";
+    const USER_NAME_STORAGE_KEY = "profileName";
+    const USER_STATUS_STORAGE_KEY = "userStatus";
+    const OWNER_EMAIL = "itwix907@gmail.com";
+    
+    // ====================================================================
+    // ⚙️ وظيفة الإشعار (Toast Notification) - تحسين UX
+    // ====================================================================
+    /**
+     * يعرض إشعار مؤقت في زاوية الشاشة.
+     * @param {string} message - رسالة الإشعار.
+     * @param {number} duration - مدة الظهور بالمللي ثانية (افتراضي 3000).
+     */
+    function showToast(message, duration = 3000) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, duration);
+    }
+    
+    // ====================================================================
+    // 🌙 إدارة الوضع الليلي/النهاري
+    // ====================================================================
+    
+    /** تطبيق الثيم المحفوظ عند تحميل الصفحة */
+    function applySavedTheme() {
+        const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+        if (savedTheme === LIGHT_MODE_CLASS) {
+            document.getElementById('appBody').classList.add(LIGHT_MODE_CLASS);
+        }
+        updateThemeButton();
+    }
+    
+    /** تحديث نص وشكل زر التبديل */
+    function updateThemeButton() {
+        const body = document.getElementById('appBody');
+        const isLight = body.classList.contains(LIGHT_MODE_CLASS);
+        const button = document.getElementById('themeToggleButton');
+        
+        if (button) {
+             button.innerHTML = isLight 
+                 ? '<i class="fa-solid fa-moon"></i> الوضع الليلي' 
+                 : '<i class="fa-solid fa-sun"></i> الوضع النهاري';
+             
+             // تحديث الخلفية بشكل واقعي
+             button.style.background = isLight 
+                 ? "linear-gradient(45deg, #1a1a1a, #444)" 
+                 : "linear-gradient(45deg, #ff00aa, #ff33cc)";
+        }
+    }
+
+    /** التبديل بين الوضعين */
+    function toggleTheme() {
+      const body = document.getElementById('appBody');
+      body.classList.toggle(LIGHT_MODE_CLASS);
+      
+      const isLight = body.classList.contains(LIGHT_MODE_CLASS);
+      localStorage.setItem(THEME_STORAGE_KEY, isLight ? LIGHT_MODE_CLASS : "dark-mode");
+      
+      updateThemeButton();
+      showToast(isLight ? "💡 تم تفعيل الوضع النهاري!" : "🌙 تم تفعيل الوضع الليلي!");
+    }
+    
+    // ====================================================================
+    // 👤 تفاعلات الملف الشخصي
+    // ====================================================================
+
+    /** تهيئة وعرض اسم المستخدم */
+    function initializeUserName() {
+        const storedName = localStorage.getItem(USER_NAME_STORAGE_KEY);
+        const defaultName = "MIKAI Fan";
+        const currentNameElement = document.getElementById("currentUserName");
+        
+        // إذا لم يكن الاسم مخزناً، احفظ الافتراضي
+        if (!storedName) {
+            localStorage.setItem(USER_NAME_STORAGE_KEY, defaultName);
+            currentNameElement.textContent = defaultName;
+        } else {
+            currentNameElement.textContent = storedName;
+        }
+    }
+
+    /** تعديل الاسم (بشكل ديناميكي) */
+    function changeName() {
+      const currentName = localStorage.getItem(USER_NAME_STORAGE_KEY);
+      const newName = prompt(`أدخل اسمك الجديد (الاسم الحالي: ${currentName}):`);
+      
+      if (newName && newName.trim() !== "" && newName.trim().length <= 20) {
+        localStorage.setItem(USER_NAME_STORAGE_KEY, newName.trim());
+        document.getElementById("currentUserName").textContent = newName.trim();
+        showToast("✅ تم تحديث الاسم بنجاح!");
+      } else if (newName && newName.trim().length > 20) {
+        showToast("❌ يجب أن لا يتجاوز الاسم 20 حرفاً!");
+      } else if (newName !== null) {
+        showToast("❌ لم يتم تحديث الاسم.");
+      }
+    }
+
+    /** تعديل الصورة (عرض واجهة واقعية) */
+    function changePhoto() {
+      const photoOptions = confirm("🖼️ هل تريد رفع صورة جديدة أو اختيار صورة رمزية (Avatar)؟\n\n- موافق: لرفع صورة.\n- إلغاء: لاختيار رمزية.");
+      
+      if (photoOptions) {
+        showToast("📤 جاري فتح نافذة الرفع... (ميزة قيد التطوير)");
+      } else {
+        showToast("🎨 جاري عرض قائمة الرموز... (ميزة قيد التطوير)");
+      }
+    }
+    
+    // ====================================================================
+    // 🔒 تفاعلات الأمان والمزايا
+    // ====================================================================
+
+    /** إشعار للميزات المقفولة */
+    function showPremiumAlert() {
+        showToast("💎 هذه ميزة حصرية لمشتركي باقة البريميوم!", 4000);
+    }
+    
+    /** شراء التوثيق الأزرق (محاكاة دفع) */
+    function buyBlueVerify() {
+        const confirmPurchase = confirm("💳 سيتم خصم 3$ من رصيدك. هل أنت متأكد من الشراء؟");
+        if(confirmPurchase) {
+             showToast("💰 جاري معالجة الدفع... (تمت المحاكاة بنجاح!)");
+             localStorage.setItem(USER_STATUS_STORAGE_KEY, "Verified");
+             setTimeout(initializeBadges, 3000); // تحديث الشارات بعد 3 ثواني
+        } else {
+             showToast("🚫 تم إلغاء عملية الشراء.");
+        }
+    }
+    
+    /** تغيير كلمة المرور (محاكاة) */
+    function changePassword() {
+        showToast("🔒 سيتم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني المسجل.", 4000);
+    }
+
+    /** حذف الحساب (تحذير وتأكيد) */
+    function deleteAccount() {
+        const step1 = confirm("⚠️ تحذير: أنت على وشك حذف حسابك نهائياً! هل أنت متأكد؟");
+        if (step1) {
+            const step2 = prompt("للتأكيد، يرجى كتابة 'أحذف حسابي':");
+            if (step2 === "أحذف حسابي") {
+                localStorage.clear();
+                alert("🗑️ تم حذف حسابك بنجاح. مع السلامة!");
+                window.location.href = "index.html";
+            } else {
+                showToast("❌ لم يتم تأكيد الحذف. العملية ملغاة.");
+            }
+        }
+    }
+
+    /** تسجيل الخروج */
+    function logout() {
+      if (confirm("هل تريد تسجيل الخروج؟")) {
+        localStorage.clear();
+        showToast("👋 تم تسجيل الخروج بنجاح!");
+        // تأخير بسيط لإظهار الـ Toast
+        setTimeout(() => {
+             window.location.href = "index.html"; // توجيه للصفحة الرئيسية
+        }, 1000);
+      }
+    }
+
+    /** زر العودة (تحسين) */
+    function goBack() {
+      if (document.referrer && document.referrer.includes(window.location.host)) {
+        window.history.back();
+      } else {
+        window.location.href = "index.html";
+      }
+    }
+
+    /** تفعيل الشارات بناءً على الحالة */
+    function initializeBadges() {
+      const email = localStorage.getItem("loggedInUser");
+      const status = localStorage.getItem(USER_STATUS_STORAGE_KEY);
+      const ownerBadge = document.querySelector("#ownerBadge");
+      const statusBadge = document.querySelector("#userStatusBadge");
+      
+      // شارة المالك
+      if (email === OWNER_EMAIL) {
+        ownerBadge.style.display = "inline-block";
+      } else {
+        ownerBadge.style.display = "none";
+      }
+      
+      // شارة التوثيق (أزرق)
+      if (status === "Verified") {
+        statusBadge.textContent = "✅ موثّق أزرق";
+        statusBadge.style.background = "linear-gradient(45deg, #008cff, #33bbff)";
+        statusBadge.style.display = "inline-block";
+      } else {
+         // شارة الحالة الافتراضية
+         statusBadge.textContent = "✨ مستخدم نشط";
+         statusBadge.style.background = "linear-gradient(45deg, #007bff, #00bfff)";
+         statusBadge.style.display = "inline-block";
+      }
+    }
+    
+    /** تغيير اللغة (محاكاة) */
+    function changeLanguage() {
+        showToast("🌐 ميزة تغيير اللغة قيد الإعداد. التطبيق يعمل حاليًا باللغة العربية.", 4000);
+    }
+    
+    // ====================================================================
+    // 🚀 بدء التهيئة
+    // ====================================================================
+    window.addEventListener("load", () => {
+      applySavedTheme(); 
+      initializeUserName();
+      initializeBadges();
+    });
+  </script>
+
+</body>
+</html>

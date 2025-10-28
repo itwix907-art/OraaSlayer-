@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ نيكا-توك | شات أنمي تفاعلي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a35ff;
+            --primary-light: #8c6bff;
+            --primary-dark: #4a1fd1;
+            --secondary: #ff4081;
+            --secondary-light: #ff79b0;
+            --accent: #00e5ff;
+            --dark: #0f0b24;
+            --dark-light: #1a1538;
+            --text: #e2e2ff;
+            --text-light: #a9a9cc;
+            --success: #00e676;
+            --warning: #ffab00;
+            --error: #ff1744;
+            --user-msg: rgba(106, 53, 255, 0.2);
+            --bot-msg: rgba(255, 64, 129, 0.2);
+            --news-msg: rgba(0, 229, 255, 0.2);
+            --card-bg: rgba(26, 21, 56, 0.7);
+            --shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 15px rgba(106, 53, 255, 0.5);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(106, 53, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 64, 129, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(0, 229, 255, 0.05) 0%, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* الهيدر */
+        header {
+            background: var(--gradient);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: linear-gradient(to right, white, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.1);
+        }
+
+        /* التنقل */
+        .nav-tabs {
+            display: flex;
+            background: var(--dark-light);
+            padding: 0 20px;
+            overflow-x: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-tab {
+            padding: 15px 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .nav-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .nav-tab:hover:not(.active) {
+            color: var(--primary-light);
+        }
+
+        /* المحتوى الرئيسي */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* الشريط الجانبي */
+        .sidebar {
+            width: 300px;
+            background: var(--dark-light);
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 18px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent);
+        }
+
+        .online-users {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        .user:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            position: relative;
+        }
+
+        .user-status {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success);
+            border: 2px solid var(--dark-light);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .user-status-text {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .trending-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .topic {
+            background: rgba(106, 53, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .topic:hover {
+            background: rgba(106, 53, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* منطقة الدردشة */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-btn {
+            background: var(--card-bg);
+            border: none;
+            color: var(--text);
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .chat-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 5px 10px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 15px;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+            box-shadow: var(--shadow);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--user-msg);
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background: var(--bot-msg);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.news {
+            align-self: center;
+            background: var(--news-msg);
+            max-width: 90%;
+            text-align: center;
+            border-radius: 12px;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .message-sender {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .message-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+        }
+
+        .message-badge.bot {
+            background: var(--secondary);
+        }
+
+        .message-badge.news {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 5px;
+            text-align: left;
+        }
+
+        .message-actions {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .message:hover .message-actions {
+            opacity: 1;
+        }
+
+        .message-action {
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .message-action:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* منطقة الإدخال */
+        .input-area {
+            display: flex;
+            background: var(--dark-light);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .input-tools {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tool-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tool-btn:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .message-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            padding: 12px 15px;
+            border-radius: 12px;
+            resize: none;
+            max-height: 120px;
+            min-height: 50px;
+            outline: none;
+        }
+
+        .message-input::placeholder {
+            color: var(--text-light);
+        }
+
+        .send-btn {
+            background: var(--gradient);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(106, 53, 255, 0.7);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* لوحة الإيموجي */
+        .emoji-panel {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            background: var(--dark-light);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .emoji-panel.active {
+            display: grid;
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .emoji:hover {
+            transform: scale(1.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* أخبار عاجلة */
+        .breaking-news {
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .news-label {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .news-ticker {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .news-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 25s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* نافذة تسجيل الدخول */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark-light);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.2);
+        }
+
+        .form-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--gradient);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .form-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 53, 255, 0.4);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* قسم نشر الأخبار */
+        .news-panel {
+            display: none;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .news-panel.active {
+            display: block;
+        }
+
+        /* التكيف مع الشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                max-height: 200px;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .nav-tabs {
+                padding: 0 10px;
+            }
+            
+            .nav-tab {
+                padding: 12px 15px;
+            }
+            
+            .emoji-panel {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        /* تأثيرات إضافية */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(106, 53, 255, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(106, 53, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(106, 53, 255, 0); }
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: var(--bot-msg);
+            border-radius: 18px;
+            align-self: flex-start;
+            margin-bottom: 10px;
+            max-width: fit-content;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- نافذة تسجيل الدخول -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">تسجيل الدخول للمسؤول</h2>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="email">البريد الإلكتروني</label>
+                    <input type="email" id="email" class="form-input" placeholder="أدخل بريدك الإلكتروني" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">كلمة المرور</label>
+                    <input type="password" id="password" class="form-input" placeholder="أدخل كلمة المرور" required>
+                </div>
+                <button type="submit" class="form-btn">تسجيل الدخول</button>
+            </form>
+            <div class="form-footer">
+                <p>لنشر الأخبار، يلزم تسجيل الدخول بحساب المسؤول</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- شريط الأخبار العاجلة -->
+    <div class="breaking-news">
+        <div class="news-label">
+            <i class="fas fa-bolt"></i> أخبار عاجلة
+        </div>
+        <div class="news-ticker">
+            <div class="news-text" id="newsTicker">
+                ✨ افتتاح شات نيكا-توك الجديد! | 🎉 مسابقة أفضل كوزبلاي هذا الأسبوع | 📢 إعلان عن حلقة خاصة لأنمي Demon Slayer | 🔥 نقاش حي: أفضل أنمي في 2024
+            </div>
+        </div>
+    </div>
+
+    <!-- الهيدر -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-dragon"></i>
+            </div>
+            <div class="logo-text">نيكا-توك</div>
+        </div>
+        <div class="header-actions">
+            <button class="header-btn" id="adminBtn" title="نشر خبر جديد">
+                <i class="fas fa-bullhorn"></i>
+            </button>
+            <button class="header-btn" title="الإشعارات">
+                <i class="fas fa-bell"></i>
+            </button>
+            <button class="header-btn" title="الإعدادات">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button class="header-btn" title="المستخدمين النشطين">
+                <i class="fas fa-users"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- أشرطة التنقل -->
+    <div class="nav-tabs">
+        <div class="nav-tab active" data-tab="general">
+            <i class="fas fa-comments"></i> الشات العام
+        </div>
+        <div class="nav-tab" data-tab="news">
+            <i class="fas fa-newspaper"></i> أخبار الأنمي
+        </div>
+        <div class="nav-tab" data-tab="games">
+            <i class="fas fa-gamepad"></i> غرفة الألعاب
+        </div>
+        <div class="nav-tab" data-tab="shows">
+            <i class="fas fa-video"></i> عروض الأنمي
+        </div>
+        <div class="nav-tab" data-tab="groups">
+            <i class="fas fa-user-friends"></i> مجموعات
+        </div>
+        <div class="nav-tab" data-tab="favorites">
+            <i class="fas fa-star"></i> المفضلة
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="main-container">
+        <!-- الشريط الجانبي -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="section-title">
+                    <i class="fas fa-users"></i> المستخدمون المتصلون
+                </div>
+                <div class="online-users">
+                    <div class="user">
+                        <div class="user-avatar">
+                            <i class="fas fa-cat"></i>
+                            <div class="user-status"></div>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">سارا-تان</div>
+                            <div class="user-status-text">تشاهد Attack on Titan</div>
+                        </div>
+                    </div>
+                    <div class="user">
+                        <div class="user-avatar">
+                            <i class="fas fa-shield-alt"></i>
+                            <div class="user-status"></div>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">أنمي-مستر</div>
+                            <div class="user-status-text">يناقش One Piece</div>
+                        </div>
+                    </div>
+                    <div class="user">
+                        <div class="user-avatar">
+                            <i class="fas fa-moon"></i>
+                            <div class="user-status"></div>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">نينجا-أكيا</div>
+                            <div class="user-status-text">في غرفة الألعاب</div>
+                        </div>
+                    </div>
+                    <div class="user">
+                        <div class="user-avatar">
+                            <i class="fas fa-robot"></i>
+                            <div class="user-status"></div>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">بوت-أنمي</div>
+                            <div class="user-status-text">متاح للمساعدة</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title">
+                    <i class="fas fa-fire"></i> المواضيع الرائجة
+                </div>
+                <div class="trending-topics">
+                    <div class="topic">ناروتو</div>
+                    <div class="topic">هجوم العمالقة</div>
+                    <div class="topic">ون بيس</div>
+                    <div class="topic">ديدنوت</div>
+                    <div class="topic">أنمي 2024</div>
+                    <div class="topic">مانغا</div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title">
+                    <i class="fas fa-calendar-alt"></i> الأحداث القادمة
+                </div>
+                <div class="events-list">
+                    <div class="event">
+                        <div class="event-title">مسابقة كوزبلاي</div>
+                        <div class="event-date">15 ديسمبر</div>
+                    </div>
+                    <div class="event">
+                        <div class="event-title">نقاش أنمي Jujutsu Kaisen</div>
+                        <div class="event-date">18 ديسمبر</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- منطقة الدردشة -->
+        <div class="chat-area">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <i class="fas fa-hashtag"></i> <span id="activeTabTitle">الشات العام</span>
+                    <span class="pulse" style="width: 10px; height: 10px; background: var(--success); border-radius: 50%; display: inline-block;"></span>
+                </div>
+                <div class="chat-actions">
+                    <button class="chat-btn">
+                        <i class="fas fa-search"></i> بحث
+                    </button>
+                    <button class="chat-btn">
+                        <i class="fas fa-filter"></i> ترشيح
+                    </button>
+                </div>
+            </div>
+
+            <!-- لوحة نشر الأخبار (للمسؤول فقط) -->
+            <div class="news-panel" id="newsPanel">
+                <div class="section-title">
+                    <i class="fas fa-bullhorn"></i> نشر خبر جديد
+                </div>
+                <div class="form-group">
+                    <input type="text" id="newsTitle" class="form-input" placeholder="عنوان الخبر">
+                </div>
+                <div class="form-group">
+                    <textarea id="newsContent" class="form-input" placeholder="محتوى الخبر" rows="3"></textarea>
+                </div>
+                <button class="form-btn" id="publishNewsBtn">نشر الخبر</button>
+            </div>
+
+            <div class="messages-container" id="messagesContainer">
+                <!-- سيتم إضافة الرسائل هنا ديناميكياً -->
+                <div class="message news">
+                    <div class="message-header">
+                        <div class="message-sender">نيكا-توك</div>
+                        <div class="message-badge news">أخبار</div>
+                    </div>
+                    <div class="message-text">مرحباً بالجميع في نيكا-توك! 🎉 هذا الشات مخصص لمحبي الأنمي والمانغا. شاركوا أفكاركم وتناقشوا بحرية!</div>
+                    <div class="message-time">الآن</div>
+                </div>
+            </div>
+
+            <!-- لوحة الإيموجي -->
+            <div class="emoji-panel" id="emojiPanel"></div>
+
+            <!-- منطقة الإدخال -->
+            <div class="input-area">
+                <div class="input-tools">
+                    <button class="tool-btn" id="emojiBtn" title="إيموجي">
+                        <i class="far fa-smile"></i>
+                    </button>
+                    <button class="tool-btn" title="إرفاق ملف">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                </div>
+                <textarea class="message-input" id="messageInput" placeholder="اكتب رسالتك هنا..."></textarea>
+                <button class="send-btn" id="sendBtn" title="إرسال">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // العناصر الرئيسية
+        const messagesContainer = document.getElementById('messagesContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const emojiBtn = document.getElementById('emojiBtn');
+        const emojiPanel = document.getElementById('emojiPanel');
+        const loginModal = document.getElementById('loginModal');
+        const closeModal = document.getElementById('closeModal');
+        const loginForm = document.getElementById('loginForm');
+        const adminBtn = document.getElementById('adminBtn');
+        const newsPanel = document.getElementById('newsPanel');
+        const publishNewsBtn = document.getElementById('publishNewsBtn');
+        const newsTitle = document.getElementById('newsTitle');
+        const newsContent = document.getElementById('newsContent');
+        const newsTicker = document.getElementById('newsTicker');
+        const activeTabTitle = document.getElementById('activeTabTitle');
+        const navTabs = document.querySelectorAll('.nav-tab');
+
+        // بيانات التطبيق
+        const currentUser = {
+            name: localStorage.getItem('userName') || 'مستخدم',
+            avatar: 'fas fa-user',
+            isAdmin: localStorage.getItem('isAdmin') === 'true'
+        };
+
+        // بيانات الاعتماد للمسؤول
+        const ADMIN_CREDENTIALS = {
+            email: 'itwix907@gmail.com',
+            password: 'Oraa2026@SlayerAnime'
+        };
+
+        // الأخبار المخزنة
+        let news = JSON.parse(localStorage.getItem('animeNews')) || [];
+
+        // قائمة الإيموجي
+        const emojis = ['😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '😗', '😙', '😚', '🙂', '🤗', '🤩', '🤔', '🤨', '😐', '😑', '😶', '🙄', '😏', '😣', '😥', '😮', '🤐', '😯', '😪', '😫', '😴', '😌', '😛', '😜', '😝', '🤤', '😒', '😓', '😔', '😕', '🙃', '🤑', '😲', '☹️', '🙁', '😖', '😞', '😟', '😤', '😢', '😭', '😦', '😧', '😨', '😩', '🤯', '😬', '😰', '😱', '😳', '🤪', '😵', '😡', '😠', '🤬', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '😇', '🤠', '🤡', '🥳', '🥴', '🥺', '🤥', '🤫', '🤭', '🧐', '🤓', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '👋', '🤚', '🖐️', '✋', '🖖', '👌', '🤏', '✌️', '🤞', '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '👍', '👎', '✊', '👊', '🤛', '🤜', '👏', '🙌', '👐', '🤲', '🤝', '🙏', '✍️', '💅', '🤳', '💪', '🦾', '🦿', '🦵', '🦶', '👂', '🦻', '👃', '🧠', '🦷', '🦴', '👀', '👁️', '👅', '👄', '👶', '🧒', '👦', '👧', '🧑', '👱', '👨', '🧔', '👨‍🦰', '👨‍🦱', '👨‍🦳', '👨‍🦲', '👩', '👩‍🦰', '👩‍🦱', '👩‍🦳', '👩‍🦲', '🧓', '👴', '👵', '🙍', '🙎', '🙅', '🙆', '💁', '🙋', '🧏', '🙇', '🤦', '🤷', '👮', '🕵️', '💂', '👷', '🤴', '👸', '👳', '👲', '🧕', '🤵', '👰', '🤰', '🤱', '👼', '🎅', '🤶', '🦸', '🦹', '🧙', '🧚', '🧛', '🧜', '🧝', '🧞', '🧟', '💆', '💇', '🚶', '🧍', '🧎', '🏃', '💃', '🕺', '🕴️', '👯', '🧖', '🧗', '🤺', '🏇', '⛷️', '🏂', '🏌️', '🏄', '🚣', '🏊', '⛹️', '🏋️', '🚴', '🚵', '🤸', '🤼', '🤽', '🤾', '🤹', '🧘', '🛀', '🛌', '👭', '👫', '👬', '💏', '💑', '👪', '🤳', '💘', '💝', '💖', '💗', '💓', '💞', '💕', '💟', '❣️', '💔', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💋', '👄', '🌹', '🥀', '🌺', '🌷', '💐', '🌸'];
+
+        // تهيئة لوحة الإيموجي
+        function initEmojiPanel() {
+            emojis.forEach(emoji => {
+                const emojiElement = document.createElement('div');
+                emojiElement.className = 'emoji';
+                emojiElement.textContent = emoji;
+                emojiElement.addEventListener('click', () => {
+                    messageInput.value += emoji;
+                    messageInput.focus();
+                });
+                emojiPanel.appendChild(emojiElement);
+            });
+        }
+
+        // إظهار/إخفاء لوحة الإيموجي
+        emojiBtn.addEventListener('click', () => {
+            emojiPanel.classList.toggle('active');
+        });
+
+        // إرسال رسالة
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text) return;
+
+            addMessage(currentUser.name, text, 'user');
+            messageInput.value = '';
+            updateSendButton();
+            emojiPanel.classList.remove('active');
+
+            // محاكاة رد البوت بعد فترة
+            setTimeout(() => {
+                const botResponses = [
+                    "أهلاً! شكراً لمشاركتك في النقاش! 😊",
+                    "رأيك مثير للاهتمام! هل لدى الآخرين تعليقات؟",
+                    "أحب هذا الموضوع! هل تريد مناقشة المزيد؟",
+                    "شكراً للمساهمة! هل لدى أحد أفكار أخرى؟",
+                    "هذا يذكرني بمشهد رائع في أنمي... أي أنمي تفضل؟"
+                ];
+                const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
+                addMessage('بوت-أنمي', randomResponse, 'bot');
+            }, 1000 + Math.random() * 2000);
+        }
+
+        // إضافة رسالة إلى الدردشة
+        function addMessage(sender, text, type) {
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${type}`;
+            
+            const time = new Date().toLocaleTimeString('ar-EG', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            let badge = '';
+            if (type === 'bot') {
+                badge = '<div class="message-badge bot">بوت</div>';
+            } else if (type === 'user' && sender === 'المسؤول') {
+                badge = '<div class="message-badge">مسؤول</div>';
+            } else if (type === 'news') {
+                badge = '<div class="message-badge news">أخبار</div>';
+            }
+            
+            messageElement.innerHTML = `
+                <div class="message-actions">
+                    <button class="message-action" title="رد">
+                        <i class="fas fa-reply"></i>
+                    </button>
+                    <button class="message-action" title="نسخ">
+                        <i class="far fa-copy"></i>
+                    </button>
+                </div>
+                <div class="message-header">
+                    <div class="message-sender">${sender}</div>
+                    ${badge}
+                </div>
+                <div class="message-text">${text}</div>
+                <div class="message-time">${time}</div>
+            `;
+            
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // تحديث حالة زر الإرسال
+        function updateSendButton() {
+            sendBtn.disabled = !messageInput.value.trim();
+        }
+
+        // تسجيل الدخول كمسؤول
+        function loginAsAdmin(email, password) {
+            if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+                currentUser.isAdmin = true;
+                currentUser.name = 'المسؤول';
+                localStorage.setItem('isAdmin', 'true');
+                localStorage.setItem('userName', 'المسؤول');
+                loginModal.classList.remove('active');
+                newsPanel.classList.add('active');
+                addMessage('نظام نيكا-توك', 'تم تسجيل الدخول كمسؤول. يمكنك الآن نشر الأخبار.', 'bot');
+                return true;
+            }
+            return false;
+        }
+
+        // نشر خبر جديد
+        function publishNews() {
+            const title = newsTitle.value.trim();
+            const content = newsContent.value.trim();
+            
+            if (!title || !content) {
+                alert('يرجى ملء جميع الحقول');
+                return;
+            }
+            
+            const newsItem = {
+                id: Date.now(),
+                title,
+                content,
+                date: new Date().toLocaleDateString('ar-EG')
+            };
+            
+            news.unshift(newsItem);
+            localStorage.setItem('animeNews', JSON.stringify(news));
+            
+            // إضافة الخبر إلى الشات
+            addMessage('نيكا-توك', `📢 ${title}: ${content}`, 'news');
+            
+            // تحديث شريط الأخبار
+            updateNewsTicker();
+            
+            // مسح الحقول
+            newsTitle.value = '';
+            newsContent.value = '';
+            
+            alert('تم نشر الخبر بنجاح!');
+        }
+
+        // تحديث شريط الأخبار
+        function updateNewsTicker() {
+            if (news.length > 0) {
+                const latestNews = news.slice(0, 3).map(item => item.title).join(' | ');
+                newsTicker.textContent = `📢 ${latestNews} | ✨ افتتاح شات نيكا-توك الجديد!`;
+            }
+        }
+
+        // تحميل الأخبار
+        function loadNews() {
+            news.forEach(item => {
+                addMessage('نيكا-توك', `📢 ${item.title}: ${item.content}`, 'news');
+            });
+        }
+
+        // تغيير التبويب النشط
+        function changeActiveTab(tabName) {
+            navTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            activeTabTitle.textContent = event.target.textContent;
+            
+            // مسح المحادثة وإظهار محتوى التبويب المحدد
+            messagesContainer.innerHTML = '';
+            
+            if (tabName === 'general') {
+                addInitialMessages();
+            } else if (tabName === 'news') {
+                loadNews();
+                if (currentUser.isAdmin) {
+                    newsPanel.classList.add('active');
+                }
+            } else {
+                addMessage('نظام نيكا-توك', `مرحباً بك في قسم ${event.target.textContent}. هذا القسم قيد التطوير.`, 'bot');
+            }
+        }
+
+        // إضافة بعض الرسائل الأولية
+        function addInitialMessages() {
+            const initialMessages = [
+                { sender: 'سارا-تان', text: 'مرحباً بالجميع! من يشاهد أنمي Spy x Family الجديد؟ 🥰', type: 'user' },
+                { sender: 'أنمي-مستر', text: 'أنا أشاهده! أنا أحب الشخصية أنيا، إنها مضحكة جداً 😂', type: 'user' },
+                { sender: 'بوت-أنمي', text: 'Spy x Family هو أحد أكثر الأنميات شعبية هذا الموسم! هل تعلم أن المانغا بيعت أكثر من 25 مليون نسخة؟ 📚', type: 'bot' },
+                { sender: 'نينجا-أكيا', text: 'أيضاً أحب أسلوب الرسم والكوميديا فيه. أنا في انتظار الحلقة الجديدة! 🍿', type: 'user' }
+            ];
+            
+            // إضافة الرسائل مع تأخير لخلق تأثير محادثة حية
+            initialMessages.forEach((msg, index) => {
+                setTimeout(() => {
+                    addMessage(msg.sender, msg.text, msg.type);
+                }, 1000 + index * 1500);
+            });
+        }
+
+        // تهيئة التطبيق
+        function initApp() {
+            initEmojiPanel();
+            updateSendButton();
+            addInitialMessages();
+            updateNewsTicker();
+            
+            // إذا كان المستخدم مسؤولاً، إظهار لوحة الأخبار
+            if (currentUser.isAdmin) {
+                newsPanel.classList.add('active');
+            }
+            
+            // تحميل الأخبار إذا كانت موجودة
+            if (news.length > 0) {
+                loadNews();
+            }
+        }
+
+        // أحداث الإدخال
+        messageInput.addEventListener('input', updateSendButton);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        sendBtn.addEventListener('click', sendMessage);
+
+        // أحداث التسجيل ونشر الأخبار
+        adminBtn.addEventListener('click', () => {
+            if (currentUser.isAdmin) {
+                newsPanel.classList.toggle('active');
+            } else {
+                loginModal.classList.add('active');
+            }
+        });
+
+        closeModal.addEventListener('click', () => {
+            loginModal.classList.remove('active');
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (loginAsAdmin(email, password)) {
+                alert('تم تسجيل الدخول بنجاح!');
+            } else {
+                alert('بيانات الاعتماد غير صحيحة!');
+            }
+        });
+
+        publishNewsBtn.addEventListener('click', publishNews);
+
+        // أحداث التبويبات
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                changeActiveTab(tab.dataset.tab);
+            });
+        });
+
+        // بدء التطبيق عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

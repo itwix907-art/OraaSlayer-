@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ التحقق من البريد الإلكتروني - MIKAI Anime</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+  <style>
+    /* نفس أنماط register.html */
+  </style>
+</head>
+<body>
+
+  <div class="register-box">
+    <img src="https://i.ibb.co/8Xr7Lp3/anime-icon.png" class="anime-icon" alt="أيقونة أنمي">
+    <h2>التحقق من البريد الإلكتروني</h2>
+
+    <div class="input-group"><input id="token" type="text" placeholder="أدخل رمز التحقق" required><i class="fa-solid fa-key"></i></div>
+
+    <button onclick="verifyEmail()">تحقق</button>
+    <button class="back-btn" onclick="window.location.href='index.html'">🏠 العودة إلى الرئيسية</button>
+
+    <div class="login-link">
+      لم تستلم الرمز؟ <a href="#" onclick="resendVerification()">إعادة إرسال الرمز</a>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+
+  <script>
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function verifyEmail() {
+      const token = document.getElementById("token").value.trim();
+
+      try {
+        const user = verifyEmail(token);
+        alert(`🎉 تم تفعيل حسابك بنجاح! مرحباً ${user.username}`);
+        window.location.href = "login.html";
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    function resendVerification() {
+      const email = getQueryParam('email');
+      if (!email) {
+        alert("البريد الإلكتروني غير معروف. يرجى التسجيل مرة أخرى.");
+        return;
+      }
+
+      // في الواقع، نبحث عن المستخدم و نرسل رمز تحقق جديد
+      const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+      const user = users.find(u => u.email === email);
+      if (user) {
+        sendVerificationEmail(user);
+        alert("تم إعادة إرسال رمز التحقق إلى بريدك الإلكتروني.");
+      } else {
+        alert("البريد الإلكتروني غير مسجل.");
+      }
+    }
+  </script>
+
+</body>
+</html>

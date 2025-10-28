@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌀 Oraa Anime</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary-color: #6C63FF;
+      --secondary-color: #FF6584;
+      --accent-color: #36D1DC;
+      --accent-color-2: #FF9A8B;
+      --bg-dark: #0F0F1A;
+      --bg-card: #1A1A2E;
+      --text-light: #F0F0F0;
+      --border-color: rgba(255, 101, 132, 0.2);
+      --sidebar-width: 280px;
+      --gradient-primary: linear-gradient(135deg, #6C63FF, #36D1DC);
+      --gradient-secondary: linear-gradient(135deg, #FF6584, #FF9A8B);
+      --gradient-dark: linear-gradient(135deg, #0F0F1A, #1A1A2E);
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      background: var(--bg-dark);
+      font-family: 'Cairo', sans-serif;
+      color: var(--text-light);
+      padding-bottom: 70px;
+      direction: rtl;
+      transition: margin-right 0.3s ease;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(108, 99, 255, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(255, 101, 132, 0.05) 0%, transparent 20%);
+    }
+
+    /* 🔹 الهيدر - محسّن */
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(26, 26, 46, 0.98);
+      backdrop-filter: blur(15px);
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .main-header.scrolled {
+      padding: 8px 20px;
+      background: rgba(15, 15, 26, 0.95);
+      box-shadow: 0 6px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-shadow: 0 0 20px rgba(108, 99, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .logo:hover {
+      transform: scale(1.05);
+    }
+    
+    .logo::before {
+      content: "🌀";
+      font-size: 1.5rem;
+      filter: drop-shadow(0 0 10px rgba(108, 99, 255, 0.5));
+    }
+    
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    /* زر فتح الإعدادات - محسّن */
+    #settingsToggle {
+        color: var(--text-light);
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.1);
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    #settingsToggle::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--gradient-primary);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 50%;
+    }
+    
+    #settingsToggle:hover::before {
+        opacity: 1;
+    }
+    
+    #settingsToggle:hover {
+        transform: rotate(90deg) scale(1.1);
+        box-shadow: 0 0 20px rgba(108, 99, 255, 0.6);
+    }
+    
+    #settingsToggle i {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* 🔹 شريط الأخبار المتحرك - محسّن */
+    .news-ticker {
+      background: var(--gradient-secondary);
+      padding: 10px 0;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 3px 15px rgba(255, 101, 132, 0.4);
+      z-index: 99;
+    }
+    
+    .ticker-content {
+      display: inline-block;
+      white-space: nowrap;
+      animation: ticker 40s linear infinite;
+      padding-right: 100%;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    
+    .ticker-content span {
+      margin-left: 40px;
+      display: inline-block;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    
+    .ticker-content i {
+      margin-left: 8px;
+      color: var(--bg-dark);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* 🔹 قائمة المستخدم المنسدلة - محسّنة */
+    .user-info {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+      padding: 8px 15px;
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .user-info:hover {
+      transform: translateY(-2px);
+      background: rgba(108, 99, 255, 0.15);
+      border-color: rgba(108, 99, 255, 0.3);
+      box-shadow: 0 5px 15px rgba(108, 99, 255, 0.2);
+    }
+
+    .user-info img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-color);
+      object-fit: cover;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(54, 209, 220, 0.3);
+    }
+
+    .user-info:hover img {
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 20px rgba(255, 101, 132, 0.5);
+      transform: scale(1.05);
+    }
+
+    .verify-gold {
+      color: var(--secondary-color);
+      font-size: 1.3rem;
+      filter: drop-shadow(0 0 6px var(--secondary-color));
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { filter: drop-shadow(0 0 5px var(--secondary-color)); }
+      to { filter: drop-shadow(0 0 10px var(--secondary-color)); }
+    }
+    
+    .user-name {
+      max-width: 120px; 
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .user-menu {
+      display: none;
+      position: absolute;
+      top: 65px; 
+      right: 0;
+      background: rgba(30, 30, 46, 0.98);
+      backdrop-filter: blur(15px);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      z-index: 110;
+      min-width: 220px;
+      transform-origin: top right;
+      animation: menuFadeIn 0.25s ease-out forwards;
+      border: 1px solid var(--border-color);
+    }
+
+    @keyframes menuFadeIn {
+      from { opacity: 0; transform: scale(0.8) translateY(-15px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .user-menu a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      color: var(--text-light);
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .user-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .user-menu a::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--gradient-primary);
+      opacity: 0.1;
+      transition: right 0.3s ease;
+    }
+
+    .user-menu a:hover::before {
+      right: 0;
+    }
+
+    .user-menu a:hover {
+      color: var(--primary-color);
+      padding-right: 25px;
+    }
+    
+    .user-menu a i {
+        font-size: 1.2rem;
+        width: 20px; 
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* 🔹 البحث - محسّن */
+    .search-bar {
+      text-align: center;
+      margin: 25px 0;
+      padding: 0 15px;
+      position: relative;
+    }
+
+    .search-bar input {
+      width: 90%;
+      max-width: 550px;
+      padding: 16px 25px;
+      border-radius: 15px;
+      border: 1px solid var(--border-color);
+      outline: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+      font-family: 'Cairo', sans-serif;
+      transition: all 0.3s;
+      font-size: 1.1rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bar input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.3), 0 10px 25px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .search-bar input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* 🔹 سجل البحث - محسّن */
+    .recent-searches {
+      background: rgba(26, 26, 46, 0.9);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 15px auto;
+      max-width: 550px;
+      border: 1px solid var(--border-color);
+      display: none;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .recent-searches.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .recent-searches h3 {
+      margin: 0 0 15px 0;
+      font-size: 1.1rem;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .recent-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      margin: 8px 0;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .recent-item:hover {
+      background: rgba(108, 99, 255, 0.15);
+      border-color: rgba(108, 99, 255, 0.3);
+      transform: translateX(-5px);
+    }
+
+    .recent-item span {
+      flex: 1;
+      font-weight: 600;
+    }
+
+    .replay {
+      background: none;
+      border: none;
+      color: var(--primary-color);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      font-size: 1.1rem;
+    }
+
+    .replay:hover {
+      background: rgba(108, 99, 255, 0.2);
+      transform: scale(1.1);
+    }
+
+    .clear {
+      background: var(--gradient-secondary);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      margin-top: 15px;
+      width: 100%;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      transition: all 0.3s;
+      font-size: 1rem;
+    }
+
+    .clear:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 101, 132, 0.5);
+    }
+
+    .empty {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      padding: 25px;
+      font-size: 1.1rem;
+    }
+    
+    /* 🔹 فلاتر السنة - محسّنة */
+    .year-filters {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+      padding: 0 15px;
+    }
+    
+    .year-btn {
+      padding: 10px 20px;
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .year-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient-primary);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      border-radius: 25px;
+    }
+    
+    .year-btn span {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .year-btn.active, .year-btn:hover {
+      border-color: var(--primary-color);
+      box-shadow: 0 5px 15px rgba(108, 99, 255, 0.4);
+      transform: translateY(-2px);
+    }
+    
+    .year-btn.active::before, .year-btn:hover::before {
+      opacity: 1;
+    }
+    
+    /* 🔹 قائمة الأنميات - محسّنة */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
+      gap: 30px; 
+      padding: 25px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    
+    .anime-card { 
+        background: var(--bg-card);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        text-align: center;
+        transition: all 0.4s ease;
+        cursor: pointer;
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        opacity: 0;
+        transform: translateY(25px);
+        animation: fadeInUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .anime-card:hover {
+        transform: translateY(-12px) scale(1.03);
+        box-shadow: 0 20px 40px rgba(108, 99, 255, 0.4);
+        border-color: rgba(108, 99, 255, 0.5);
+    }
+    
+    .anime-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: var(--gradient-primary);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+    
+    .anime-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .anime-card img {
+        width: 100%;
+        height: 240px; 
+        object-fit: cover;
+        display: block;
+        transition: transform 0.6s ease;
+    }
+    
+    .anime-card:hover img {
+        transform: scale(1.08);
+    }
+    
+    .anime-info {
+        padding: 15px 10px;
+        background: rgba(0, 0, 0, 0.4);
+        transition: all 0.4s ease;
+        position: relative;
+    }
+    
+    .anime-card:hover .anime-info {
+        background: rgba(108, 99, 255, 0.25);
+    }
+    
+    .anime-info h3 {
+        margin: 0;
+        font-size: 1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--text-light);
+        font-weight: 700;
+    }
+    
+    .anime-info span {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 0.95rem;
+        display: inline-block;
+        margin-top: 5px;
+    }
+    
+    /* زر المفضلة - محسّن */
+    .favorite-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 3;
+        transition: all 0.3s;
+        border: none;
+        color: white;
+        backdrop-filter: blur(5px);
+    }
+
+    .favorite-btn:hover {
+        background: var(--secondary-color);
+        transform: scale(1.15);
+        box-shadow: 0 0 20px rgba(255, 101, 132, 0.6);
+    }
+
+    .favorite-btn.active {
+        background: var(--secondary-color);
+    }
+
+    .favorite-btn i {
+        font-size: 1.2rem;
+        transition: all 0.3s;
+    }
+
+    /* مؤشر التحميل - محسّن */
+    .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 30px;
+        color: var(--primary-color);
+    }
+
+    .loading-spinner i {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* الإشعارات - محسّنة */
+    .notification {
+        position: fixed;
+        top: 25px;
+        right: 25px;
+        background: rgba(30, 30, 46, 0.95);
+        color: white;
+        padding: 18px 25px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transform: translateX(150%);
+        transition: transform 0.4s ease;
+        backdrop-filter: blur(15px);
+        border: 1px solid var(--border-color);
+        max-width: 350px;
+    }
+    
+    .notification.show {
+        transform: translateX(0);
+    }
+    
+    .notification i {
+        color: var(--primary-color);
+        font-size: 1.4rem;
+    }
+
+    /* لوحة الإعدادات - محسّنة */
+    .settings-panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        z-index: 1500;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .settings-panel.active {
+        display: flex;
+    }
+
+    .settings-content {
+        background: var(--bg-card);
+        border-radius: 20px;
+        padding: 30px;
+        width: 90%;
+        max-width: 450px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+        border: 1px solid var(--border-color);
+        transform: scale(0.9);
+        animation: scaleIn 0.3s ease forwards;
+    }
+
+    @keyframes scaleIn {
+      to { transform: scale(1); }
+    }
+
+    .settings-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .settings-header h2 {
+        margin: 0;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.4rem;
+    }
+
+    .close-settings {
+        background: none;
+        border: none;
+        color: var(--text-light);
+        font-size: 1.6rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .close-settings:hover {
+        background: rgba(255, 101, 132, 0.2);
+        color: var(--secondary-color);
+        transform: rotate(90deg);
+    }
+
+    .setting-group {
+        margin-bottom: 25px;
+    }
+
+    .setting-group label {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--text-light);
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .setting-group select {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-light);
+        font-family: 'Cairo', sans-serif;
+        outline: none;
+        transition: all 0.3s;
+        font-size: 1rem;
+    }
+
+    .setting-group select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.3);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* 🔹 التذييل والأزرار السفلية - محسّنة */
+    footer {
+      display: flex;
+      justify-content: space-around;
+      padding: 18px 0;
+      background: rgba(26, 26, 46, 0.95);
+      backdrop-filter: blur(15px);
+      border-top: 1px solid var(--border-color);
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      z-index: 90;
+      box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    footer a {
+      flex-grow: 1; 
+      text-align: center;
+      padding: 10px 0; 
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    footer i {
+      color: var(--text-light);
+      font-size: 1.5rem;
+      transition: all 0.3s;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer a::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      right: 50%;
+      transform: translateX(50%);
+      width: 0;
+      height: 4px;
+      background: var(--gradient-primary);
+      border-radius: 4px 4px 0 0;
+      transition: width 0.3s;
+    }
+
+    footer a.active::after,
+    footer a:hover::after {
+      width: 45px;
+    }
+
+    footer i.active,
+    footer a:hover i {
+      color: var(--primary-color);
+      transform: scale(1.2);
+      filter: drop-shadow(0 0 10px rgba(108, 99, 255, 0.6));
+    }
+
+    .to-home-btn {
+      position: fixed;
+      bottom: 90px; 
+      left: 25px; 
+      background: var(--gradient-primary);
+      border: none;
+      color: white;
+      padding: 14px 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 95;
+      box-shadow: 0 8px 20px rgba(108, 99, 255, 0.5);
+      transition: all 0.3s;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    
+    .to-home-btn:hover {
+        transform: scale(1.15) translateY(-5px);
+        box-shadow: 0 12px 25px rgba(108, 99, 255, 0.7);
+    }
+    
+    /* تأثيرات إضافية */
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(108, 99, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0); }
+    }
+
+    .empty-search {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.2rem;
+    }
+
+    .empty-search i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+    
+    /* تصميم متجاوب */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 20px;
+        padding: 20px;
+      }
+      
+      .anime-card img {
+        height: 210px;
+      }
+      
+      .search-bar input {
+        width: 95%;
+        padding: 14px 20px;
+      }
+      
+      .year-filters {
+        gap: 10px;
+      }
+      
+      .year-btn {
+        padding: 8px 16px;
+        font-size: 0.95rem;
+      }
+
+      .user-name {
+        display: none;
+      }
+
+      .logo {
+        font-size: 1.4rem;
+      }
+
+      .main-header {
+        padding: 10px 15px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 15px;
+        padding: 15px;
+      }
+      
+      .anime-card img {
+        height: 180px;
+      }
+      
+      .logo {
+        font-size: 1.2rem;
+      }
+      
+      .year-filters {
+        gap: 8px;
+      }
+      
+      .year-btn {
+        padding: 7px 14px;
+        font-size: 0.9rem;
+      }
+
+      .search-bar input {
+        font-size: 1rem;
+      }
+
+      footer i {
+        font-size: 1.3rem;
+      }
+
+      .to-home-btn {
+        width: 55px;
+        height: 55px;
+        bottom: 80px;
+        left: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="main-header">
+    <div class="header-left">
+        <i class="fa-solid fa-sliders" id="settingsToggle" title="الإعدادات المتقدمة"></i>
+        <div class="logo">🌀 Oraa Anime</div>
+    </div>
+    <div class="user-info" id="userInfo">
+      <img id="headerProfile" src="https://i.ibb.co/YRShYmn/avatar.png" alt="صورة المستخدم">
+      <span class="user-name" id="headerName">زائر</span>
+      <i id="headerVerify" class="fa-solid fa-crown verify-gold" title="توثيق ذهبي" style="display:none;"></i>
+
+      <div class="user-menu" id="userMenu">
+        <a href="profile.html"><i class="fa-solid fa-user"></i> الملف الشخصي</a>
+        <a href="favorites.html"><i class="fa-solid fa-heart"></i> المفضلة</a>
+        <a href="#" id="uploadPhotoBtn"><i class="fa-solid fa-camera"></i> تغيير الصورة</a>
+        <a href="settings.html"><i class="fa-solid fa-gear"></i> الإعدادات</a>
+        <a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- شريط الأخبار المتحرك -->
+  <div class="news-ticker">
+    <div class="ticker-content">
+      <span>✨ ترقبوا الموسم الجديد من أنمي Demon Slayer: Hashira Training Arc</span>
+      <span>🎉 أعلن عن أنمي Spy × Family الجزء الثاني قريبًا</span>
+      <span>🔥 One Piece يحطم الأرقام القياسية مع الحلقة 1079</span>
+      <span>🌟 تصويت لأفضل أنمي 2024 مفتوح الآن</span>
+      <span>🎬 أنمي جديد Blue Lock: Episode Nagi قادم في 2025</span>
+      <span>🏆 Jujutsu Kaisen يفوز بجائزة أفضل أنمي في حفل Anime Awards</span>
+    </div>
+  </div>
+
+  <section class="search-bar">
+    <input type="text" id="search" placeholder="🔍 ابحث عن أنميك المفضل...">
+  </section>
+
+  <!-- سجل البحث -->
+  <div class="recent-searches" id="recentSearches">
+    <h3><i class="fa-solid fa-clock-rotate-left"></i> عمليات البحث الأخيرة</h3>
+    <!-- سيتم تعبئته ديناميكياً -->
+  </div>
+
+  <!-- فلاتر السنة -->
+  <div class="year-filters">
+    <button class="year-btn active" data-year="all"><span>الكل</span></button>
+    <button class="year-btn" data-year="2025"><span>2025</span></button>
+    <button class="year-btn" data-year="2024"><span>2024</span></button>
+    <button class="year-btn" data-year="2023"><span>2023</span></button>
+    <button class="year-btn" data-year="2022"><span>2022</span></button>
+    <button class="year-btn" data-year="2021"><span>2021</span></button>
+    <button class="year-btn" data-year="2020"><span>2020</span></button>
+  </div>
+
+  <!-- مؤشر التحميل -->
+  <div class="loading-spinner" id="loadingSpinner">
+    <i class="fa-solid fa-spinner"></i>
+    <div>جاري التحميل...</div>
+  </div>
+
+  <main id="animeGrid" class="grid">
+    <!-- سيتم تعبئة الأنميات ديناميكياً -->
+  </main>
+
+  <!-- الإشعارات -->
+  <div class="notification" id="notification">
+    <i class="fa-solid fa-circle-info"></i>
+    <span id="notificationText">تم تنفيذ العملية بنجاح!</span>
+  </div>
+
+  <!-- لوحة الإعدادات -->
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-content">
+      <div class="settings-header">
+        <h2><i class="fa-solid fa-sliders"></i> الإعدادات</h2>
+        <button class="close-settings" id="closeSettings">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      
+      <div class="setting-group">
+        <label for="sortOrder">ترتيب العرض:</label>
+        <select id="sortOrder">
+          <option value="rating_desc">الأعلى تقييماً</option>
+          <option value="rating_asc">الأقل تقييماً</option>
+          <option value="title_asc">حسب العنوان (أ-ي)</option>
+        </select>
+      </div>
+
+      <div class="setting-group">
+        <label for="themeSelect">السمة:</label>
+        <select id="themeSelect">
+          <option value="default">الافتراضية</option>
+          <option value="dark">داكنة</option>
+          <option value="blue">زرقاء</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- زر رفع الصورة (مخفي) -->
+  <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+
+  <footer>
+    <a href="index.html"><i class="fa-solid fa-house active"></i></a>
+    <a href="searching.html"><i class="fa-solid fa-magnifying-glass"></i></a>
+    <a href="favorites.html"><i class="fa-solid fa-heart"></i></a>
+    <a href="chat.html"><i class="fa-solid fa-comment-dots" title="الدردشة"></i></a> 
+    <a href="profile.html"><i class="fa-solid fa-user"></i></a>
+  </footer>
+
+  <button class="to-home-btn pulse" onclick="window.location.href='index.html'">🏠</button>
+
+  <script>
+    // ====================================================================
+    // ✅ قائمة بيانات الأنمي الموسعة (70 أنمي)
+    // ====================================================================
+    const animeList = [
+      { title: "Attack on Titan", rating: "9.1", img: "https://cdn.myanimelist.net/images/anime/10/47347.jpg", year: "2023" },
+      { title: "Demon Slayer", rating: "8.9", img: "https://cdn.myanimelist.net/images/anime/1286/99889.jpg", year: "2024" },
+      { title: "Naruto Shippuden", rating: "8.5", img: "https://cdn.myanimelist.net/images/anime/5/17407.jpg", year: "2017" },
+      { title: "Jujutsu Kaisen", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/1171/109222.jpg", year: "2024" },
+      { title: "One Piece", rating: "9.0", img: "https://cdn.myanimelist.net/images/anime/6/73245.jpg", year: "2024" },
+      { title: "Bleach: Thousand-Year Blood War", rating: "8.8", img: "https://cdn.myanimelist.net/images/anime/1764/126627.jpg", year: "2024" },
+      { title: "My Hero Academia", rating: "8.4", img: "https://cdn.myanimelist.net/images/anime/10/78745.jpg", year: "2023" },
+      { title: "Chainsaw Man", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/1806/126216.jpg", year: "2022" },
+      { title: "Tokyo Ghoul", rating: "8.0", img: "https://cdn.myanimelist.net/images/anime/5/64449.jpg", year: "2018" },
+      { title: "Black Clover", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/2/88336.jpg", year: "2021" },
+      { title: "Death Note", rating: "9.0", img: "https://cdn.myanimelist.net/images/anime/9/9453.jpg", year: "2007" },
+      { title: "Hunter x Hunter", rating: "9.2", img: "https://cdn.myanimelist.net/images/anime/1337/99013.jpg", year: "2014" },
+      { title: "Vinland Saga", rating: "8.9", img: "https://cdn.myanimelist.net/images/anime/1500/103005.jpg", year: "2023" },
+      { title: "Spy x Family", rating: "8.6", img: "https://cdn.myanimelist.net/images/anime/1441/122795.jpg", year: "2024" },
+      { title: "Re:Zero", rating: "8.6", img: "https://cdn.myanimelist.net/images/anime/11/79410.jpg", year: "2021" },
+      { title: "Code Geass", rating: "9.0", img: "https://cdn.myanimelist.net/images/anime/5/50331.jpg", year: "2008" },
+      { title: "Fullmetal Alchemist: Brotherhood", rating: "9.2", img: "https://cdn.myanimelist.net/images/anime/1208/94745.jpg", year: "2010" },
+      { title: "Steins;Gate", rating: "9.1", img: "https://cdn.myanimelist.net/images/anime/1935/127974.jpg", year: "2011" },
+      { title: "Your Name", rating: "8.9", img: "https://cdn.myanimelist.net/images/anime/5/87048.jpg", year: "2016" },
+      { title: "A Silent Voice", rating: "8.8", img: "https://cdn.myanimelist.net/images/anime/1122/96435.jpg", year: "2016" },
+      { title: "Parasyte", rating: "8.6", img: "https://cdn.myanimelist.net/images/anime/3/73178.jpg", year: "2015" },
+      { title: "Made in Abyss", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/6/86733.jpg", year: "2017" },
+      { title: "Dr. Stone", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/1613/102576.jpg", year: "2023" },
+      { title: "One Punch Man", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/12/76049.jpg", year: "2019" },
+      { title: "Mob Psycho 100", rating: "8.5", img: "https://cdn.myanimelist.net/images/anime/8/80356.jpg", year: "2019" },
+      { title: "Fairy Tail", rating: "8.0", img: "https://cdn.myanimelist.net/images/anime/5/18179.jpg", year: "2019" },
+      { title: "Sword Art Online", rating: "7.8", img: "https://cdn.myanimelist.net/images/anime/11/39717.jpg", year: "2020" },
+      { title: "Overlord", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/7/88019.jpg", year: "2022" },
+      { title: "Naruto", rating: "8.1", img: "https://cdn.myanimelist.net/images/anime/13/17405.jpg", year: "2007" },
+      { title: "KonoSuba", rating: "8.4", img: "https://cdn.myanimelist.net/images/anime/8/77831.jpg", year: "2017" },
+      { title: "Seven Deadly Sins", rating: "8.0", img: "https://cdn.myanimelist.net/images/anime/8/65409.jpg", year: "2021" },
+      { title: "Frieren", rating: "9.0", img: "https://cdn.myanimelist.net/images/anime/1015/138006.jpg", year: "2024" },
+      // أنميات إضافية
+      { title: "Haikyuu!!", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/7/76014.jpg", year: "2020" },
+      { title: "Cowboy Bebop", rating: "8.8", img: "https://cdn.myanimelist.net/images/anime/4/19644.jpg", year: "1998" },
+      { title: "Neon Genesis Evangelion", rating: "8.4", img: "https://cdn.myanimelist.net/images/anime/1314/108941.jpg", year: "1995" },
+      { title: "Dragon Ball Z", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/1607/117271.jpg", year: "1996" },
+      { title: "Sailor Moon", rating: "7.9", img: "https://cdn.myanimelist.net/images/anime/1784/137823.jpg", year: "1992" },
+      { title: "Pokémon", rating: "7.5", img: "https://cdn.myanimelist.net/images/anime/13/73834.jpg", year: "1997" },
+      { title: "Yu Yu Hakusho", rating: "8.4", img: "https://cdn.myanimelist.net/images/anime/1224/136351.jpg", year: "1992" },
+      { title: "Rurouni Kenshin", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/1267/134807.jpg", year: "1996" },
+      { title: "Inuyasha", rating: "7.9", img: "https://cdn.myanimelist.net/images/anime/1589/95329.jpg", year: "2000" },
+      { title: "Berserk", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/12/82171.jpg", year: "1997" },
+      { title: "Trigun", rating: "8.2", img: "https://cdn.myanimelist.net/images/anime/7/20310.jpg", year: "1998" },
+      { title: "Hellsing", rating: "7.8", img: "https://cdn.myanimelist.net/images/anime/5/19659.jpg", year: "2001" },
+      { title: "Samurai Champloo", rating: "8.5", img: "https://cdn.myanimelist.net/images/anime/1375/121599.jpg", year: "2004" },
+      { title: "Ghost in the Shell", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/10/82549.jpg", year: "1995" },
+      { title: "Gurren Lagann", rating: "8.6", img: "https://cdn.myanimelist.net/images/anime/4/5123.jpg", year: "2007" },
+      { title: "Kill la Kill", rating: "8.0", img: "https://cdn.myanimelist.net/images/anime/4/52099.jpg", year: "2013" },
+      { title: "No Game No Life", rating: "8.1", img: "https://cdn.myanimelist.net/images/anime/1074/111944.jpg", year: "2014" },
+      { title: "Soul Eater", rating: "7.8", img: "https://cdn.myanimelist.net/images/anime/9/20924.jpg", year: "2008" },
+      { title: "Blue Exorcist", rating: "7.5", img: "https://cdn.myanimelist.net/images/anime/10/75195.jpg", year: "2011" },
+      { title: "Noragami", rating: "8.0", img: "https://cdn.myanimelist.net/images/anime/1886/128288.jpg", year: "2014" },
+      { title: "The Promised Neverland", rating: "8.5", img: "https://cdn.myanimelist.net/images/anime/1286/111940.jpg", year: "2019" },
+      { title: "Beastars", rating: "7.9", img: "https://cdn.myanimelist.net/images/anime/1753/106374.jpg", year: "2021" },
+      { title: "Dorohedoro", rating: "8.1", img: "https://cdn.myanimelist.net/images/anime/1071/111990.jpg", year: "2020" },
+      { title: "Great Pretender", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/1280/107637.jpg", year: "2020" },
+      { title: "Jujutsu Kaisen 0", rating: "8.6", img: "https://cdn.myanimelist.net/images/anime/1122/119044.jpg", year: "2021" },
+      { title: "Cyberpunk: Edgerunners", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/1810/126216.jpg", year: "2022" },
+      { title: "Bocchi the Rock!", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/1448/127959.jpg", year: "2022" },
+      { title: "Chainsaw Man Part 2", rating: "8.8", img: "https://cdn.myanimelist.net/images/anime/1246/136351.jpg", year: "2023" },
+      { title: "Oshi no Ko", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/1810/134786.jpg", year: "2023" },
+      { title: "Heavenly Delusion", rating: "8.4", img: "https://cdn.myanimelist.net/images/anime/1989/134627.jpg", year: "2023" },
+      { title: "Zom 100: Bucket List of the Dead", rating: "8.2", img: "https://cdn.myanimelist.net/images/anime/1462/136355.jpg", year: "2023" },
+      { title: "Undead Unluck", rating: "7.9", img: "https://cdn.myanimelist.net/images/anime/1272/138033.jpg", year: "2023" },
+      { title: "The Apothecary Diaries", rating: "8.8", img: "https://cdn.myanimelist.net/images/anime/1702/138033.jpg", year: "2023" },
+      { title: "Frieren: Beyond Journey's End", rating: "9.1", img: "https://cdn.myanimelist.net/images/anime/1015/138006.jpg", year: "2023" },
+      { title: "The Eminence in Shadow", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/1122/138033.jpg", year: "2022" },
+      { title: "Bleach: Thousand-Year Blood War Part 2", rating: "9.0", img: "https://cdn.myanimelist.net/images/anime/1891/138033.jpg", year: "2023" },
+      { title: "Vinland Saga Season 2", rating: "9.2", img: "https://cdn.myanimelist.net/images/anime/1500/138033.jpg", year: "2023" },
+      { title: "Attack on Titan: The Final Season", rating: "9.4", img: "https://cdn.myanimelist.net/images/anime/1000/138033.jpg", year: "2022" },
+      { title: "Demon Slayer: Entertainment District Arc", rating: "9.0", img: "https://cdn.myanimelist.net/images/anime/1776/138033.jpg", year: "2021" },
+      { title: "Jujutsu Kaisen Season 2", rating: "9.1", img: "https://cdn.myanimelist.net/images/anime/1792/138022.jpg", year: "2023" },
+      { title: "One Piece: Wano Country Arc", rating: "9.3", img: "https://cdn.myanimelist.net/images/anime/1509/138033.jpg", year: "2022" }
+    ];
+
+    // ====================================================================
+    // ✅ متغيرات حالة التطبيق
+    // ====================================================================
+    let currentAnimeList = [];
+    let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    const initialSort = 'rating_desc';
+    let userFavorites = JSON.parse(localStorage.getItem("userFavorites")) || [];
+
+    // ====================================================================
+    // ✅ العناصر المُختارة من الـ DOM
+    // ====================================================================
+    const grid = document.getElementById("animeGrid");
+    const searchInput = document.getElementById('search');
+    const recentBox = document.getElementById('recentSearches');
+    const userInfo = document.getElementById("userInfo");
+    const userMenu = document.getElementById("userMenu");
+    const headerName = document.getElementById("headerName");
+    const headerProfile = document.getElementById("headerProfile");
+    const headerVerify = document.getElementById("headerVerify");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const uploadPhotoBtn = document.getElementById("uploadPhotoBtn");
+    const photoUpload = document.getElementById("photoUpload");
+    const settingsToggle = document.getElementById("settingsToggle");
+    const settingsPanel = document.getElementById("settingsPanel");
+    const closeSettings = document.getElementById("closeSettings");
+    const sortSelect = document.getElementById('sortOrder');
+    const loadingSpinner = document.getElementById("loadingSpinner");
+    const notification = document.getElementById("notification");
+    const notificationText = document.getElementById("notificationText");
+    const yearButtons = document.querySelectorAll('.year-btn');
+    const footerIcons = document.querySelectorAll("footer i");
+    const mainHeader = document.querySelector('.main-header');
+
+    // ====================================================================
+    // ✅ دوال مساعدة (Helper Functions)
+    // ====================================================================
+
+    /**
+     * دالة لتأخير التنفيذ (Debouncing)
+     */
+    const debounce = (func, delay) => {
+      let timeoutId;
+      return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+      };
+    };
+
+    /**
+     * دالة الفرز بناءً على الخيار
+     */
+    function sortAnime(list, sortKey) {
+      const listCopy = [...list];
+      switch (sortKey) {
+        case 'rating_desc':
+          return listCopy.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+        case 'rating_asc':
+          return listCopy.sort((a, b) => parseFloat(a.rating) - parseFloat(b.rating));
+        case 'title_asc':
+          return listCopy.sort((a, b) => a.title.localeCompare(b.title));
+        default:
+          return listCopy;
+      }
+    }
+
+    /**
+     * إظهار الإشعارات
+     */
+    function showNotification(message) {
+      notificationText.textContent = message;
+      notification.classList.add("show");
+      
+      setTimeout(() => {
+        notification.classList.remove("show");
+      }, 3000);
+    }
+
+    // ====================================================================
+    // ✅ وظائف العرض والتفاعل الأساسية
+    // ====================================================================
+
+    /**
+     * إنشاء بطاقة الأنمي
+     */
+    function createAnimeCard(anime) {
+      const card = document.createElement("div");
+      card.classList.add("anime-card");
+      card.setAttribute('data-rating', anime.rating);
+      card.setAttribute('data-year', anime.year);
+      
+      const isFavorite = userFavorites.includes(anime.title);
+      
+      card.innerHTML = `
+        <button class="favorite-btn ${isFavorite ? 'active' : ''}" onclick="toggleFavorite('${anime.title}', this)">
+            <i class="${isFavorite ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+        </button>
+        <img src="${anime.img}" alt="${anime.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x280?text=Image+Not+Found'">
+        <div class="anime-info">
+          <h3>${anime.title}</h3>
+          <span>⭐ ${anime.rating}</span>
+        </div>
+      `;
+
+      card.addEventListener("click", (e) => {
+        if (!e.target.closest('.favorite-btn')) {
+          localStorage.setItem("selectedAnime", JSON.stringify(anime));
+          window.location.href = "anime.html";
+        }
+      });
+      
+      // تأثير الظهور التدريجي
+      setTimeout(() => {
+        card.style.opacity = "1";
+        card.style.transform = "translateY(0)";
+      }, 100);
+      
+      return card;
+    }
+
+    /**
+     * عرض قائمة الأنمي على الشبكة
+     */
+    function displayAnime(list) {
+      const fragment = document.createDocumentFragment();
+
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-search">
+            <i class="fa-solid fa-search"></i>
+            <h3>لم يتم العثور على نتائج!</h3>
+            <p>جرب استخدام كلمات بحث أخرى أو تغيير الفلاتر</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.forEach((anime, index) => {
+        // تأخير ظهور البطاقات تدريجياً
+        setTimeout(() => {
+          fragment.appendChild(createAnimeCard(anime));
+        }, index * 50);
+      });
+
+      grid.innerHTML = "";
+      grid.appendChild(fragment);
+    }
+
+    /**
+     * تطبيق البحث والتصفية وعرض النتائج
+     */
+    function applyFilterAndDisplay() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const activeYear = document.querySelector('.year-btn.active').dataset.year;
+      
+      let listToFilter = currentAnimeList;
+
+      // تطبيق فلترة السنة
+      const yearFiltered = activeYear === 'all' 
+        ? listToFilter 
+        : listToFilter.filter(anime => anime.year === activeYear);
+
+      // تطبيق البحث
+      const filtered = keyword
+        ? yearFiltered.filter(a => a.title.toLowerCase().includes(keyword))
+        : yearFiltered;
+
+      displayAnime(filtered);
+    }
+
+    // ====================================================================
+    // ✅ إدارة سجل البحث
+    // ====================================================================
+
+    function updateRecentSearches() {
+      if (!recentBox) return;
+      recentBox.innerHTML = '';
+
+      if (searchHistory.length === 0) {
+        recentBox.innerHTML = '<p class="empty">🔍 لا يوجد سجل بحث بعد</p>';
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      searchHistory.forEach(term => {
+        const item = document.createElement('div');
+        item.classList.add('recent-item');
+        item.innerHTML = `
+          <span>${term}</span>
+          <button class="replay" aria-label="استخدام هذا البحث"><i class="fa-solid fa-arrow-rotate-left"></i></button>
+        `;
+
+        item.querySelector('.replay').addEventListener('click', () => {
+          searchInput.value = term;
+          applyFilterAndDisplay();
+        });
+        
+        item.querySelector('span').addEventListener('click', () => {
+          searchInput.value = term;
+          applyFilterAndDisplay();
+        });
+        
+        fragment.appendChild(item);
+      });
+
+      recentBox.appendChild(fragment);
+
+      const clearBtn = document.createElement('button');
+      clearBtn.textContent = '🧹 مسح الكل';
+      clearBtn.classList.add('clear');
+      clearBtn.addEventListener('click', () => {
+        localStorage.removeItem('searchHistory');
+        searchHistory = [];
+        updateRecentSearches();
+      });
+      recentBox.appendChild(clearBtn);
+    }
+
+    function saveSearchTerm(keyword) {
+      const term = keyword.trim();
+      if (term && !searchHistory.includes(term)) {
+        searchHistory = searchHistory.filter(t => t !== term);
+        searchHistory.unshift(term);
+        if (searchHistory.length > 10) searchHistory.pop();
+        localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+        updateRecentSearches();
+      }
+    }
+
+    // ====================================================================
+    // ✅ نظام المفضلة
+    // ====================================================================
+
+    window.toggleFavorite = (animeTitle, element) => {
+      const index = userFavorites.indexOf(animeTitle);
+      
+      if (index > -1) {
+        userFavorites.splice(index, 1);
+        element.classList.remove('active');
+        element.innerHTML = '<i class="fa-regular fa-heart"></i>';
+        showNotification('تمت الإزالة من المفضلة');
+      } else {
+        userFavorites.push(animeTitle);
+        element.classList.add('active');
+        element.innerHTML = '<i class="fa-solid fa-heart"></i>';
+        showNotification('تمت الإضافة إلى المفضلة');
+      }
+      
+      localStorage.setItem("userFavorites", JSON.stringify(userFavorites));
+    };
+
+    // ====================================================================
+    // ✅ إدارة المستخدم
+    // ====================================================================
+
+    function loadUserInfo() {
+      const oraaUser = JSON.parse(localStorage.getItem("oraa_user"));
+      const savedName = localStorage.getItem("profileName");
+      const savedImage = localStorage.getItem("profileImage");
+      const email = oraaUser?.email || "";
+
+      headerName.textContent = savedName || "زائر";
+      
+      // تحميل صورة المستخدم من localStorage إذا كانت موجودة
+      if (savedImage && savedImage !== "https://i.ibb.co/YRShYmn/avatar.png") {
+        headerProfile.src = savedImage;
+      } else {
+        headerProfile.src = "https://i.ibb.co/YRShYmn/avatar.png";
+      }
+
+      if (email === "itwix907@gmail.com") {
+        headerVerify.style.display = "inline";
+      } else {
+        headerVerify.style.display = "none";
+      }
+    }
+
+    function uploadProfilePhoto(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imageUrl = e.target.result;
+          headerProfile.src = imageUrl;
+          localStorage.setItem("profileImage", imageUrl);
+          showNotification("✅ تم تغيير صورة الملف الشخصي بنجاح!");
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // ====================================================================
+    // ✅ تهيئة التطبيق
+    // ====================================================================
+
+    function initializeApp() {
+      // 1. فرز القائمة المبدئي
+      currentAnimeList = sortAnime(animeList, initialSort);
+      
+      // 2. عرض القائمة المفرزوة
+      displayAnime(currentAnimeList);
+
+      // 3. تحديث سجل البحث
+      updateRecentSearches();
+      
+      // 4. تعيين القيمة الافتراضية في الإعدادات
+      if (sortSelect) {
+        sortSelect.value = initialSort;
+      }
+      
+      // 5. تحميل معلومات المستخدم
+      loadUserInfo();
+    }
+
+    // ====================================================================
+    // ✅ تفعيل المستمعات
+    // ====================================================================
+
+    // 1. البحث (Debounced)
+    if (searchInput) {
+      const debouncedSearch = debounce(applyFilterAndDisplay, 300);
+      searchInput.addEventListener('input', debouncedSearch);
+
+      // إظهار/إخفاء سجل البحث
+      searchInput.addEventListener('focus', () => {
+        if (searchHistory.length > 0) {
+          recentBox.classList.add('active');
+        }
+      });
+      
+      searchInput.addEventListener('blur', () => {
+        setTimeout(() => {
+          recentBox.classList.remove('active');
+        }, 200);
+      });
+
+      searchInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          saveSearchTerm(searchInput.value);
+          applyFilterAndDisplay();
+          searchInput.blur();
+        }
+      });
+    }
+
+    // 2. قائمة البروفايل
+    if (userInfo && userMenu) {
+      userInfo.addEventListener('click', e => {
+        e.stopPropagation();
+        userMenu.style.display = userMenu.style.display === "block" ? "none" : "block";
+      });
+      document.addEventListener('click', e => {
+        if (userMenu.style.display === "block" && !userInfo.contains(e.target)) {
+          userMenu.style.display = "none";
+        }
+      });
+    }
+
+    // 3. رفع صورة المستخدم
+    if (uploadPhotoBtn && photoUpload) {
+      uploadPhotoBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        photoUpload.click();
+      });
+      
+      photoUpload.addEventListener('change', uploadProfilePhoto);
+    }
+
+    // 4. تسجيل الخروج
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        localStorage.clear();
+        headerName.textContent = "زائر";
+        headerProfile.src = "https://i.ibb.co/YRShYmn/avatar.png"; 
+        headerVerify.style.display = "none";
+        userMenu.style.display = "none";
+        showNotification("✅ تم تسجيل الخروج بنجاح!");
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 1500);
+      });
+    }
+
+    // 5. تأثير التمرير على الهيدر
+    if (mainHeader) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+          mainHeader.classList.add('scrolled');
+        } else {
+          mainHeader.classList.remove('scrolled');
+        }
+      });
+    }
+
+    // 6. لوحة الإعدادات
+    if (settingsToggle && settingsPanel && closeSettings) {
+      settingsToggle.addEventListener('click', e => {
+        e.stopPropagation();
+        settingsPanel.classList.add('active');
+      });
+      closeSettings.addEventListener('click', () => {
+        settingsPanel.classList.remove('active');
+      });
+      document.addEventListener('click', (e) => {
+        if (settingsPanel.classList.contains('active') && !settingsPanel.contains(e.target) && !settingsToggle.contains(e.target)) {
+          settingsPanel.classList.remove('active');
+        }
+      });
+    }
+
+    // 7. التحكم في الترتيب
+    if (sortSelect) {
+      sortSelect.addEventListener('change', (e) => {
+        const value = e.target.value;
+        currentAnimeList = sortAnime(animeList, value);
+        applyFilterAndDisplay();
+        settingsPanel.classList.remove('active');
+      });
+    }
+
+    // 8. فلاتر السنة
+    if (yearButtons.length > 0) {
+      yearButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          yearButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          applyFilterAndDisplay();
+        });
+      });
+    }
+
+    // 9. الأيقونات في البار السفلي
+    if (footerIcons.length > 0) {
+      footerIcons.forEach(icon => {
+        icon.addEventListener("click", () => {
+          footerIcons.forEach(i => i.classList.remove("active"));
+          icon.classList.add("active");
+          icon.style.transform = "scale(1.2)";
+          setTimeout(() => icon.style.transform = "scale(1)", 200);
+        });
+      });
+    }
+
+    // 10. بدء التطبيق
+    window.addEventListener('load', initializeApp);
+  </script>
+</body>
+</html>
