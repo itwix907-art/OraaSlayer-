@@ -35,8 +35,6 @@
             z-index: -1;
         }
 
-        .bg-effects::before {
-            content: "";
             position: absolute;
             top: 0;
             left: 0;
@@ -44,7 +42,6 @@
             height: 100%;
             background: 
                 radial-gradient(circle at 20% 20%, rgba(139, 123, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 123, 169, 0.1) 0%, transparent 50%);
         }
 
         .floating-element {
@@ -346,4 +343,3 @@
     console.log("Firebase loaded:", app, auth, db);
 </script>
 </body>
-</html>
