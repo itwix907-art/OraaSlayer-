@@ -1528,5 +1528,17 @@
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
 </script>
+<script type="module">
+  import { app, auth, db } from './firebase-init.js';
+
+  // مثال: اختبار الاتصال بـ Firebase
+  console.log("Firebase loaded:", app, auth, db);
+</script>
+<script type="module">
+  import { app, auth, db } from './firebase-init.js';
+  
+  // مثال: اختبار الاتصال بـ Firebase
+  console.log("Firebase loaded:", app, auth, db);
+</script>
 </body>
 </html>
