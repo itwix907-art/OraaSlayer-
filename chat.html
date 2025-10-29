@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
@@ -901,11 +900,10 @@
     </style>
 </head>
 <body>
-    <!-- نافذة تسجيل الدخول -->
     <div class="modal" id="loginModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">تسجيل الدخول</h2>
+                <h2 class="modal-title">تسجيل الدخول / إنشاء حساب</h2>
                 <button class="close-modal" id="closeModal">&times;</button>
             </div>
             <form id="loginForm">
@@ -919,16 +917,15 @@
                 </div>
                 <button type="submit" class="form-btn">تسجيل الدخول</button>
             </form>
+            <button id="registerBtn" class="form-btn" style="background: var(--accent); margin-top: 10px;">إنشاء حساب جديد</button>
             <div class="form-footer">
                 <p>لتجربة كاملة مع إمكانية نشر الرسائل</p>
             </div>
         </div>
     </div>
 
-    <!-- إشعارات -->
     <div class="notification" id="notification"></div>
 
-    <!-- شريط الأخبار العاجلة -->
     <div class="breaking-news">
         <div class="news-label">
             <i class="fas fa-bolt"></i> أخبار عاجلة
@@ -940,7 +937,6 @@
         </div>
     </div>
 
-    <!-- الهيدر -->
     <header>
         <div class="logo">
             <div class="logo-icon">
@@ -961,7 +957,6 @@
         </div>
     </header>
 
-    <!-- أشرطة التنقل -->
     <div class="nav-tabs">
         <div class="nav-tab active" data-tab="general">
             <i class="fas fa-comments"></i> الشات العام
@@ -974,14 +969,11 @@
         </div>
     </div>
 
-    <!-- زر عرض/إخفاء الشريط الجانبي (للجوال) -->
     <button class="sidebar-toggle" id="sidebarToggle">
         <i class="fas fa-users"></i>
     </button>
 
-    <!-- المحتوى الرئيسي -->
     <div class="main-container">
-        <!-- الشريط الجانبي -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-section">
                 <div class="section-title">
@@ -989,8 +981,7 @@
                     <span class="pulse" style="width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; margin-right: 8px;"></span>
                 </div>
                 <div class="online-users" id="onlineUsers">
-                    <!-- سيتم ملء هذا القسم من Firebase -->
-                </div>
+                    </div>
             </div>
 
             <div class="sidebar-section">
@@ -1023,7 +1014,6 @@
             </div>
         </div>
 
-        <!-- منطقة الدردشة -->
         <div class="chat-area">
             <div class="chat-header">
                 <div class="chat-title">
@@ -1040,7 +1030,6 @@
                 </div>
             </div>
 
-            <!-- لوحة نشر الأخبار (للمسؤول فقط) -->
             <div class="news-panel" id="newsPanel">
                 <div class="section-title">
                     <i class="fas fa-bullhorn"></i> نشر خبر جديد
@@ -1055,7 +1044,6 @@
             </div>
 
             <div class="messages-container" id="messagesContainer">
-                <!-- سيتم إضافة الرسائل هنا ديناميكياً من Firebase -->
                 <div class="message news">
                     <div class="message-header">
                         <div class="message-sender">نيكا-توك</div>
@@ -1066,7 +1054,6 @@
                 </div>
             </div>
 
-            <!-- مؤشر الكتابة -->
             <div class="typing-indicator" id="typingIndicator" style="display: none;">
                 <span>شخص ما يكتب...</span>
                 <div class="typing-dots">
@@ -1076,10 +1063,8 @@
                 </div>
             </div>
 
-            <!-- لوحة الإيموجي -->
             <div class="emoji-panel" id="emojiPanel"></div>
 
-            <!-- منطقة الإدخال -->
             <div class="input-area">
                 <div class="input-tools">
                     <button class="tool-btn" id="emojiBtn" title="إيموجي">
@@ -1128,6 +1113,8 @@
             const loginModal = document.getElementById('loginModal');
             const closeModal = document.getElementById('closeModal');
             const loginForm = document.getElementById('loginForm');
+            // تم إضافة زر التسجيل
+            const registerBtn = document.getElementById('registerBtn'); 
             const adminBtn = document.getElementById('adminBtn');
             const newsPanel = document.getElementById('newsPanel');
             const publishNewsBtn = document.getElementById('publishNewsBtn');
@@ -1346,6 +1333,20 @@
                 addMessageToChat(welcomeMessage);
             }
 
+            // 🎯 تسجيل مستخدم جديد
+            function registerUser(email, password) {
+                auth.createUserWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        // userCredential.user.updateProfile({ displayName: email.split('@')[0] });
+                        showNotification('🎉 تم إنشاء الحساب بنجاح! جاري تسجيل الدخول...');
+                        loginUser(email, password); // تسجيل الدخول مباشرة بعد الإنشاء
+                    })
+                    .catch((error) => {
+                        console.error('Registration error:', error);
+                        showNotification(`❌ فشل التسجيل: ${error.message}`, 'error');
+                    });
+            }
+
             // 🎯 تسجيل الدخول بالبريد
             function loginUser(email, password) {
                 auth.signInWithEmailAndPassword(email, password)
@@ -1553,6 +1554,19 @@
 
             publishNewsBtn.addEventListener('click', publishNews);
 
+            // ربط زر "إنشاء حساب جديد"
+            registerBtn.addEventListener('click', () => {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                if (!email || !password) {
+                    showNotification('⚠️ يرجى ملء حقل البريد وكلمة المرور للتسجيل.', 'warning');
+                    return;
+                }
+                registerUser(email, password);
+            });
+
+
             // 🎯 أحداث التبويبات
             navTabs.forEach(tab => {
                 tab.addEventListener('click', () => {
@@ -1592,3 +1606,4 @@
         });
     </script>
 </body>
+</html>
