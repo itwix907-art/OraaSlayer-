@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌀 Oraa Anime - Loading</title>
+    <title>🌀 Oraa Slayer - جاري التحميل</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -14,6 +14,7 @@
         }
 
         body {
+            /* الحفاظ على الألوان المطلوبة */
             background: linear-gradient(135deg, #0F0F25, #1A1A3A);
             font-family: 'Cairo', sans-serif;
             color: #F8F8FF;
@@ -33,15 +34,10 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-        }
-
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            /* إضافة التأثيرات المطلوبة */
             background: 
                 radial-gradient(circle at 20% 20%, rgba(139, 123, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 123, 169, 0.1) 0%, transparent 50%);
         }
 
         .floating-element {
@@ -137,6 +133,7 @@
             margin-top: 15px;
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.6);
+            min-height: 20px; /* لتجنب القفز عند تغيير النص */
         }
 
         /* معلومات المطور */
@@ -271,16 +268,19 @@
     </div>
 
     <script>
-        // كود مبسط يعمل بدون مشاكل
+        // كود التحكم في شاشة التحميل والانتقال
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Oraa Anime Splash Screen Loaded');
+            console.log('🚀 Oraa Slayer Splash Screen Loaded');
             
             // إضافة تأثير التموج عند النقر
             document.body.addEventListener('click', function(e) {
                 const ripple = document.createElement('div');
                 ripple.className = 'ripple-effect';
-                ripple.style.left = e.clientX - 10 + 'px';
-                ripple.style.top = e.clientY - 10 + 'px';
+                // تحديد موقع التموج (إزاحة بسيطة ليتوسط المؤشر)
+                const size = 20;
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = e.clientX - (size / 2) + 'px';
+                ripple.style.top = e.clientY - (size / 2) + 'px';
                 document.body.appendChild(ripple);
                 
                 setTimeout(() => {
@@ -288,12 +288,12 @@
                 }, 600);
             });
             
-            // تحديث نص التحميل
+            // تحديث نص التحميل بشكل دوري
             const loadingTexts = [
                 "جاري تحميل أفضل الأنميات...",
-                "تهيئة قاعدة البيانات...", 
+                "تهيئة قاعدة البيانات (Firebase)...", 
                 "تحميل واجهة المستخدم...",
-                "جاري الإعداد النهائي..."
+                "جاري الإعداد النهائي (تم الاتصال)..."
             ];
             
             let currentTextIndex = 0;
@@ -303,43 +303,127 @@
                 if (currentTextIndex < loadingTexts.length) {
                     loadingTextElement.textContent = loadingTexts[currentTextIndex];
                     currentTextIndex++;
-                    setTimeout(updateLoadingText, 800);
+                    // زيادة المدة لتظهر جميع النصوص قبل الانتقال
+                    setTimeout(updateLoadingText, 1200); 
                 }
             };
             
             // بدء تحديث النص
-            setTimeout(updateLoadingText, 1000);
+            setTimeout(updateLoadingText, 500);
             
-            // الانتقال بعد انتهاء التحميل
+            // الانتقال بعد انتهاء التحميل (4.5 ثواني)
             setTimeout(() => {
                 document.body.style.opacity = '0';
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    // يمكنك تغيير 'index.html' إلى الصفحة الرئيسية الفعلية لتطبيقك
+                    window.location.href = 'index.html'; 
                 }, 500);
-            }, 4000);
+            }, 4500); 
             
             // إمكانية التخطي بالضغط على أي مفتاح
             document.addEventListener('keydown', function(e) {
+                // تخطي الشاشة عند الضغط على مفتاح الهروب (Escape) أو الإدخال (Enter)
                 if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+                    console.log('Splash screen skipped by user.');
                     window.location.href = 'index.html';
                 }
             });
         });
 
         // التعامل مع الأخطاء
-        window.addEventListener('error', function() {
-            console.log('⚠️ حدث خطأ في التحميل');
-            document.getElementById('loadingText').textContent = "⚠️ حدث خطأ في التحميل، جاري إعادة المحاولة...";
-            
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 2000);
+        window.addEventListener('error', function(event) {
+            console.error('⚠️ حدث خطأ عام في التحميل:', event.message);
+            const loadingTextElement = document.getElementById('loadingText');
+            if(loadingTextElement) {
+                loadingTextElement.textContent = "⚠️ حدث خطأ في التحميل، جاري المتابعة للموقع.";
+            }
+            // لا نستخدم alert()
         });
     </script>
+
+    <!--
+    ===================================================================
+    قسم تهيئة FIREBASE
+    يتم ربط تطبيقك بـ Firestore و Authentication في الخلفية
+    ===================================================================
+    -->
     <script type="module">
-    import { app, auth, db } from './firebase-init.js';
-    
-    // مثال: اختبار الاتصال بـ Firebase
-    console.log("Firebase loaded:", app, auth, db);
-</script>
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // المتغيرات العامة التي يوفرها بيئة Canvas (مطلوبة)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        let firebaseConfig;
+
+        try {
+            // محاولة تحليل إعدادات Firebase
+            firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        } catch (e) {
+            console.error("Firebase config parsing failed:", e);
+            firebaseConfig = {};
+        }
+
+        // تشغيل التهيئة والمصادقة
+        if (Object.keys(firebaseConfig).length > 0) {
+            try {
+                // تعيين مستوى التسجيل للمساعدة في تصحيح الأخطاء
+                setLogLevel('debug'); 
+                
+                // 1. تهيئة تطبيق Firebase
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                const db = getFirestore(app);
+                
+                console.log(`Firebase App ID: ${appId} initialized successfully.`);
+                
+                // 2. المصادقة (Authentication)
+                const authenticate = async () => {
+                    const loadingTextElement = document.getElementById('loadingText');
+                    
+                    if (initialAuthToken) {
+                        // تسجيل الدخول باستخدام التوكن المخصص (الأكثر أماناً)
+                        await signInWithCustomToken(auth, initialAuthToken);
+                        console.log("✅ Custom token sign-in successful.");
+                    } else {
+                        // تسجيل الدخول كمستخدم مجهول في حال عدم توفر التوكن
+                        await signInAnonymously(auth);
+                        console.log("⚠️ Signed in anonymously (No token provided).");
+                    }
+
+                    const userId = auth.currentUser?.uid;
+                    console.log(`Firebase User ID: ${userId}`);
+
+                    if (loadingTextElement) {
+                         // تحديث النص بعد نجاح الاتصال
+                         loadingTextElement.textContent = "تم التحميل بنجاح! جاهز للانطلاق.";
+                    }
+                };
+                
+                // بدء المصادقة
+                authenticate().catch(error => {
+                    console.error("🚨 Firebase Authentication failed:", error);
+                    const loadingTextElement = document.getElementById('loadingText');
+                    if (loadingTextElement) {
+                         loadingTextElement.textContent = "⚠️ فشل الاتصال بخدمة المصادقة، جاري المتابعة...";
+                    }
+                });
+
+            } catch (e) {
+                console.error("🚨 Firebase Initialization failed:", e);
+                 const loadingTextElement = document.getElementById('loadingText');
+                if (loadingTextElement) {
+                     loadingTextElement.textContent = "⚠️ فشل تهيئة Firebase، جاري المتابعة.";
+                }
+            }
+        } else {
+            console.warn("Firebase config is missing. Skipping Firebase initialization.");
+            const loadingTextElement = document.getElementById('loadingText');
+            if (loadingTextElement) {
+                 loadingTextElement.textContent = "جاري التحميل... (تخطي اتصال Firebase)";
+            }
+        }
+    </script>
 </body>
+

@@ -6,6 +6,12 @@
     <title>✨ نيكا-توك | شات أنمي تفاعلي</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
     <style>
         :root {
             --primary: #6a35ff;
@@ -53,60 +59,70 @@
         /* الهيدر */
         header {
             background: var(--gradient);
-            padding: 15px 20px;
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: var(--shadow);
             position: relative;
             z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
         }
 
         .logo-icon {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             background: rgba(255, 255, 255, 0.2);
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: var(--shadow-glow);
+            flex-shrink: 0;
         }
 
         .logo-text {
             font-weight: 700;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             background: linear-gradient(to right, white, var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .header-actions {
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            flex-shrink: 0;
         }
 
         .header-btn {
             background: rgba(255, 255, 255, 0.15);
             border: none;
             color: white;
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            flex-shrink: 0;
         }
 
         .header-btn:hover {
@@ -118,21 +134,24 @@
         .nav-tabs {
             display: flex;
             background: var(--dark-light);
-            padding: 0 20px;
+            padding: 0 10px;
             overflow-x: auto;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            -webkit-overflow-scrolling: touch;
         }
 
         .nav-tab {
-            padding: 15px 20px;
+            padding: 12px 15px;
             white-space: nowrap;
             cursor: pointer;
             border-bottom: 3px solid transparent;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
         .nav-tab.active {
@@ -149,50 +168,56 @@
             display: flex;
             flex: 1;
             overflow: hidden;
+            flex-direction: column;
         }
 
         /* الشريط الجانبي */
         .sidebar {
-            width: 300px;
+            width: 100%;
             background: var(--dark-light);
-            padding: 20px;
+            padding: 15px;
             overflow-y: auto;
-            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
-            display: flex;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: none;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
+            max-height: 40vh;
+        }
+
+        .sidebar.active {
+            display: flex;
         }
 
         .sidebar-section {
             background: var(--card-bg);
-            border-radius: 15px;
-            padding: 18px;
+            border-radius: 12px;
+            padding: 15px;
             box-shadow: var(--shadow);
         }
 
         .section-title {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             color: var(--accent);
         }
 
         .online-users {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .user {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px;
-            border-radius: 10px;
+            gap: 10px;
+            padding: 6px;
+            border-radius: 8px;
             transition: background 0.3s;
         }
 
@@ -201,24 +226,25 @@
         }
 
         .user-avatar {
-            width: 45px;
-            height: 45px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             background: var(--gradient);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1rem;
             color: white;
             position: relative;
+            flex-shrink: 0;
         }
 
         .user-status {
             position: absolute;
             bottom: 2px;
             right: 2px;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: var(--success);
             border: 2px solid var(--dark-light);
@@ -226,31 +252,39 @@
 
         .user-info {
             flex: 1;
+            min-width: 0;
         }
 
         .user-name {
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .user-status-text {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .trending-topics {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         .topic {
             background: rgba(106, 53, 255, 0.2);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
             transition: all 0.3s;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         .topic:hover {
@@ -263,7 +297,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding: 15px;
             overflow: hidden;
         }
 
@@ -271,36 +305,43 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .chat-title {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
         }
 
         .chat-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            flex-shrink: 0;
         }
 
         .chat-btn {
             background: var(--card-bg);
             border: none;
             color: var(--text);
-            padding: 8px 15px;
-            border-radius: 10px;
+            padding: 6px 12px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             font-family: 'Cairo', sans-serif;
+            font-size: 0.85rem;
+            flex-shrink: 0;
         }
 
         .chat-btn:hover {
@@ -311,19 +352,21 @@
         .messages-container {
             flex: 1;
             overflow-y: auto;
-            padding: 10px 5px 10px 10px;
+            padding: 8px 5px 8px 8px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .message {
-            max-width: 80%;
-            padding: 15px;
-            border-radius: 18px;
+            max-width: 85%;
+            padding: 12px;
+            border-radius: 15px;
             position: relative;
             animation: fadeIn 0.3s ease-out;
             box-shadow: var(--shadow);
+            word-wrap: break-word;
         }
 
         @keyframes fadeIn {
@@ -346,27 +389,27 @@
         .message.news {
             align-self: center;
             background: var(--news-msg);
-            max-width: 90%;
+            max-width: 95%;
             text-align: center;
-            border-radius: 12px;
+            border-radius: 10px;
         }
 
         .message-header {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 6px;
+            margin-bottom: 6px;
         }
 
         .message-sender {
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
 
         .message-badge {
-            font-size: 0.7rem;
-            padding: 3px 8px;
-            border-radius: 10px;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 8px;
             background: var(--primary);
             color: white;
         }
@@ -381,18 +424,18 @@
         }
 
         .message-time {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-light);
-            margin-top: 5px;
+            margin-top: 4px;
             text-align: left;
         }
 
         .message-actions {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 8px;
+            left: 8px;
             display: flex;
-            gap: 5px;
+            gap: 4px;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -405,13 +448,13 @@
             background: rgba(0, 0, 0, 0.5);
             border: none;
             color: white;
-            width: 25px;
-            height: 25px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             cursor: pointer;
             transition: background 0.3s;
         }
@@ -424,33 +467,34 @@
         .input-area {
             display: flex;
             background: var(--dark-light);
-            border-radius: 15px;
-            padding: 15px;
-            margin-top: 20px;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 15px;
             box-shadow: var(--shadow);
-            gap: 10px;
+            gap: 8px;
             align-items: flex-end;
         }
 
         .input-tools {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .tool-btn {
             background: transparent;
             border: none;
             color: var(--text-light);
-            font-size: 1.2rem;
-            width: 40px;
-            height: 40px;
+            font-size: 1.1rem;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
+            flex-shrink: 0;
         }
 
         .tool-btn:hover {
@@ -464,13 +508,14 @@
             border: none;
             color: var(--text);
             font-family: 'Cairo', sans-serif;
-            font-size: 1rem;
-            padding: 12px 15px;
-            border-radius: 12px;
+            font-size: 0.9rem;
+            padding: 10px 12px;
+            border-radius: 10px;
             resize: none;
-            max-height: 120px;
-            min-height: 50px;
+            max-height: 100px;
+            min-height: 40px;
             outline: none;
+            line-height: 1.4;
         }
 
         .message-input::placeholder {
@@ -481,16 +526,17 @@
             background: var(--gradient);
             border: none;
             color: white;
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: var(--shadow-glow);
+            flex-shrink: 0;
         }
 
         .send-btn:hover {
@@ -508,16 +554,17 @@
         /* لوحة الإيموجي */
         .emoji-panel {
             display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
             background: var(--dark-light);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
             box-shadow: var(--shadow);
-            max-height: 200px;
+            max-height: 150px;
             overflow-y: auto;
             display: none;
+            -webkit-overflow-scrolling: touch;
         }
 
         .emoji-panel.active {
@@ -525,52 +572,56 @@
         }
 
         .emoji {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             text-align: center;
             cursor: pointer;
             transition: transform 0.2s;
-            padding: 5px;
-            border-radius: 8px;
+            padding: 4px;
+            border-radius: 6px;
         }
 
         .emoji:hover {
-            transform: scale(1.3);
+            transform: scale(1.2);
             background: rgba(255, 255, 255, 0.1);
         }
 
         /* أخبار عاجلة */
         .breaking-news {
             background: linear-gradient(90deg, var(--secondary), var(--primary));
-            padding: 12px 20px;
+            padding: 10px 15px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             overflow: hidden;
             position: relative;
+            flex-wrap: wrap;
         }
 
         .news-label {
             background: rgba(0, 0, 0, 0.3);
-            padding: 5px 12px;
-            border-radius: 20px;
+            padding: 4px 10px;
+            border-radius: 15px;
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             white-space: nowrap;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            flex-shrink: 0;
         }
 
         .news-ticker {
             flex: 1;
             white-space: nowrap;
             overflow: hidden;
+            min-width: 0;
         }
 
         .news-text {
             display: inline-block;
             padding-left: 100%;
             animation: ticker 25s linear infinite;
+            font-size: 0.85rem;
         }
 
         @keyframes ticker {
@@ -590,6 +641,7 @@
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            padding: 15px;
         }
 
         .modal.active {
@@ -598,10 +650,10 @@
 
         .modal-content {
             background: var(--dark-light);
-            border-radius: 20px;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
             box-shadow: var(--shadow);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -610,11 +662,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .modal-title {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--accent);
         }
@@ -623,29 +675,30 @@
             background: none;
             border: none;
             color: var(--text);
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             cursor: pointer;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .form-input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 10px 12px;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+            border-radius: 8px;
             color: var(--text);
             font-family: 'Cairo', sans-serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: all 0.3s;
         }
 
@@ -657,17 +710,17 @@
 
         .form-btn {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: var(--gradient);
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             color: white;
             font-family: 'Cairo', sans-serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .form-btn:hover {
@@ -677,8 +730,8 @@
 
         .form-footer {
             text-align: center;
-            margin-top: 20px;
-            font-size: 0.9rem;
+            margin-top: 15px;
+            font-size: 0.8rem;
             color: var(--text-light);
         }
 
@@ -686,42 +739,14 @@
         .news-panel {
             display: none;
             background: var(--card-bg);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
             box-shadow: var(--shadow);
         }
 
         .news-panel.active {
             display: block;
-        }
-
-        /* التكيف مع الشاشات الصغيرة */
-        @media (max-width: 768px) {
-            .main-container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                max-height: 200px;
-            }
-            
-            .message {
-                max-width: 90%;
-            }
-            
-            .nav-tabs {
-                padding: 0 10px;
-            }
-            
-            .nav-tab {
-                padding: 12px 15px;
-            }
-            
-            .emoji-panel {
-                grid-template-columns: repeat(6, 1fr);
-            }
         }
 
         /* تأثيرات إضافية */
@@ -731,21 +756,21 @@
 
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(106, 53, 255, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(106, 53, 255, 0); }
+            70% { box-shadow: 0 0 0 8px rgba(106, 53, 255, 0); }
             100% { box-shadow: 0 0 0 0 rgba(106, 53, 255, 0); }
         }
 
         .typing-indicator {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 15px;
+            gap: 6px;
+            padding: 8px 12px;
             background: var(--bot-msg);
-            border-radius: 18px;
+            border-radius: 15px;
             align-self: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             max-width: fit-content;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--text-light);
         }
 
@@ -755,8 +780,8 @@
         }
 
         .typing-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background: var(--secondary);
             border-radius: 50%;
             animation: typing 1.4s infinite ease-in-out;
@@ -772,7 +797,106 @@
 
         @keyframes typing {
             0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-5px); }
+            30% { transform: translateY(-3px); }
+        }
+
+        /* زر عرض/إخفاء الشريط الجانبي للجوال */
+        .sidebar-toggle {
+            display: none;
+            background: var(--primary);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            position: fixed;
+            bottom: 80px;
+            left: 15px;
+            z-index: 99;
+            box-shadow: var(--shadow-glow);
+            cursor: pointer;
+        }
+
+        /* تحسينات للشاشات الكبيرة */
+        @media (min-width: 768px) {
+            .main-container {
+                flex-direction: row;
+            }
+            
+            .sidebar {
+                width: 280px;
+                max-height: none;
+                display: flex;
+            }
+            
+            .sidebar-toggle {
+                display: none;
+            }
+            
+            .message {
+                max-width: 70%;
+            }
+            
+            .emoji-panel {
+                grid-template-columns: repeat(8, 1fr);
+                max-height: 180px;
+            }
+        }
+
+        /* تحسينات للشاشات الصغيرة جداً */
+        @media (max-width: 360px) {
+            .nav-tab {
+                padding: 10px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .chat-title {
+                font-size: 1.1rem;
+            }
+            
+            .message {
+                max-width: 90%;
+                padding: 10px;
+            }
+            
+            .header-btn, .send-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            
+            .tool-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+        }
+
+        /* إشعارات */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: var(--error);
+        }
+
+        .notification.warning {
+            background: var(--warning);
         }
     </style>
 </head>
@@ -781,7 +905,7 @@
     <div class="modal" id="loginModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">تسجيل الدخول للمسؤول</h2>
+                <h2 class="modal-title">تسجيل الدخول</h2>
                 <button class="close-modal" id="closeModal">&times;</button>
             </div>
             <form id="loginForm">
@@ -796,10 +920,13 @@
                 <button type="submit" class="form-btn">تسجيل الدخول</button>
             </form>
             <div class="form-footer">
-                <p>لنشر الأخبار، يلزم تسجيل الدخول بحساب المسؤول</p>
+                <p>لتجربة كاملة مع إمكانية نشر الرسائل</p>
             </div>
         </div>
     </div>
+
+    <!-- إشعارات -->
+    <div class="notification" id="notification"></div>
 
     <!-- شريط الأخبار العاجلة -->
     <div class="breaking-news">
@@ -825,14 +952,11 @@
             <button class="header-btn" id="adminBtn" title="نشر خبر جديد">
                 <i class="fas fa-bullhorn"></i>
             </button>
-            <button class="header-btn" title="الإشعارات">
+            <button class="header-btn" id="notificationsBtn" title="الإشعارات">
                 <i class="fas fa-bell"></i>
             </button>
-            <button class="header-btn" title="الإعدادات">
-                <i class="fas fa-cog"></i>
-            </button>
-            <button class="header-btn" title="المستخدمين النشطين">
-                <i class="fas fa-users"></i>
+            <button class="header-btn" id="userProfileBtn" title="الملف الشخصي">
+                <i class="fas fa-user"></i>
             </button>
         </div>
     </header>
@@ -842,72 +966,30 @@
         <div class="nav-tab active" data-tab="general">
             <i class="fas fa-comments"></i> الشات العام
         </div>
-        <div class="nav-tab" data-tab="news">
-            <i class="fas fa-newspaper"></i> أخبار الأنمي
+        <div class="nav-tab" data-tab="anime">
+            <i class="fas fa-film"></i> مناقشة الأنمي
         </div>
         <div class="nav-tab" data-tab="games">
             <i class="fas fa-gamepad"></i> غرفة الألعاب
         </div>
-        <div class="nav-tab" data-tab="shows">
-            <i class="fas fa-video"></i> عروض الأنمي
-        </div>
-        <div class="nav-tab" data-tab="groups">
-            <i class="fas fa-user-friends"></i> مجموعات
-        </div>
-        <div class="nav-tab" data-tab="favorites">
-            <i class="fas fa-star"></i> المفضلة
-        </div>
     </div>
+
+    <!-- زر عرض/إخفاء الشريط الجانبي (للجوال) -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-users"></i>
+    </button>
 
     <!-- المحتوى الرئيسي -->
     <div class="main-container">
         <!-- الشريط الجانبي -->
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
             <div class="sidebar-section">
                 <div class="section-title">
                     <i class="fas fa-users"></i> المستخدمون المتصلون
+                    <span class="pulse" style="width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; margin-right: 8px;"></span>
                 </div>
-                <div class="online-users">
-                    <div class="user">
-                        <div class="user-avatar">
-                            <i class="fas fa-cat"></i>
-                            <div class="user-status"></div>
-                        </div>
-                        <div class="user-info">
-                            <div class="user-name">سارا-تان</div>
-                            <div class="user-status-text">تشاهد Attack on Titan</div>
-                        </div>
-                    </div>
-                    <div class="user">
-                        <div class="user-avatar">
-                            <i class="fas fa-shield-alt"></i>
-                            <div class="user-status"></div>
-                        </div>
-                        <div class="user-info">
-                            <div class="user-name">أنمي-مستر</div>
-                            <div class="user-status-text">يناقش One Piece</div>
-                        </div>
-                    </div>
-                    <div class="user">
-                        <div class="user-avatar">
-                            <i class="fas fa-moon"></i>
-                            <div class="user-status"></div>
-                        </div>
-                        <div class="user-info">
-                            <div class="user-name">نينجا-أكيا</div>
-                            <div class="user-status-text">في غرفة الألعاب</div>
-                        </div>
-                    </div>
-                    <div class="user">
-                        <div class="user-avatar">
-                            <i class="fas fa-robot"></i>
-                            <div class="user-status"></div>
-                        </div>
-                        <div class="user-info">
-                            <div class="user-name">بوت-أنمي</div>
-                            <div class="user-status-text">متاح للمساعدة</div>
-                        </div>
-                    </div>
+                <div class="online-users" id="onlineUsers">
+                    <!-- سيتم ملء هذا القسم من Firebase -->
                 </div>
             </div>
 
@@ -919,7 +1001,6 @@
                     <div class="topic">ناروتو</div>
                     <div class="topic">هجوم العمالقة</div>
                     <div class="topic">ون بيس</div>
-                    <div class="topic">ديدنوت</div>
                     <div class="topic">أنمي 2024</div>
                     <div class="topic">مانغا</div>
                 </div>
@@ -947,14 +1028,14 @@
             <div class="chat-header">
                 <div class="chat-title">
                     <i class="fas fa-hashtag"></i> <span id="activeTabTitle">الشات العام</span>
-                    <span class="pulse" style="width: 10px; height: 10px; background: var(--success); border-radius: 50%; display: inline-block;"></span>
+                    <span class="pulse" style="width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block;"></span>
                 </div>
                 <div class="chat-actions">
-                    <button class="chat-btn">
-                        <i class="fas fa-search"></i> بحث
+                    <button class="chat-btn" id="clearChatBtn">
+                        <i class="fas fa-trash"></i> مسح
                     </button>
-                    <button class="chat-btn">
-                        <i class="fas fa-filter"></i> ترشيح
+                    <button class="chat-btn" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> تحديث
                     </button>
                 </div>
             </div>
@@ -968,13 +1049,13 @@
                     <input type="text" id="newsTitle" class="form-input" placeholder="عنوان الخبر">
                 </div>
                 <div class="form-group">
-                    <textarea id="newsContent" class="form-input" placeholder="محتوى الخبر" rows="3"></textarea>
+                    <textarea id="newsContent" class="form-input" placeholder="محتوى الخبر" rows="2"></textarea>
                 </div>
                 <button class="form-btn" id="publishNewsBtn">نشر الخبر</button>
             </div>
 
             <div class="messages-container" id="messagesContainer">
-                <!-- سيتم إضافة الرسائل هنا ديناميكياً -->
+                <!-- سيتم إضافة الرسائل هنا ديناميكياً من Firebase -->
                 <div class="message news">
                     <div class="message-header">
                         <div class="message-sender">نيكا-توك</div>
@@ -982,6 +1063,16 @@
                     </div>
                     <div class="message-text">مرحباً بالجميع في نيكا-توك! 🎉 هذا الشات مخصص لمحبي الأنمي والمانغا. شاركوا أفكاركم وتناقشوا بحرية!</div>
                     <div class="message-time">الآن</div>
+                </div>
+            </div>
+
+            <!-- مؤشر الكتابة -->
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                <span>شخص ما يكتب...</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
                 </div>
             </div>
 
@@ -994,9 +1085,6 @@
                     <button class="tool-btn" id="emojiBtn" title="إيموجي">
                         <i class="far fa-smile"></i>
                     </button>
-                    <button class="tool-btn" title="إرفاق ملف">
-                        <i class="fas fa-paperclip"></i>
-                    </button>
                 </div>
                 <textarea class="message-input" id="messageInput" placeholder="اكتب رسالتك هنا..."></textarea>
                 <button class="send-btn" id="sendBtn" title="إرسال">
@@ -1007,329 +1095,500 @@
     </div>
 
     <script>
-        // العناصر الرئيسية
-        const messagesContainer = document.getElementById('messagesContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const emojiBtn = document.getElementById('emojiBtn');
-        const emojiPanel = document.getElementById('emojiPanel');
-        const loginModal = document.getElementById('loginModal');
-        const closeModal = document.getElementById('closeModal');
-        const loginForm = document.getElementById('loginForm');
-        const adminBtn = document.getElementById('adminBtn');
-        const newsPanel = document.getElementById('newsPanel');
-        const publishNewsBtn = document.getElementById('publishNewsBtn');
-        const newsTitle = document.getElementById('newsTitle');
-        const newsContent = document.getElementById('newsContent');
-        const newsTicker = document.getElementById('newsTicker');
-        const activeTabTitle = document.getElementById('activeTabTitle');
-        const navTabs = document.querySelectorAll('.nav-tab');
-
-        // بيانات التطبيق
-        const currentUser = {
-            name: localStorage.getItem('userName') || 'مستخدم',
-            avatar: 'fas fa-user',
-            isAdmin: localStorage.getItem('isAdmin') === 'true'
+        // 🔥 إعدادات Firebase - استخدم الإعدادات الصحيحة
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDMFcCvthKNkHUrEbgYY1Uc80KTPpS01M",
+            authDomain: "oraa-slayer-anime.firebaseapp.com",
+            projectId: "oraa-slayer-anime",
+            storageBucket: "oraa-slayer-anime.firebasestorage.app",
+            messagingSenderId: "426607460785",
+            appId: "1:426607460785:web:c8d9844253c9111ad3bd90",
+            measurementId: "G-VNHP64HXD5"
         };
 
-        // بيانات الاعتماد للمسؤول
-        const ADMIN_CREDENTIALS = {
-            email: 'itwix907@gmail.com',
-            password: 'Oraa2026@SlayerAnime'
-        };
-
-        // الأخبار المخزنة
-        let news = JSON.parse(localStorage.getItem('animeNews')) || [];
-
-        // قائمة الإيموجي
-        const emojis = ['😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '😗', '😙', '😚', '🙂', '🤗', '🤩', '🤔', '🤨', '😐', '😑', '😶', '🙄', '😏', '😣', '😥', '😮', '🤐', '😯', '😪', '😫', '😴', '😌', '😛', '😜', '😝', '🤤', '😒', '😓', '😔', '😕', '🙃', '🤑', '😲', '☹️', '🙁', '😖', '😞', '😟', '😤', '😢', '😭', '😦', '😧', '😨', '😩', '🤯', '😬', '😰', '😱', '😳', '🤪', '😵', '😡', '😠', '🤬', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '😇', '🤠', '🤡', '🥳', '🥴', '🥺', '🤥', '🤫', '🤭', '🧐', '🤓', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '👋', '🤚', '🖐️', '✋', '🖖', '👌', '🤏', '✌️', '🤞', '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '👍', '👎', '✊', '👊', '🤛', '🤜', '👏', '🙌', '👐', '🤲', '🤝', '🙏', '✍️', '💅', '🤳', '💪', '🦾', '🦿', '🦵', '🦶', '👂', '🦻', '👃', '🧠', '🦷', '🦴', '👀', '👁️', '👅', '👄', '👶', '🧒', '👦', '👧', '🧑', '👱', '👨', '🧔', '👨‍🦰', '👨‍🦱', '👨‍🦳', '👨‍🦲', '👩', '👩‍🦰', '👩‍🦱', '👩‍🦳', '👩‍🦲', '🧓', '👴', '👵', '🙍', '🙎', '🙅', '🙆', '💁', '🙋', '🧏', '🙇', '🤦', '🤷', '👮', '🕵️', '💂', '👷', '🤴', '👸', '👳', '👲', '🧕', '🤵', '👰', '🤰', '🤱', '👼', '🎅', '🤶', '🦸', '🦹', '🧙', '🧚', '🧛', '🧜', '🧝', '🧞', '🧟', '💆', '💇', '🚶', '🧍', '🧎', '🏃', '💃', '🕺', '🕴️', '👯', '🧖', '🧗', '🤺', '🏇', '⛷️', '🏂', '🏌️', '🏄', '🚣', '🏊', '⛹️', '🏋️', '🚴', '🚵', '🤸', '🤼', '🤽', '🤾', '🤹', '🧘', '🛀', '🛌', '👭', '👫', '👬', '💏', '💑', '👪', '🤳', '💘', '💝', '💖', '💗', '💓', '💞', '💕', '💟', '❣️', '💔', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💋', '👄', '🌹', '🥀', '🌺', '🌷', '💐', '🌸'];
-
-        // تهيئة لوحة الإيموجي
-        function initEmojiPanel() {
-            emojis.forEach(emoji => {
-                const emojiElement = document.createElement('div');
-                emojiElement.className = 'emoji';
-                emojiElement.textContent = emoji;
-                emojiElement.addEventListener('click', () => {
-                    messageInput.value += emoji;
-                    messageInput.focus();
-                });
-                emojiPanel.appendChild(emojiElement);
-            });
+        // ✅ تهيئة Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log('✅ Firebase initialized successfully');
+        } catch (error) {
+            console.log('ℹ️ Firebase already initialized');
         }
 
-        // إظهار/إخفاء لوحة الإيموجي
-        emojiBtn.addEventListener('click', () => {
-            emojiPanel.classList.toggle('active');
-        });
+        const db = firebase.firestore();
+        const auth = firebase.auth();
 
-        // إرسال رسالة
-        function sendMessage() {
-            const text = messageInput.value.trim();
-            if (!text) return;
+        // 🎯 تهيئة التطبيق
+        document.addEventListener('DOMContentLoaded', function() {
+            // العناصر الرئيسية
+            const messagesContainer = document.getElementById('messagesContainer');
+            const messageInput = document.getElementById('messageInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const emojiBtn = document.getElementById('emojiBtn');
+            const emojiPanel = document.getElementById('emojiPanel');
+            const loginModal = document.getElementById('loginModal');
+            const closeModal = document.getElementById('closeModal');
+            const loginForm = document.getElementById('loginForm');
+            const adminBtn = document.getElementById('adminBtn');
+            const newsPanel = document.getElementById('newsPanel');
+            const publishNewsBtn = document.getElementById('publishNewsBtn');
+            const newsTitle = document.getElementById('newsTitle');
+            const newsContent = document.getElementById('newsContent');
+            const newsTicker = document.getElementById('newsTicker');
+            const activeTabTitle = document.getElementById('activeTabTitle');
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const notificationsBtn = document.getElementById('notificationsBtn');
+            const userProfileBtn = document.getElementById('userProfileBtn');
+            const clearChatBtn = document.getElementById('clearChatBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const onlineUsers = document.getElementById('onlineUsers');
+            const notification = document.getElementById('notification');
+            const typingIndicator = document.getElementById('typingIndicator');
 
-            addMessage(currentUser.name, text, 'user');
-            messageInput.value = '';
-            updateSendButton();
-            emojiPanel.classList.remove('active');
-
-            // محاكاة رد البوت بعد فترة
-            setTimeout(() => {
-                const botResponses = [
-                    "أهلاً! شكراً لمشاركتك في النقاش! 😊",
-                    "رأيك مثير للاهتمام! هل لدى الآخرين تعليقات؟",
-                    "أحب هذا الموضوع! هل تريد مناقشة المزيد؟",
-                    "شكراً للمساهمة! هل لدى أحد أفكار أخرى؟",
-                    "هذا يذكرني بمشهد رائع في أنمي... أي أنمي تفضل؟"
-                ];
-                const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
-                addMessage('بوت-أنمي', randomResponse, 'bot');
-            }, 1000 + Math.random() * 2000);
-        }
-
-        // إضافة رسالة إلى الدردشة
-        function addMessage(sender, text, type) {
-            const messageElement = document.createElement('div');
-            messageElement.className = `message ${type}`;
-            
-            const time = new Date().toLocaleTimeString('ar-EG', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: true 
-            });
-            
-            let badge = '';
-            if (type === 'bot') {
-                badge = '<div class="message-badge bot">بوت</div>';
-            } else if (type === 'user' && sender === 'المسؤول') {
-                badge = '<div class="message-badge">مسؤول</div>';
-            } else if (type === 'news') {
-                badge = '<div class="message-badge news">أخبار</div>';
-            }
-            
-            messageElement.innerHTML = `
-                <div class="message-actions">
-                    <button class="message-action" title="رد">
-                        <i class="fas fa-reply"></i>
-                    </button>
-                    <button class="message-action" title="نسخ">
-                        <i class="far fa-copy"></i>
-                    </button>
-                </div>
-                <div class="message-header">
-                    <div class="message-sender">${sender}</div>
-                    ${badge}
-                </div>
-                <div class="message-text">${text}</div>
-                <div class="message-time">${time}</div>
-            `;
-            
-            messagesContainer.appendChild(messageElement);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        // تحديث حالة زر الإرسال
-        function updateSendButton() {
-            sendBtn.disabled = !messageInput.value.trim();
-        }
-
-        // تسجيل الدخول كمسؤول
-        function loginAsAdmin(email, password) {
-            if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
-                currentUser.isAdmin = true;
-                currentUser.name = 'المسؤول';
-                localStorage.setItem('isAdmin', 'true');
-                localStorage.setItem('userName', 'المسؤول');
-                loginModal.classList.remove('active');
-                newsPanel.classList.add('active');
-                addMessage('نظام نيكا-توك', 'تم تسجيل الدخول كمسؤول. يمكنك الآن نشر الأخبار.', 'bot');
-                return true;
-            }
-            return false;
-        }
-
-        // نشر خبر جديد
-        function publishNews() {
-            const title = newsTitle.value.trim();
-            const content = newsContent.value.trim();
-            
-            if (!title || !content) {
-                alert('يرجى ملء جميع الحقول');
-                return;
-            }
-            
-            const newsItem = {
-                id: Date.now(),
-                title,
-                content,
-                date: new Date().toLocaleDateString('ar-EG')
+            // بيانات التطبيق
+            let currentUser = {
+                name: 'زائر',
+                email: '',
+                uid: '',
+                isAdmin: false,
+                isAnonymous: true
             };
-            
-            news.unshift(newsItem);
-            localStorage.setItem('animeNews', JSON.stringify(news));
-            
-            // إضافة الخبر إلى الشات
-            addMessage('نيكا-توك', `📢 ${title}: ${content}`, 'news');
-            
-            // تحديث شريط الأخبار
-            updateNewsTicker();
-            
-            // مسح الحقول
-            newsTitle.value = '';
-            newsContent.value = '';
-            
-            alert('تم نشر الخبر بنجاح!');
-        }
 
-        // تحديث شريط الأخبار
-        function updateNewsTicker() {
-            if (news.length > 0) {
-                const latestNews = news.slice(0, 3).map(item => item.title).join(' | ');
-                newsTicker.textContent = `📢 ${latestNews} | ✨ افتتاح شات نيكا-توك الجديد!`;
-            }
-        }
+            let isTyping = false;
+            let typingTimer;
 
-        // تحميل الأخبار
-        function loadNews() {
-            news.forEach(item => {
-                addMessage('نيكا-توك', `📢 ${item.title}: ${item.content}`, 'news');
-            });
-        }
+            // قائمة الإيموجي
+            const emojis = ['😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '😗', '😙', '😚', '🙂', '🤗', '🤩', '🤔', '🤨', '😐', '😑', '😶', '🙄', '😏', '😣', '😥', '😮', '🤐', '😯', '😪', '😫', '😴', '😌', '😛', '😜', '😝', '🤤', '😒', '😓', '😔', '😕', '🙃', '🤑', '😲', '☹️', '🙁', '😖', '😞', '😟', '😤', '😢', '😭', '😦', '😧', '😨', '😩', '🤯', '😬', '😰', '😱', '😳', '🤪', '😵', '😡', '😠', '🤬', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '😇', '🤠', '🤡', '🥳', '🥴', '🥺', '🤥', '🤫', '🤭', '🧐', '🤓', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'];
 
-        // تغيير التبويب النشط
-        function changeActiveTab(tabName) {
-            navTabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            event.target.classList.add('active');
-            activeTabTitle.textContent = event.target.textContent;
-            
-            // مسح المحادثة وإظهار محتوى التبويب المحدد
-            messagesContainer.innerHTML = '';
-            
-            if (tabName === 'general') {
-                addInitialMessages();
-            } else if (tabName === 'news') {
-                loadNews();
-                if (currentUser.isAdmin) {
-                    newsPanel.classList.add('active');
-                }
-            } else {
-                addMessage('نظام نيكا-توك', `مرحباً بك في قسم ${event.target.textContent}. هذا القسم قيد التطوير.`, 'bot');
-            }
-        }
-
-        // إضافة بعض الرسائل الأولية
-        function addInitialMessages() {
-            const initialMessages = [
-                { sender: 'سارا-تان', text: 'مرحباً بالجميع! من يشاهد أنمي Spy x Family الجديد؟ 🥰', type: 'user' },
-                { sender: 'أنمي-مستر', text: 'أنا أشاهده! أنا أحب الشخصية أنيا، إنها مضحكة جداً 😂', type: 'user' },
-                { sender: 'بوت-أنمي', text: 'Spy x Family هو أحد أكثر الأنميات شعبية هذا الموسم! هل تعلم أن المانغا بيعت أكثر من 25 مليون نسخة؟ 📚', type: 'bot' },
-                { sender: 'نينجا-أكيا', text: 'أيضاً أحب أسلوب الرسم والكوميديا فيه. أنا في انتظار الحلقة الجديدة! 🍿', type: 'user' }
-            ];
-            
-            // إضافة الرسائل مع تأخير لخلق تأثير محادثة حية
-            initialMessages.forEach((msg, index) => {
+            // 🎯 دالة عرض الإشعارات
+            function showNotification(message, type = 'success') {
+                notification.textContent = message;
+                notification.className = 'notification';
+                notification.classList.add(type, 'show');
+                
                 setTimeout(() => {
-                    addMessage(msg.sender, msg.text, msg.type);
-                }, 1000 + index * 1500);
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+
+            // 🎯 تهيئة لوحة الإيموجي
+            function initEmojiPanel() {
+                emojiPanel.innerHTML = '';
+                emojis.forEach(emoji => {
+                    const emojiElement = document.createElement('div');
+                    emojiElement.className = 'emoji';
+                    emojiElement.textContent = emoji;
+                    emojiElement.addEventListener('click', () => {
+                        messageInput.value += emoji;
+                        messageInput.focus();
+                    });
+                    emojiPanel.appendChild(emojiElement);
+                });
+            }
+
+            // 🎯 إظهار/إخفاء لوحة الإيموجي
+            emojiBtn.addEventListener('click', () => {
+                emojiPanel.classList.toggle('active');
             });
-        }
 
-        // تهيئة التطبيق
-        function initApp() {
-            initEmojiPanel();
-            updateSendButton();
-            addInitialMessages();
-            updateNewsTicker();
-            
-            // إذا كان المستخدم مسؤولاً، إظهار لوحة الأخبار
-            if (currentUser.isAdmin) {
-                newsPanel.classList.add('active');
-            }
-            
-            // تحميل الأخبار إذا كانت موجودة
-            if (news.length > 0) {
-                loadNews();
-            }
-        }
+            // 🎯 إرسال رسالة إلى Firebase
+            function sendMessage() {
+                const text = messageInput.value.trim();
+                if (!text || !currentUser.uid) return;
 
-        // أحداث الإدخال
-        messageInput.addEventListener('input', updateSendButton);
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
+                const messageData = {
+                    text: text,
+                    sender: currentUser.name,
+                    senderId: currentUser.uid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    type: 'user'
+                };
+
+                db.collection('messages').add(messageData)
+                    .then(() => {
+                        messageInput.value = '';
+                        updateSendButton();
+                        emojiPanel.classList.remove('active');
+                        showNotification('✅ تم إرسال الرسالة بنجاح');
+                    })
+                    .catch((error) => {
+                        console.error('Error sending message: ', error);
+                        showNotification('❌ حدث خطأ في إرسال الرسالة', 'error');
+                    });
+            }
+
+            // 🎯 الاستماع للرسائل الجديدة من Firebase
+            function listenForMessages() {
+                db.collection('messages')
+                    .orderBy('timestamp', 'asc')
+                    .onSnapshot((snapshot) => {
+                        messagesContainer.innerHTML = '';
+                        snapshot.forEach((doc) => {
+                            const message = doc.data();
+                            addMessageToChat(message);
+                        });
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    });
+            }
+
+            // 🎯 إضافة رسالة إلى الدردشة
+            function addMessageToChat(message) {
+                const messageElement = document.createElement('div');
+                
+                let messageType = 'bot';
+                if (message.type === 'user') {
+                    messageType = message.senderId === currentUser.uid ? 'user' : 'bot';
+                } else if (message.type === 'news') {
+                    messageType = 'news';
+                }
+                
+                messageElement.className = `message ${messageType}`;
+                
+                const time = message.timestamp ? 
+                    new Date(message.timestamp.toDate()).toLocaleTimeString('ar-EG', { 
+                        hour: '2-digit', 
+                        minute: '2-digit',
+                        hour12: true 
+                    }) : 'الآن';
+                
+                let badge = '';
+                if (messageType === 'bot' && message.sender !== currentUser.name) {
+                    badge = '<div class="message-badge bot">مستخدم</div>';
+                } else if (messageType === 'news') {
+                    badge = '<div class="message-badge news">أخبار</div>';
+                } else if (message.sender === 'المسؤول') {
+                    badge = '<div class="message-badge">مسؤول</div>';
+                }
+                
+                messageElement.innerHTML = `
+                    <div class="message-header">
+                        <div class="message-sender">${message.sender}</div>
+                        ${badge}
+                    </div>
+                    <div class="message-text">${message.text}</div>
+                    <div class="message-time">${time}</div>
+                `;
+                
+                messagesContainer.appendChild(messageElement);
+            }
+
+            // 🎯 تحديث حالة زر الإرسال
+            function updateSendButton() {
+                sendBtn.disabled = !messageInput.value.trim() || !currentUser.uid;
+            }
+
+            // 🎯 إدارة الكتابة
+            function handleTyping() {
+                if (!isTyping) {
+                    isTyping = true;
+                    // هنا يمكن إرسال حالة الكتابة إلى Firebase
+                }
+                
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(() => {
+                    isTyping = false;
+                    // إيقاف مؤشر الكتابة
+                }, 1000);
+            }
+
+            // 🎯 تسجيل الدخول كزائر (مُحسَّن)
+            function loginAsGuest() {
+                auth.signInAnonymously()
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                        currentUser = {
+                            name: `زائر_${user.uid.substring(0, 6)}`,
+                            email: '',
+                            uid: user.uid,
+                            isAdmin: false,
+                            isAnonymous: true
+                        };
+                        
+                        showNotification(`🎉 مرحباً ${currentUser.name}! تم التسجيل بنجاح`);
+                        
+                        // إضافة رسالة ترحيب
+                        const welcomeMessage = {
+                            text: `مرحباً ${currentUser.name}! يمكنك المشاركة في الدردشة الآن.`,
+                            sender: 'نظام نيكا-توك',
+                            timestamp: new Date(),
+                            type: 'bot'
+                        };
+                        addMessageToChat(welcomeMessage);
+                    })
+                    .catch((error) => {
+                        console.error('Anonymous login error:', error);
+                        showNotification('❌ فشل التسجيل كزائر', 'error');
+                        
+                        // الحل البديل: استخدام مستخدم محلي
+                        setupLocalUser();
+                    });
+            }
+
+            // 🎯 إعداد مستخدم محلي (بديل)
+            function setupLocalUser() {
+                currentUser = {
+                    name: `زائر_${Math.floor(1000 + Math.random() * 9000)}`,
+                    email: '',
+                    uid: `local_${Date.now()}`,
+                    isAdmin: false,
+                    isAnonymous: true
+                };
+                
+                showNotification(`🔶 مرحباً ${currentUser.name}! (وضع محلي)`);
+                
+                const welcomeMessage = {
+                    text: `مرحباً ${currentUser.name}! أنت في الوضع المحلي.`,
+                    sender: 'نظام نيكا-توك',
+                    timestamp: new Date(),
+                    type: 'bot'
+                };
+                addMessageToChat(welcomeMessage);
+            }
+
+            // 🎯 تسجيل الدخول بالبريد
+            function loginUser(email, password) {
+                auth.signInWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                        currentUser = {
+                            name: user.displayName || user.email.split('@')[0],
+                            email: user.email,
+                            uid: user.uid,
+                            isAdmin: user.email === 'admin@nika-tok.com',
+                            isAnonymous: false
+                        };
+                        
+                        loginModal.classList.remove('active');
+                        if (currentUser.isAdmin) {
+                            newsPanel.classList.add('active');
+                            showNotification('👑 تم التسجيل كمسؤول');
+                        } else {
+                            showNotification('✅ تم تسجيل الدخول بنجاح');
+                        }
+                        
+                        const welcomeMessage = {
+                            text: `مرحباً ${currentUser.name}! تم تسجيل الدخول بنجاح.`,
+                            sender: 'نظام نيكا-توك',
+                            timestamp: new Date(),
+                            type: 'bot'
+                        };
+                        addMessageToChat(welcomeMessage);
+                    })
+                    .catch((error) => {
+                        console.error('Login error:', error);
+                        showNotification('❌ فشل تسجيل الدخول', 'error');
+                    });
+            }
+
+            // 🎯 نشر خبر جديد
+            function publishNews() {
+                const title = newsTitle.value.trim();
+                const content = newsContent.value.trim();
+                
+                if (!title || !content) {
+                    showNotification('⚠️ يرجى ملء جميع الحقول', 'warning');
+                    return;
+                }
+                
+                if (!currentUser.isAdmin) {
+                    showNotification('❌ ليست لديك صلاحية نشر الأخبار', 'error');
+                    return;
+                }
+                
+                const newsData = {
+                    text: `📢 ${title}: ${content}`,
+                    sender: 'نيكا-توك',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    type: 'news'
+                };
+                
+                db.collection('messages').add(newsData)
+                    .then(() => {
+                        newsTitle.value = '';
+                        newsContent.value = '';
+                        showNotification('📢 تم نشر الخبر بنجاح!');
+                    })
+                    .catch((error) => {
+                        console.error('Error publishing news: ', error);
+                        showNotification('❌ حدث خطأ في نشر الخبر', 'error');
+                    });
+            }
+
+            // 🎯 تحديث شريط الأخبار
+            function updateNewsTicker() {
+                // يمكن تطوير هذه الوظيفة لسحب الأخبار من Firebase
+                const newsItems = [
+                    '✨ افتتاح شات نيكا-توك الجديد!',
+                    '🎉 مسابقة أفضل كوزبلاي هذا الأسبوع',
+                    '📢 إعلان عن حلقة خاصة لأنمي Demon Slayer',
+                    '🔥 نقاش حي: أفضل أنمي في 2024'
+                ];
+                newsTicker.textContent = newsItems.join(' | ');
+            }
+
+            // 🎯 تغيير التبويب النشط
+            function changeActiveTab(tabName) {
+                navTabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                event.target.classList.add('active');
+                activeTabTitle.textContent = event.target.textContent;
+                
+                if (tabName === 'general') {
+                    newsPanel.style.display = currentUser.isAdmin ? 'block' : 'none';
+                } else {
+                    newsPanel.style.display = 'none';
+                    showNotification(`🔹 تم التبديل إلى ${event.target.textContent}`);
+                }
+            }
+
+            // 🎯 مسح الدردشة
+            function clearChat() {
+                if (!currentUser.isAdmin) {
+                    showNotification('❌ ليست لديك صلاحية مسح الدردشة', 'error');
+                    return;
+                }
+                
+                if (confirm('هل أنت متأكد من رغبتك في مسح كل الرسائل؟')) {
+                    messagesContainer.innerHTML = '';
+                    
+                    const systemMessage = {
+                        text: 'تم مسح الدردشة بواسطة المسؤول.',
+                        sender: 'نظام نيكا-توك',
+                        timestamp: new Date(),
+                        type: 'bot'
+                    };
+                    addMessageToChat(systemMessage);
+                    showNotification('🗑️ تم مسح الدردشة');
+                }
+            }
+
+            // 🎯 إدارة المستخدمين المتصلين
+            function manageOnlineUsers() {
+                const users = [
+                    { name: 'سارا-تان', status: 'تشاهد Attack on Titan' },
+                    { name: 'أنمي-مستر', status: 'يناقش One Piece' },
+                    { name: 'نينجا-أكيا', status: 'في غرفة الألعاب' },
+                    { name: currentUser.name, status: 'متصل الآن' }
+                ];
+                
+                onlineUsers.innerHTML = '';
+                users.forEach(user => {
+                    const userElement = document.createElement('div');
+                    userElement.className = 'user';
+                    userElement.innerHTML = `
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                            <div class="user-status"></div>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">${user.name}</div>
+                            <div class="user-status-text">${user.status}</div>
+                        </div>
+                    `;
+                    onlineUsers.appendChild(userElement);
+                });
+            }
+
+            // 🎯 تحديث الصفحة
+            function refreshPage() {
+                showNotification('🔄 جاري تحديث البيانات...');
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+
+            // 🎯 تهيئة التطبيق
+            function initApp() {
+                initEmojiPanel();
+                updateSendButton();
+                updateNewsTicker();
+                manageOnlineUsers();
+                
+                // محاولة الدخول تلقائياً كزائر
+                loginAsGuest();
+                
+                // الاستماع للرسائل
+                listenForMessages();
+
+                showNotification('🚀 تطبيق نيكا-توك جاهز للاستخدام!');
+            }
+
+            // 🎯 أحداث الإدخال
+            messageInput.addEventListener('input', () => {
+                updateSendButton();
+                handleTyping();
+            });
+
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            sendBtn.addEventListener('click', sendMessage);
+
+            // 🎯 أحداث التسجيل ونشر الأخبار
+            adminBtn.addEventListener('click', () => {
+                if (currentUser.isAdmin) {
+                    newsPanel.classList.toggle('active');
+                } else {
+                    loginModal.classList.add('active');
+                }
+            });
+
+            closeModal.addEventListener('click', () => {
+                loginModal.classList.remove('active');
+            });
+
+            loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                sendMessage();
-            }
-        });
-        sendBtn.addEventListener('click', sendMessage);
-
-        // أحداث التسجيل ونشر الأخبار
-        adminBtn.addEventListener('click', () => {
-            if (currentUser.isAdmin) {
-                newsPanel.classList.toggle('active');
-            } else {
-                loginModal.classList.add('active');
-            }
-        });
-
-        closeModal.addEventListener('click', () => {
-            loginModal.classList.remove('active');
-        });
-
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            if (loginAsAdmin(email, password)) {
-                alert('تم تسجيل الدخول بنجاح!');
-            } else {
-                alert('بيانات الاعتماد غير صحيحة!');
-            }
-        });
-
-        publishNewsBtn.addEventListener('click', publishNews);
-
-        // أحداث التبويبات
-        navTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                changeActiveTab(tab.dataset.tab);
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                loginUser(email, password);
             });
-        });
 
-        // بدء التطبيق عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', initApp);
+            publishNewsBtn.addEventListener('click', publishNews);
+
+            // 🎯 أحداث التبويبات
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    changeActiveTab(tab.dataset.tab);
+                });
+            });
+
+            // 🎯 أحداث الأزرار الإضافية
+            notificationsBtn.addEventListener('click', () => {
+                showNotification('🔔 لا توجد إشعارات جديدة');
+            });
+
+            userProfileBtn.addEventListener('click', () => {
+                loginModal.classList.add('active');
+            });
+
+            clearChatBtn.addEventListener('click', clearChat);
+            refreshBtn.addEventListener('click', refreshPage);
+
+            // 🎯 حدث زر الشريط الجانبي للجوال
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+
+            // 🎯 إغلاق الشريط الجانبي عند النقر خارجَه (للجوال)
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth < 768 && 
+                    !sidebar.contains(e.target) && 
+                    !sidebarToggle.contains(e.target) &&
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // 🚀 بدء التطبيق عند تحميل الصفحة
+            initApp();
+        });
     </script>
-    <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-    
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-        apiKey: "AIzaSyAW2SN4-a_8SBCbCHelc2sBkvPAXywYDy0",
-        authDomain: "oraaslayer.firebaseapp.com",
-        projectId: "oraaslayer",
-        storageBucket: "oraaslayer.firebasestorage.app",
-        messagingSenderId: "349117618057",
-        appId: "1:349117618057:web:dba5e21031d409a1143358",
-        measurementId: "G-3LKYCN0YK2"
-    };
-    
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-</script>
-<script type="module">
-    import { app, auth, db } from './firebase-init.js';
-    
-    // مثال: اختبار الاتصال بـ Firebase
-    console.log("Firebase loaded:", app, auth, db);
-</script>
 </body>
-</html>
