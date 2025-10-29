@@ -14,10 +14,10 @@
   --secondary-color: #FF7BA9;
   --accent-color: #5FD8FF;
   --bg-dark: #0F0F25;
-  --bg-card: rgba(26, 26, 60, 0.7);
+  --bg-card: rgba(26, 26, 60, 0.9);
   --text-light: #FFFFFF;
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-bg: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.25);
   --success-color: #3DD8A9;
   --warning-color: #FFC14D;
   --error-color: #FF6B82;
@@ -27,6 +27,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -37,7 +38,8 @@ body {
   background-image: 
     radial-gradient(circle at 20% 80%, rgba(139, 123, 255, 0.15) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(255, 123, 169, 0.15) 0%, transparent 50%);
-  padding-bottom: 90px;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 /* شاشة التحميل */
@@ -71,9 +73,13 @@ body {
   100% { transform: rotate(360deg); }
 }
 
+.loading-screen p {
+  color: var(--text-light);
+  font-size: 1.1rem;
+}
+
 /* شاشة تسجيل الدخول */
 .login-required {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -81,6 +87,7 @@ body {
   height: 100%;
   background: var(--bg-dark);
   z-index: 9998;
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -96,20 +103,49 @@ body {
   font-size: 4rem;
   color: var(--primary-color);
   margin-bottom: 20px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .login-required h2 {
   font-size: 1.8rem;
   margin-bottom: 15px;
   color: var(--text-light);
+  font-weight: 700;
 }
 
 .login-required p {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 30px;
   font-size: 1.1rem;
   max-width: 400px;
   line-height: 1.6;
+}
+
+.login-required .btn {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  border-radius: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Cairo', sans-serif;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.login-required .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(139, 123, 255, 0.4);
 }
 
 /* الهيدر */
@@ -117,7 +153,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(30, 30, 60, 0.8);
+  background: rgba(30, 30, 60, 0.95);
   backdrop-filter: blur(20px);
   padding: 15px 20px;
   border-bottom: 1px solid var(--glass-border);
@@ -140,14 +176,14 @@ body {
 
 .header-actions {
   display: flex;
-  gap: 15px;
+  gap: 12px;
 }
 
 .header-btn {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   color: var(--text-light);
-  padding: 10px 16px;
+  padding: 10px 15px;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -156,6 +192,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
 }
 
 .header-btn:hover {
@@ -165,7 +202,7 @@ body {
 
 /* غلاف الصفحة */
 .cover {
-  height: 200px;
+  height: 180px;
   background: linear-gradient(135deg, rgba(139, 123, 255, 0.3), rgba(255, 123, 169, 0.3)), 
               url('https://i.ibb.co/JrFz4b2/anime-banner.jpg') center/cover;
   position: relative;
@@ -176,7 +213,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 60%, var(--bg-dark) 100%);
+  background: linear-gradient(180deg, transparent 50%, var(--bg-dark) 100%);
 }
 
 /* الصندوق الرئيسي */
@@ -184,8 +221,7 @@ body {
   background: var(--bg-card);
   backdrop-filter: blur(20px);
   border-radius: 20px;
-  max-width: 100%;
-  margin: -80px 15px 30px;
+  margin: -70px 15px 25px;
   padding: 25px 20px;
   text-align: center;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
@@ -196,26 +232,32 @@ body {
 
 /* الصورة الشخصية */
 .profile-img {
-  width: 120px;
-  height: 120px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   border: 4px solid var(--primary-color);
   object-fit: cover;
-  margin-top: -80px;
+  margin-top: -70px;
   background: var(--bg-card);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   position: relative;
   z-index: 20;
+  transition: all 0.3s ease;
+}
+
+.profile-img:hover {
+  transform: scale(1.05);
+  border-color: var(--secondary-color);
 }
 
 /* الاسم والتوثيق */
 .username {
   margin-top: 20px;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-weight: 700;
   flex-wrap: wrap;
 }
@@ -223,7 +265,7 @@ body {
 .verified {
   color: var(--secondary-color);
   animation: pulse 2s infinite alternate;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   filter: drop-shadow(0 0 8px var(--secondary-color));
   display: none;
 }
@@ -235,24 +277,29 @@ body {
 
 .about {
   color: rgba(255, 255, 255, 0.8);
-  font-size: 1rem;
+  font-size: 0.95rem;
   margin-top: 10px;
-  padding: 0 15px;
+  padding: 0 10px;
   line-height: 1.5;
+  max-height: 3em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 /* الإحصائيات */
 .stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+  gap: 12px;
   margin-top: 25px;
 }
 
 .stat {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
-  padding: 20px 15px;
+  padding: 18px 12px;
   border-radius: 16px;
   border: 1px solid var(--glass-border);
   transition: all 0.3s ease;
@@ -270,9 +317,14 @@ body {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
 }
 
+.stat:hover {
+  transform: translateY(-3px);
+  background: rgba(139, 123, 255, 0.2);
+}
+
 .stat strong {
   display: block;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -280,7 +332,7 @@ body {
 }
 
 .stat span {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 5px;
   display: block;
@@ -290,7 +342,7 @@ body {
 .btns {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 10px;
   margin-top: 25px;
 }
 
@@ -298,7 +350,7 @@ body {
   background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
   border: none;
   color: white;
-  padding: 14px 16px;
+  padding: 14px 12px;
   border-radius: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -308,9 +360,10 @@ body {
   justify-content: center;
   gap: 8px;
   font-family: 'Cairo', sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   position: relative;
   overflow: hidden;
+  min-height: 50px;
 }
 
 .btn:hover {
@@ -318,8 +371,18 @@ body {
   box-shadow: 0 8px 20px rgba(139, 123, 255, 0.4);
 }
 
+.btn:active {
+  transform: translateY(0);
+}
+
 .btn i {
-  font-size: 1rem;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.btn span {
+  font-size: 0.8rem;
+  line-height: 1.2;
 }
 
 /* أقسام المحتوى */
@@ -328,7 +391,7 @@ body {
 }
 
 .section-title {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   margin-bottom: 20px;
   color: var(--primary-color);
   display: flex;
@@ -347,28 +410,19 @@ body {
 .anime-list {
   display: flex;
   overflow-x: auto;
-  gap: 15px;
+  gap: 12px;
   padding: 10px 5px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary-color) transparent;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
 }
 
 .anime-list::-webkit-scrollbar {
-  height: 6px;
-}
-
-.anime-list::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 10px;
-}
-
-.anime-list::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  border-radius: 10px;
+  display: none;
 }
 
 .anime-card {
-  min-width: 120px;
+  min-width: 110px;
   text-align: center;
   transition: all 0.4s ease;
   background: var(--bg-card);
@@ -377,6 +431,7 @@ body {
   border: 1px solid var(--glass-border);
   position: relative;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 .anime-card::before {
@@ -396,11 +451,12 @@ body {
 }
 
 .anime-card img {
-  width: 120px;
-  height: 170px;
+  width: 110px;
+  height: 150px;
   object-fit: cover;
   background: var(--bg-dark);
   transition: transform 0.4s ease;
+  display: block;
 }
 
 .anime-card:hover {
@@ -408,19 +464,28 @@ body {
   box-shadow: 0 10px 25px rgba(139, 123, 255, 0.3);
 }
 
+.anime-card:hover img {
+  transform: scale(1.05);
+}
+
 .anime-card p {
-  padding: 10px 6px;
-  font-size: 0.85rem;
+  padding: 10px 5px;
+  font-size: 0.8rem;
   font-weight: 600;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   margin: 0;
+  line-height: 1.2;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* الأوسمة */
 .badges {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+  gap: 12px;
 }
 
 .badge {
@@ -428,11 +493,12 @@ body {
   backdrop-filter: blur(10px);
   border-radius: 14px;
   text-align: center;
-  padding: 20px 12px;
+  padding: 18px 10px;
   transition: all 0.4s ease;
   border: 1px solid var(--glass-border);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .badge:hover {
@@ -442,27 +508,29 @@ body {
 }
 
 .badge i {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   display: block;
 }
 
 .badge p {
   font-weight: 600;
   color: var(--text-light);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  line-height: 1.2;
 }
 
 /* الفوتر */
 footer {
   text-align: center;
   color: rgba(255, 255, 255, 0.6);
-  margin-top: 40px;
+  margin: 40px 15px 80px;
   font-size: 0.85rem;
-  padding: 0 15px;
+  padding: 20px 0;
+  border-top: 1px solid var(--glass-border);
 }
 
 /* زر الرئيسية */
@@ -473,7 +541,7 @@ footer {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   border: none;
   border-radius: 50px;
-  padding: 14px 22px;
+  padding: 14px 20px;
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -485,6 +553,7 @@ footer {
   gap: 8px;
   font-family: 'Cairo', sans-serif;
   font-size: 0.9rem;
+  text-decoration: none;
 }
 
 .btn-home:hover {
@@ -502,13 +571,13 @@ footer {
   backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   color: white;
-  padding: 15px 20px;
+  padding: 15px 18px;
   border-radius: 14px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   z-index: 1000;
-  transform: translateY(-100%);
+  transform: translateY(-100px);
   opacity: 0;
-  transition: all 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -521,6 +590,7 @@ footer {
 
 .notification i {
   font-size: 1.2rem;
+  flex-shrink: 0;
 }
 
 .notification.success i {
@@ -535,11 +605,23 @@ footer {
   color: var(--warning-color);
 }
 
+.notification.info i {
+  color: var(--accent-color);
+}
+
+.notification span {
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
 /* النافذة المنبثقة */
 .modal-overlay {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(10px);
   z-index: 2000;
   display: none;
@@ -559,10 +641,10 @@ footer {
   background: var(--bg-card);
   backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
-  padding: 25px;
+  padding: 25px 20px;
   border-radius: 18px;
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
   text-align: right;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
   transform: scale(0.9);
@@ -585,7 +667,7 @@ footer {
 
 .modal-input {
   width: 100%;
-  padding: 14px 18px;
+  padding: 14px 16px;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: 12px;
@@ -594,10 +676,11 @@ footer {
   font-size: 1rem;
   margin-bottom: 20px;
   transition: all 0.3s ease;
+  border: none;
+  outline: none;
 }
 
 .modal-input:focus {
-  outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(139, 123, 255, 0.2);
 }
@@ -642,16 +725,75 @@ footer {
 }
 
 /* تحسينات للشاشات المتوسطة */
+@media (min-width: 400px) {
+  .profile-box {
+    margin: -70px 20px 25px;
+    padding: 25px;
+  }
+  
+  .profile-img {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .username {
+    font-size: 1.6rem;
+  }
+  
+  .about {
+    font-size: 1rem;
+  }
+  
+  .stats {
+    gap: 15px;
+  }
+  
+  .stat {
+    padding: 20px 15px;
+  }
+  
+  .stat strong {
+    font-size: 1.5rem;
+  }
+  
+  .btns {
+    gap: 12px;
+  }
+  
+  .btn {
+    padding: 14px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .anime-card {
+    min-width: 120px;
+  }
+  
+  .anime-card img {
+    width: 120px;
+    height: 160px;
+  }
+  
+  .badges {
+    gap: 15px;
+  }
+  
+  .badge {
+    padding: 20px 12px;
+  }
+}
+
 @media (min-width: 768px) {
   .profile-box {
     margin: -80px auto 30px;
-    max-width: 700px;
+    max-width: 600px;
     padding: 30px;
   }
   
   .profile-img {
     width: 140px;
     height: 140px;
+    margin-top: -80px;
   }
   
   .username {
@@ -670,7 +812,7 @@ footer {
   
   .section {
     margin: 40px auto;
-    max-width: 700px;
+    max-width: 600px;
   }
   
   .badges {
@@ -686,15 +828,11 @@ footer {
 
 @media (min-width: 1024px) {
   .profile-box {
-    max-width: 800px;
+    max-width: 700px;
   }
   
   .section {
-    max-width: 800px;
-  }
-  
-  .badges {
-    grid-template-columns: repeat(3, 1fr);
+    max-width: 700px;
   }
   
   .btns {
@@ -705,7 +843,7 @@ footer {
 /* تحسينات خاصة للهواتف الأفقية */
 @media (max-height: 600px) and (orientation: landscape) {
   .cover {
-    height: 150px;
+    height: 140px;
   }
   
   .profile-box {
@@ -714,29 +852,76 @@ footer {
   }
   
   .profile-img {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     margin-top: -60px;
   }
   
   .username {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     margin-top: 15px;
   }
   
   .stats {
     margin-top: 15px;
+    gap: 10px;
+  }
+  
+  .stat {
+    padding: 15px 10px;
+  }
+  
+  .btns {
+    margin-top: 20px;
+    gap: 8px;
+  }
+  
+  .btn {
+    padding: 12px 8px;
+    font-size: 0.8rem;
+    min-height: 45px;
   }
 }
 
 /* تحسينات للشاشات الكبيرة جداً */
 @media (min-width: 1400px) {
   .profile-box {
-    max-width: 900px;
+    max-width: 800px;
   }
   
   .section {
-    max-width: 900px;
+    max-width: 800px;
+  }
+}
+
+/* تحسينات الأداء والتفاعل */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* تحسينات خاصة لـ iOS */
+@supports (-webkit-touch-callout: none) {
+  .btn, .header-btn, .modal-btn {
+    cursor: default;
+  }
+  
+  input, textarea {
+    font-size: 16px; /* منع التكبير في iOS */
+  }
+}
+
+/* تحسينات للأجهزة التي لا تدعم hover */
+@media (hover: none) {
+  .btn:hover, .stat:hover, .badge:hover, .anime-card:hover {
+    transform: none;
+  }
+  
+  .btn:active, .stat:active, .badge:active, .anime-card:active {
+    transform: scale(0.95);
   }
 }
 </style>
@@ -754,9 +939,9 @@ footer {
   <div class="icon">🔒</div>
   <h2>تسجيل الدخول مطلوب</h2>
   <p>يجب عليك تسجيل الدخول للوصول إلى صفحة البروفايل الخاصة بك وتعديل بياناتك الشخصية</p>
-  <button class="btn" onclick="location.href='login.html'">
+  <a href="login.html" class="btn">
     <i class="fa-solid fa-right-to-bracket"></i>تسجيل الدخول
-  </button>
+  </a>
 </div>
 
 <!-- المحتوى الرئيسي -->
@@ -769,7 +954,7 @@ footer {
         <i class="fa-solid fa-house"></i>الرئيسية
       </button>
       <button class="header-btn" id="logoutBtn">
-        <i class="fa-solid fa-right-from-bracket"></i>تسجيل خروج
+        <i class="fa-solid fa-right-from-bracket"></i>خروج
       </button>
     </div>
   </header>
@@ -794,11 +979,26 @@ footer {
     </div>
 
     <div class="btns">
-      <button class="btn" id="editName"><i class="fa-solid fa-user-pen"></i>تعديل الاسم</button>
-      <button class="btn" id="editAbout"><i class="fa-solid fa-comment-dots"></i>تعديل النبذة</button>
-      <button class="btn" id="changeImg"><i class="fa-solid fa-image"></i>تغيير الصورة</button>
-      <button class="btn" id="changeCover"><i class="fa-solid fa-panorama"></i>تغيير الغلاف</button>
-      <button class="btn" id="verifyBtn"><i class="fa-solid fa-shield-halved"></i>التفعيل المميز</button>
+      <button class="btn" id="editName">
+        <i class="fa-solid fa-user-pen"></i>
+        <span>تعديل الاسم</span>
+      </button>
+      <button class="btn" id="editAbout">
+        <i class="fa-solid fa-comment-dots"></i>
+        <span>تعديل النبذة</span>
+      </button>
+      <button class="btn" id="changeImg">
+        <i class="fa-solid fa-image"></i>
+        <span>تغيير الصورة</span>
+      </button>
+      <button class="btn" id="changeCover">
+        <i class="fa-solid fa-panorama"></i>
+        <span>تغيير الغلاف</span>
+      </button>
+      <button class="btn" id="verifyBtn">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>التفعيل المميز</span>
+      </button>
     </div>
   </div>
 
@@ -825,9 +1025,9 @@ footer {
 
   <footer>© 2025 OraaSlayer • صنع بكل حب 💜</footer>
 
-  <button class="btn-home" onclick="location.href='index.html'">
+  <a href="index.html" class="btn-home">
     <i class="fa-solid fa-house"></i> الرئيسية
-  </button>
+  </a>
 </div>
 
 <!-- الإشعار -->
@@ -850,6 +1050,7 @@ footer {
 
 <!-- Firebase SDK -->
 <script type="module">
+  // استيراد مكتبات Firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { 
     getAuth, 
@@ -893,7 +1094,6 @@ footer {
   const loadingScreen = document.getElementById('loadingScreen');
   const loginRequired = document.getElementById('loginRequired');
   const mainContent = document.getElementById('mainContent');
-  const username = document.getElementById('username');
   const nameText = document.getElementById('nameText');
   const about = document.getElementById('about');
   const profileImg = document.getElementById('profileImg');
@@ -919,22 +1119,22 @@ footer {
     { 
       title: "هجوم العمالقة", 
       img: "https://cdn.myanimelist.net/images/anime/10/47347.jpg",
-      backupImg: "https://placehold.co/120x170/1a1a3a/8B7BFF?text=AOT"
+      backupImg: "https://placehold.co/120x160/1a1a3a/8B7BFF?text=AOT"
     },
     { 
       title: "قاتل الشياطين", 
       img: "https://cdn.myanimelist.net/images/anime/1286/99889.jpg",
-      backupImg: "https://placehold.co/120x170/1a1a3a/FF7BA9?text=KNY"
+      backupImg: "https://placehold.co/120x160/1a1a3a/FF7BA9?text=KNY"
     },
     { 
       title: "ون بيس", 
       img: "https://cdn.myanimelist.net/images/anime/6/73245.jpg",
-      backupImg: "https://placehold.co/120x170/1a1a3a/5FD8FF?text=OP"
+      backupImg: "https://placehold.co/120x160/1a1a3a/5FD8FF?text=OP"
     },
     { 
       title: "مذكرة الموت", 
       img: "https://cdn.myanimelist.net/images/anime/9/9453.jpg",
-      backupImg: "https://placehold.co/120x170/1a1a3a/8B7BFF?text=DN"
+      backupImg: "https://placehold.co/120x160/1a1a3a/8B7BFF?text=DN"
     }
   ];
 
@@ -952,11 +1152,15 @@ footer {
   // دوال النافذة المنبثقة
   function showModal(title, defaultValue, callback, inputType = 'text') {
     modalTitle.innerHTML = `<i class="fa-solid fa-pen"></i>${title}`;
-    modalInput.value = defaultValue;
+    modalInput.value = defaultValue || '';
     modalInput.type = inputType;
     modalCallback = callback;
     modalOverlay.classList.add('show');
-    modalInput.focus();
+    
+    // تركيز على حقل الإدخال بعد تأخير بسيط
+    setTimeout(() => {
+      modalInput.focus();
+    }, 300);
   }
 
   function hideModal() {
@@ -965,38 +1169,52 @@ footer {
     modalInput.type = 'text';
   }
 
-  modalConfirm.onclick = () => {
+  // إعداد معالجات الأحداث للنافذة المنبثقة
+  modalConfirm.addEventListener('click', () => {
     if (modalCallback && modalInput.value.trim() !== '') {
-      modalCallback(modalInput.value);
+      modalCallback(modalInput.value.trim());
+    } else if (modalInput.value.trim() === '') {
+      showNotification('يرجى إدخال قيمة صحيحة', 'warning');
+      return;
     }
     hideModal();
-  };
+  });
 
-  modalCancel.onclick = hideModal;
+  modalCancel.addEventListener('click', hideModal);
 
-  modalOverlay.onclick = (e) => {
+  modalOverlay.addEventListener('click', (e) => {
     if (e.target === modalOverlay) {
       hideModal();
     }
-  };
+  });
+
+  // إغلاق النافذة بالضغط على Esc
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalOverlay.classList.contains('show')) {
+      hideModal();
+    }
+  });
 
   // تحميل بيانات المستخدم من Firebase
   async function loadUserData(user) {
     try {
+      console.log('جاري تحميل بيانات المستخدم:', user.uid);
+      
       const userDoc = await getDoc(doc(db, "users", user.uid));
       
       if (userDoc.exists()) {
         const userData = userDoc.data();
+        console.log('بيانات المستخدم:', userData);
         
         // تحديث واجهة المستخدم
         nameText.textContent = user.displayName || userData.username || 'مستخدم';
         about.textContent = userData.about || 'عاشق الأنمي ✨ | مستكشف العوالم الخيالية 🚀 | محب للتحديات 🎯';
         
         // تحديث الصور
-        if (userData.profileImage) {
+        if (userData.profileImage && userData.profileImage !== '') {
           profileImg.src = userData.profileImage;
         }
-        if (userData.coverImage) {
+        if (userData.coverImage && userData.coverImage !== '') {
           coverImg.style.backgroundImage = `url(${userData.coverImage})`;
         }
         
@@ -1007,12 +1225,15 @@ footer {
         document.getElementById('achievements').textContent = userData.achievements || '0';
         
         // التحقق من الحساب المميز
-        if (userData.verified) {
+        if (userData.verified === true) {
           verifyIcon.style.display = "inline";
+        } else {
+          verifyIcon.style.display = "none";
         }
       } else {
         // إنشاء مستند جديد للمستخدم إذا لم يكن موجوداً
-        await setDoc(doc(db, "users", user.uid), {
+        console.log('إنشاء مستند جديد للمستخدم');
+        const userData = {
           username: user.displayName || 'مستخدم',
           email: user.email,
           about: 'عاشق الأنمي ✨ | مستكشف العوالم الخيالية 🚀 | محب للتحديات 🎯',
@@ -1025,38 +1246,48 @@ footer {
           verified: false,
           createdAt: serverTimestamp(),
           lastLogin: serverTimestamp()
-        });
+        };
+        
+        await setDoc(doc(db, "users", user.uid), userData);
+        
+        // تحديث الواجهة بالقيم الافتراضية
+        nameText.textContent = userData.username;
+        about.textContent = userData.about;
       }
       
       loadFavoriteAnime();
       
     } catch (error) {
       console.error("Error loading user data:", error);
-      showNotification('حدث خطأ في تحميل البيانات', 'error');
+      showNotification('حدث خطأ في تحميل البيانات: ' + error.message, 'error');
     }
   }
 
   // تحميل الأنمي المفضلة
   function loadFavoriteAnime() {
-    favoriteAnimeList.innerHTML = '';
-    
-    favoriteAnimeData.forEach(anime => {
-      const animeCard = document.createElement('div');
-      animeCard.className = 'anime-card';
+    try {
+      favoriteAnimeList.innerHTML = '';
       
-      animeCard.innerHTML = `
-        <img src="${anime.img}" alt="${anime.title}" 
-             onerror="this.src='${anime.backupImg}'">
-        <p>${anime.title}</p>
-      `;
-      
-      animeCard.addEventListener('click', () => {
-        localStorage.setItem('selectedAnime', JSON.stringify(anime));
-        window.location.href = 'anime.html';
+      favoriteAnimeData.forEach(anime => {
+        const animeCard = document.createElement('div');
+        animeCard.className = 'anime-card';
+        
+        animeCard.innerHTML = `
+          <img src="${anime.img}" alt="${anime.title}" 
+               onerror="this.src='${anime.backupImg}'">
+          <p>${anime.title}</p>
+        `;
+        
+        animeCard.addEventListener('click', () => {
+          localStorage.setItem('selectedAnime', JSON.stringify(anime));
+          window.location.href = 'anime.html';
+        });
+        
+        favoriteAnimeList.appendChild(animeCard);
       });
-      
-      favoriteAnimeList.appendChild(animeCard);
-    });
+    } catch (error) {
+      console.error("Error loading favorite anime:", error);
+    }
   }
 
   // رفع صورة إلى Firebase Storage
@@ -1073,7 +1304,7 @@ footer {
   }
 
   // تعديل الاسم
-  document.getElementById('editName').onclick = () => {
+  document.getElementById('editName').addEventListener('click', () => {
     const currentName = nameText.textContent;
     
     showModal("تعديل الاسم:", currentName, async (newName) => {
@@ -1085,36 +1316,38 @@ footer {
         
         // تحديث في Firestore
         await updateDoc(doc(db, "users", currentUser.uid), {
-          username: newName
+          username: newName,
+          lastUpdated: serverTimestamp()
         });
         
         nameText.textContent = newName;
         showNotification('تم تحديث الاسم بنجاح! 🌟');
       } catch (error) {
         console.error("Error updating name:", error);
-        showNotification('حدث خطأ في تحديث الاسم', 'error');
+        showNotification('حدث خطأ في تحديث الاسم: ' + error.message, 'error');
       }
     });
-  };
+  });
 
   // تعديل النبذة
-  document.getElementById('editAbout').onclick = () => {
+  document.getElementById('editAbout').addEventListener('click', () => {
     const currentAbout = about.textContent;
 
     showModal("تعديل النبذة:", currentAbout, async (newAbout) => {
       try {
         await updateDoc(doc(db, "users", currentUser.uid), {
-          about: newAbout
+          about: newAbout,
+          lastUpdated: serverTimestamp()
         });
         
         about.textContent = newAbout;
         showNotification('تم تحديث النبذة بنجاح! ✨');
       } catch (error) {
         console.error("Error updating about:", error);
-        showNotification('حدث خطأ في تحديث النبذة', 'error');
+        showNotification('حدث خطأ في تحديث النبذة: ' + error.message, 'error');
       }
     });
-  };
+  });
 
   // دالة مساعد لرفع الصور
   function handleImageUpload(file, maxMb, path, successMessage) {
@@ -1125,6 +1358,12 @@ footer {
       return;
     }
     
+    // التحقق من نوع الملف
+    if (!file.type.startsWith('image/')) {
+      showNotification('يرجى اختيار ملف صورة فقط', 'error');
+      return;
+    }
+    
     showNotification('جاري رفع الصورة...', 'info');
     
     uploadImage(file, path)
@@ -1132,7 +1371,8 @@ footer {
         // تحديث في Firestore
         const field = path.includes('profile') ? 'profileImage' : 'coverImage';
         await updateDoc(doc(db, "users", currentUser.uid), {
-          [field]: downloadURL
+          [field]: downloadURL,
+          lastUpdated: serverTimestamp()
         });
         
         // تحديث الواجهة
@@ -1146,12 +1386,12 @@ footer {
       })
       .catch(error => {
         console.error("Error uploading image:", error);
-        showNotification('حدث خطأ في رفع الصورة', 'error');
+        showNotification('حدث خطأ في رفع الصورة: ' + error.message, 'error');
       });
   }
 
   // تغيير الصورة الشخصية
-  document.getElementById('changeImg').onclick = () => {
+  document.getElementById('changeImg').addEventListener('click', () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
@@ -1169,10 +1409,10 @@ footer {
     };
     
     input.click();
-  };
+  });
 
   // تغيير صورة الغلاف
-  document.getElementById('changeCover').onclick = () => {
+  document.getElementById('changeCover').addEventListener('click', () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
@@ -1190,31 +1430,32 @@ footer {
     };
     
     input.click();
-  };
+  });
 
   // التفعيل المميز
-  document.getElementById('verifyBtn').onclick = () => {
+  document.getElementById('verifyBtn').addEventListener('click', () => {
     showModal("أدخل كود التفعيل المميز:", "", async (code) => {
       if (code === "ORAA2025") {
         try {
           await updateDoc(doc(db, "users", currentUser.uid), {
-            verified: true
+            verified: true,
+            lastUpdated: serverTimestamp()
           });
           
           verifyIcon.style.display = "inline";
           showNotification('🎉 تم تفعيل الحساب المميز بنجاح! استمتع بالمزايا الحصرية', 'success');
         } catch (error) {
           console.error("Error verifying account:", error);
-          showNotification('حدث خطأ في التفعيل', 'error');
+          showNotification('حدث خطأ في التفعيل: ' + error.message, 'error');
         }
       } else if (code) {
         showNotification('❌ كود التفعيل غير صحيح', 'error');
       }
     }, 'password');
-  };
+  });
 
   // تسجيل الخروج
-  logoutBtn.onclick = async () => {
+  logoutBtn.addEventListener('click', async () => {
     try {
       await signOut(auth);
       showNotification('تم تسجيل الخروج بنجاح', 'success');
@@ -1223,28 +1464,63 @@ footer {
       }, 1500);
     } catch (error) {
       console.error("Error signing out:", error);
-      showNotification('حدث خطأ في تسجيل الخروج', 'error');
+      showNotification('حدث خطأ في تسجيل الخروج: ' + error.message, 'error');
     }
-  };
+  });
+
+  // معالجة أخطاء الصور
+  document.addEventListener('error', function(e) {
+    if (e.target.tagName === 'IMG') {
+      const img = e.target;
+      const backup = img.getAttribute('data-backup');
+      if (backup && img.src !== backup) {
+        img.src = backup;
+      }
+    }
+  }, true);
 
   // مراقبة حالة المصادقة
   onAuthStateChanged(auth, async (user) => {
+    console.log('حالة المصادقة:', user ? 'مسجل دخول' : 'غير مسجل');
+    
     if (user) {
       // المستخدم مسجل الدخول
       currentUser = user;
-      await loadUserData(user);
+      console.log('المستخدم الحالي:', user.email);
       
-      // إخفاء شاشة التحميل وإظهار المحتوى
-      setTimeout(() => {
-        loadingScreen.style.opacity = '0';
+      try {
+        await loadUserData(user);
+        
+        // إخفاء شاشة التحميل وإظهار المحتوى
         setTimeout(() => {
-          loadingScreen.style.display = 'none';
-          mainContent.style.display = 'block';
-        }, 500);
-      }, 1000);
+          loadingScreen.style.opacity = '0';
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+            mainContent.style.display = 'block';
+            
+            // إضافة تأثيرات ظهور للعناصر
+            setTimeout(() => {
+              const elements = document.querySelectorAll('.stat, .badge, .anime-card');
+              elements.forEach((el, index) => {
+                setTimeout(() => {
+                  el.style.opacity = '1';
+                  el.style.transform = 'translateY(0)';
+                }, index * 100);
+              });
+            }, 100);
+            
+          }, 500);
+        }, 1000);
+        
+      } catch (error) {
+        console.error("Error in auth state change:", error);
+        loadingScreen.style.display = 'none';
+        showNotification('حدث خطأ في تحميل البيانات', 'error');
+      }
       
     } else {
       // المستخدم غير مسجل الدخول
+      console.log('إظهار شاشة تسجيل الدخول');
       setTimeout(() => {
         loadingScreen.style.display = 'none';
         loginRequired.classList.add('show');
@@ -1257,21 +1533,45 @@ footer {
   style.textContent = `
     .stat, .badge, .anime-card {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(20px);
       transition: all 0.6s ease-out;
+    }
+    
+    /* منع التحديد */
+    * {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    
+    /* السماح بالتحديد في حقول الإدخال */
+    input, textarea {
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
     }
   `;
   document.head.appendChild(style);
 
-  // تهيئة تأثيرات الظهور بعد تحميل البيانات
-  setTimeout(() => {
-    document.querySelectorAll('.stat, .badge, .anime-card').forEach((el, index) => {
-      setTimeout(() => {
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-      }, index * 100);
-    });
-  }, 1500);
+  // تهيئة الصفحة
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('الصفحة محملة، جاري التحقق من حالة المستخدم...');
+    
+    // إضافة تأثيرات اللمس للأجهزة التي لا تدعم hover
+    if ('ontouchstart' in window) {
+      document.querySelectorAll('.btn, .stat, .badge, .anime-card').forEach(el => {
+        el.addEventListener('touchstart', function() {
+          this.style.transform = 'scale(0.95)';
+        });
+        
+        el.addEventListener('touchend', function() {
+          this.style.transform = '';
+        });
+      });
+    }
+  });
 </script>
 </body>
 </html>
