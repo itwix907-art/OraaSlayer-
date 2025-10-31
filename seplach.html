@@ -1,429 +1,148 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌀 Oraa Slayer - جاري التحميل</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ORAASlayer – Loading...</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --glass-bg: rgba(20, 20, 30, 0.75);
+      --accent-anime1: #4c9aff;     /* أزرق سماوي */
+      --accent-anime2: #b85aff;     /* بنفسجي فاتح */
+      --accent-anime3: #ff5e97;     /* وردي فيروشي */
+      --text-main: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.7);
+    }
 
-        body {
-            /* الحفاظ على الألوان المطلوبة */
-            background: linear-gradient(135deg, #0F0F25, #1A1A3A);
-            font-family: 'Cairo', sans-serif;
-            color: #F8F8FF;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* تأثيرات الخلفية */
-        .bg-effects {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            /* إضافة التأثيرات المطلوبة */
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(139, 123, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 123, 169, 0.1) 0%, transparent 50%);
-        }
-
-        .floating-element {
-            position: absolute;
-            background: rgba(139, 123, 255, 0.1);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .floating-element:nth-child(1) {
-            width: 100px;
-            height: 100px;
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .floating-element:nth-child(2) {
-            width: 150px;
-            height: 150px;
-            top: 60%;
-            left: 80%;
-            animation-delay: -2s;
-        }
-
-        .floating-element:nth-child(3) {
-            width: 80px;
-            height: 80px;
-            top: 80%;
-            left: 20%;
-            animation-delay: -4s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-
-        /* المحتوى الرئيسي */
-        .splash-container {
-            text-align: center;
-            z-index: 1;
-            animation: fadeIn 1.5s ease-out;
-        }
-
-        .logo {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #8B7BFF, #5FD8FF);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(139, 123, 255, 0.5));
-            animation: pulse 2s infinite;
-        }
-
-        .app-name {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #8B7BFF, #FF7BA9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .tagline {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 40px;
-            font-weight: 600;
-        }
-
-        /* شريط التحميل */
-        .loading-bar {
-            width: 300px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            margin: 0 auto;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .loading-progress {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #8B7BFF, #FF7BA9);
-            border-radius: 10px;
-            animation: loading 3s ease-in-out forwards;
-            box-shadow: 0 0 10px rgba(139, 123, 255, 0.5);
-        }
-
-        .loading-text {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.6);
-            min-height: 20px; /* لتجنب القفز عند تغيير النص */
-        }
-
-        /* معلومات المطور */
-        .developer-info {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.8rem;
-        }
-
-        .developer-info a {
-            color: rgba(139, 123, 255, 0.8);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .developer-info a:hover {
-            color: #8B7BFF;
-        }
-
-        /* شاشة التحميل الاحتياطية */
-        .fallback-loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0F0F25, #1A1A3A);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        .fallback-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(139, 123, 255, 0.3);
-            border-top: 4px solid #8B7BFF;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        /* الرسوم المتحركة */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes loading {
-            0% { width: 0%; }
-            20% { width: 30%; }
-            50% { width: 60%; }
-            80% { width: 90%; }
-            100% { width: 100%; }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* تأثير التموج عند النقر */
-        .ripple-effect {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(139,123,255,0.8) 0%, transparent 70%);
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-            pointer-events: none;
-        }
-
-        @keyframes ripple {
-            to {
-                transform: scale(20);
-                opacity: 0;
-            }
-        }
-
-        /* تصميم متجاوب */
-        @media (max-width: 768px) {
-            .logo { font-size: 3rem; }
-            .app-name { font-size: 2rem; }
-            .tagline { font-size: 1rem; }
-            .loading-bar { width: 250px; }
-        }
-
-        @media (max-width: 480px) {
-            .logo { font-size: 2.5rem; }
-            .app-name { font-size: 1.8rem; }
-            .tagline { font-size: 0.9rem; }
-            .loading-bar { width: 200px; }
-        }
-    </style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      background-image: url('https://drive.google.com/uc?export=view&id=1XFUJ0BCTezmMkLKnuVwe7hImNRxT7Vqi'); /* مثال استخدام الخلفية */
+      background-size: cover;
+      background-position: center;
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent-anime1) 0%, var(--accent-anime3) 70%);
+      opacity: 0.30;
+      mix-blend-mode: overlay;
+    }
+    .splash {
+      z-index: 10;
+      text-align: center;
+      animation: fadeInUp 1s ease-out forwards;
+    }
+    .logo-icon {
+      font-size: 6rem;
+      color: var(--accent-anime2);
+      text-shadow: 0 0 40px rgba(184, 90, 255, 0.8);
+      animation: pulse 2.5s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+    .logo-text {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 4rem;
+      letter-spacing: 3px;
+      background: linear-gradient(to right, var(--accent-anime3), var(--accent-anime1));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-top: 0.5rem;
+    }
+    .logo-sub {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+      border-radius: 1rem;
+      padding: 2rem 3rem;
+      display: inline-block;
+      animation: fadeInUp 1.2s ease-out 0.5s forwards;
+      opacity: 0;
+    }
+    .glass-card.show {
+      opacity: 1;
+    }
+    .loader {
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+    }
+    .loader span {
+      margin-left: 8px;
+      color: var(--accent-anime1);
+      animation: dots 1.5s infinite;
+    }
+    @keyframes dots {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .status {
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: var(--text-muted);
+      animation: fadeBlink 2s infinite alternate;
+    }
+    @keyframes fadeBlink {
+      from { opacity: 0.5; }
+      to { opacity: 1; }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-    <!-- شاشة التحميل الاحتياطية -->
-    <div class="fallback-loading" id="fallbackLoading">
-        <div class="fallback-spinner"></div>
+  <div class="overlay"></div>
+  <div class="splash">
+    <!-- إذا عندك شعار PNG استخدم بدلاً من i.fa -->
+    <i class="fas fa-dragon logo-icon"></i>
+    <h1 class="logo-text">ORAASlayer</h1>
+    <p class="logo-sub">Ultimate Anime Streaming Hub</p>
+
+    <div class="glass-card" id="card">
+      <div class="loader">Loading<span>…</span></div>
+      <p class="status">Preparing your experience</p>
     </div>
+  </div>
 
-    <!-- تأثيرات الخلفية -->
-    <div class="bg-effects">
-        <div class="floating-element"></div>
-        <div class="floating-element"></div>
-        <div class="floating-element"></div>
-    </div>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // بعد نصف ثانية تظهر الـ card
+      setTimeout(() => {
+        document.getElementById('card').classList.add('show');
+      }, 500);
 
-    <!-- المحتوى الرئيسي -->
-    <div class="splash-container">
-        <div class="logo">🌀</div>
-        <h1 class="app-name">Oraa Slayer</h1>
-        <p class="tagline">أفضل منصة لمشاهدة الأنمي العربي</p>
-        
-        <div class="loading-bar">
-            <div class="loading-progress"></div>
-        </div>
-        <p class="loading-text" id="loadingText">جاري تحميل أفضل الأنميات...</p>
-    </div>
-
-    <!-- معلومات المطور -->
-    <div class="developer-info">
-        <p>تم التطوير بـ <i class="fa-solid fa-heart" style="color: #FF7BA9;"></i> بواسطة <a href="https://github.com/yourusername" target="_blank">فريق Oraa</a></p>
-    </div>
-
-    <script>
-        // كود التحكم في شاشة التحميل والانتقال
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Oraa Slayer Splash Screen Loaded');
-            
-            // إضافة تأثير التموج عند النقر
-            document.body.addEventListener('click', function(e) {
-                const ripple = document.createElement('div');
-                ripple.className = 'ripple-effect';
-                // تحديد موقع التموج (إزاحة بسيطة ليتوسط المؤشر)
-                const size = 20;
-                ripple.style.width = ripple.style.height = size + 'px';
-                ripple.style.left = e.clientX - (size / 2) + 'px';
-                ripple.style.top = e.clientY - (size / 2) + 'px';
-                document.body.appendChild(ripple);
-                
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-            });
-            
-            // تحديث نص التحميل بشكل دوري
-            const loadingTexts = [
-                "جاري تحميل أفضل الأنميات...",
-                "تهيئة قاعدة البيانات (Firebase)...", 
-                "تحميل واجهة المستخدم...",
-                "جاري الإعداد النهائي (تم الاتصال)..."
-            ];
-            
-            let currentTextIndex = 0;
-            const loadingTextElement = document.getElementById('loadingText');
-            
-            const updateLoadingText = () => {
-                if (currentTextIndex < loadingTexts.length) {
-                    loadingTextElement.textContent = loadingTexts[currentTextIndex];
-                    currentTextIndex++;
-                    // زيادة المدة لتظهر جميع النصوص قبل الانتقال
-                    setTimeout(updateLoadingText, 1200); 
-                }
-            };
-            
-            // بدء تحديث النص
-            setTimeout(updateLoadingText, 500);
-            
-            // الانتقال بعد انتهاء التحميل (4.5 ثواني)
-            setTimeout(() => {
-                document.body.style.opacity = '0';
-                setTimeout(() => {
-                    // يمكنك تغيير 'index.html' إلى الصفحة الرئيسية الفعلية لتطبيقك
-                    window.location.href = 'index.html'; 
-                }, 500);
-            }, 4500); 
-            
-            // إمكانية التخطي بالضغط على أي مفتاح
-            document.addEventListener('keydown', function(e) {
-                // تخطي الشاشة عند الضغط على مفتاح الهروب (Escape) أو الإدخال (Enter)
-                if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
-                    console.log('Splash screen skipped by user.');
-                    window.location.href = 'index.html';
-                }
-            });
-        });
-
-        // التعامل مع الأخطاء
-        window.addEventListener('error', function(event) {
-            console.error('⚠️ حدث خطأ عام في التحميل:', event.message);
-            const loadingTextElement = document.getElementById('loadingText');
-            if(loadingTextElement) {
-                loadingTextElement.textContent = "⚠️ حدث خطأ في التحميل، جاري المتابعة للموقع.";
-            }
-            // لا نستخدم alert()
-        });
-    </script>
-
-    <!--
-    ===================================================================
-    قسم تهيئة FIREBASE
-    يتم ربط تطبيقك بـ Firestore و Authentication في الخلفية
-    ===================================================================
-    -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
-        // المتغيرات العامة التي يوفرها بيئة Canvas (مطلوبة)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        let firebaseConfig;
-
-        try {
-            // محاولة تحليل إعدادات Firebase
-            firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        } catch (e) {
-            console.error("Firebase config parsing failed:", e);
-            firebaseConfig = {};
-        }
-
-        // تشغيل التهيئة والمصادقة
-        if (Object.keys(firebaseConfig).length > 0) {
-            try {
-                // تعيين مستوى التسجيل للمساعدة في تصحيح الأخطاء
-                setLogLevel('debug'); 
-                
-                // 1. تهيئة تطبيق Firebase
-                const app = initializeApp(firebaseConfig);
-                const auth = getAuth(app);
-                const db = getFirestore(app);
-                
-                console.log(`Firebase App ID: ${appId} initialized successfully.`);
-                
-                // 2. المصادقة (Authentication)
-                const authenticate = async () => {
-                    const loadingTextElement = document.getElementById('loadingText');
-                    
-                    if (initialAuthToken) {
-                        // تسجيل الدخول باستخدام التوكن المخصص (الأكثر أماناً)
-                        await signInWithCustomToken(auth, initialAuthToken);
-                        console.log("✅ Custom token sign-in successful.");
-                    } else {
-                        // تسجيل الدخول كمستخدم مجهول في حال عدم توفر التوكن
-                        await signInAnonymously(auth);
-                        console.log("⚠️ Signed in anonymously (No token provided).");
-                    }
-
-                    const userId = auth.currentUser?.uid;
-                    console.log(`Firebase User ID: ${userId}`);
-
-                    if (loadingTextElement) {
-                         // تحديث النص بعد نجاح الاتصال
-                         loadingTextElement.textContent = "تم التحميل بنجاح! جاهز للانطلاق.";
-                    }
-                };
-                
-                // بدء المصادقة
-                authenticate().catch(error => {
-                    console.error("🚨 Firebase Authentication failed:", error);
-                    const loadingTextElement = document.getElementById('loadingText');
-                    if (loadingTextElement) {
-                         loadingTextElement.textContent = "⚠️ فشل الاتصال بخدمة المصادقة، جاري المتابعة...";
-                    }
-                });
-
-            } catch (e) {
-                console.error("🚨 Firebase Initialization failed:", e);
-                 const loadingTextElement = document.getElementById('loadingText');
-                if (loadingTextElement) {
-                     loadingTextElement.textContent = "⚠️ فشل تهيئة Firebase، جاري المتابعة.";
-                }
-            }
-        } else {
-            console.warn("Firebase config is missing. Skipping Firebase initialization.");
-            const loadingTextElement = document.getElementById('loadingText');
-            if (loadingTextElement) {
-                 loadingTextElement.textContent = "جاري التحميل... (تخطي اتصال Firebase)";
-            }
-        }
-    </script>
+      // بعد 4 ثواني انتقل
+      setTimeout(() => {
+        window.location.href = 'index.html'; // غيرها حسب الصفحة
+      }, 4000);
+    });
+  </script>
 </body>
-
+</html>

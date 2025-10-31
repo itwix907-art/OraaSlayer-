@@ -1,0 +1,23 @@
+[
+  {
+    "id": "one-punchman3",
+    "title": "One Punch Man 3",
+    "file": "one-punchman3.json",
+    "totalEpisodes": 12,
+    "imageUrl": "images/opm3-poster.jpg"
+  },
+  {
+    "id": "attack-on-titan-s4",
+    "title": "Attack on Titan S4",
+    "file": "aots4.json",
+    "totalEpisodes": 28,
+    "imageUrl": "images/aots4-poster.jpg"
+  },
+  {
+    "id": "gachiakuta",
+    "title": "Gachiakuta",
+    "file": "gachiakuta.json",
+    "totalEpisodes": 1,
+    "imageUrl": "images/gachiakuta-poster.jpg"
+  }
+]

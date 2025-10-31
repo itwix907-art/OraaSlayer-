@@ -1,139 +1,79 @@
-// auth.js
-import { auth, db } from './firebase-init.js';
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendEmailVerification,
-  sendPasswordResetEmail,
-  updateProfile,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+auth.js// يُفترض أنك قمت باستيراد auth من firebase-init.js (أو firebase.js)
+// مثال:
+// import { auth } from './firebase-init.js';
+// إذا كنت تستخدم نمط وحدة (Module)، يجب أن يكون الاستيراد موجودًا في بداية الملف.
 
-class AuthManager {
-  constructor() {
-    this.currentUser = null;
-    this.initAuthListener();
-  }
-  
-  initAuthListener() {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        this.currentUser = user;
-        await this.updateUserData(user);
-        this.onUserSignedIn(user);
-      } else {
-        this.currentUser = null;
-        this.onUserSignedOut();
-      }
-    });
-  }
-  
-  async register(email, password, username) {
+// تأكد من استيراد الدوال الضرورية من مكتبة المصادقة:
+import { 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged,
+    sendPasswordResetEmail 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"; 
+
+// يتم استيراد كائن الـ auth من ملف firebase-init.js (يفترض أن الملف موجود ويحتوي على الكائن المهيأ)
+// إذا كان `firebase-init.js` يُصدِّر الكائن `auth`:
+import { auth } from './firebase-init.js'; 
+
+// --- وظائف المصادقة الأساسية ---
+
+// 1. وظيفة التسجيل (إنشاء مستخدم جديد)
+export async function registerUser(email, password) {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      
-      // Update profile with username
-      await updateProfile(user, {
-        displayName: username
-      });
-      
-      // Send email verification
-      await sendEmailVerification(user);
-      
-      // Save user data to Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        username: username,
-        email: email,
-        createdAt: serverTimestamp(),
-        lastLogin: serverTimestamp(),
-        verified: false,
-        profileComplete: false
-      });
-      
-      return { success: true, user: user };
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        // تم التسجيل بنجاح
+        console.log("User registered:", userCredential.user);
+        return userCredential.user;
     } catch (error) {
-      return { success: false, error: error.message };
+        // حدث خطأ في التسجيل
+        console.error("Registration error:", error.message);
+        throw error;
     }
-  }
-  
-  async login(email, password) {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      
-      // Update last login time
-      await this.updateUserData(user);
-      
-      return { success: true, user: user };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-  
-  async updateUserData(user) {
-    try {
-      const userRef = doc(db, "users", user.uid);
-      const userDoc = await getDoc(userRef);
-      
-      if (userDoc.exists()) {
-        await setDoc(userRef, {
-          lastLogin: serverTimestamp(),
-          email: user.email,
-          displayName: user.displayName
-        }, { merge: true });
-      }
-    } catch (error) {
-      console.error("Error updating user data:", error);
-    }
-  }
-  
-  async resetPassword(email) {
-    try {
-      await sendPasswordResetEmail(auth, email);
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-  
-  async logout() {
-    try {
-      await signOut(auth);
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-  
-  onUserSignedIn(user) {
-    // يمكنك إضافة أي كود تريد تنفيذه عند تسجيل الدخول
-    console.log("User signed in:", user.email);
-    
-    // إعادة التوجيه إذا لزم الأمر
-    if (window.location.pathname.includes('login.html') ||
-      window.location.pathname.includes('register.html')) {
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 1000);
-    }
-  }
-  
-  onUserSignedOut() {
-    console.log("User signed out");
-  }
-  
-  getCurrentUser() {
-    return this.currentUser;
-  }
-  
-  isUserVerified() {
-    return this.currentUser ? this.currentUser.emailVerified : false;
-  }
 }
 
-// إنشاء instance واحدة من AuthManager
-const authManager = new AuthManager();
-export default authManager;
+// 2. وظيفة تسجيل الدخول
+export async function loginUser(email, password) {
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        // تم تسجيل الدخول بنجاح
+        console.log("User logged in:", userCredential.user);
+        return userCredential.user;
+    } catch (error) {
+        // حدث خطأ في تسجيل الدخول
+        console.error("Login error:", error.message);
+        throw error;
+    }
+}
+
+// 3. وظيفة تسجيل الخروج
+export async function logoutUser() {
+    try {
+        await signOut(auth);
+        // تم تسجيل الخروج بنجاح
+        console.log("User signed out");
+    } catch (error) {
+        // حدث خطأ في تسجيل الخروج
+        console.error("Logout error:", error.message);
+        throw error;
+    }
+}
+
+// 4. وظيفة إرسال بريد إلكتروني لإعادة تعيين كلمة المرور
+export async function resetPassword(email) {
+    try {
+        await sendPasswordResetEmail(auth, email);
+        console.log("Password reset email sent to:", email);
+    } catch (error) {
+        console.error("Password reset error:", error.message);
+        throw error;
+    }
+}
+
+// 5. وظيفة مراقبة حالة المصادقة (مهمة لمعرفة ما إذا كان المستخدم مسجلاً دخوله)
+// يمكن استخدامها في ملف main.js أو صفحات HTML للتحكم في واجهة المستخدم
+export function subscribeToAuthChanges(callback) {
+    return onAuthStateChanged(auth, callback);
+}
+
+// يمكنك استدعاء الوظائف السابقة في ملفات مثل register.html (لتسجيل المستخدم) و login.html (لتسجيل الدخول) و main.js (للوصول إلى حالة المستخدم).

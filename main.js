@@ -1,852 +1,976 @@
-// ====================================================================
-// ✅ قائمة بيانات الأنمي (70 أنمي) - محسنة ومصنفة
-// ====================================================================
-const animeList = [
-  // أنميات شونين (Shonen)
-  { title: "Attack on Titan", rating: "9.1", img: "https://cdn.myanimelist.net/images/anime/10/47347.jpg", year: "2013", genre: "شونين" },
-  { title: "Demon Slayer", rating: "8.9", img: "https://cdn.myanimelist.net/images/anime/1286/99889.jpg", year: "2019", genre: "شونين" },
-  { title: "Naruto Shippuden", rating: "8.5", img: "https://cdn.myanimelist.net/images/anime/5/17407.jpg", year: "2007", genre: "شونين" },
-  { title: "Jujutsu Kaisen", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/1171/109222.jpg", year: "2020", genre: "شونين" },
-  { title: "One Piece", rating: "9.0", img: "https://cdn.myanimelist.net/images/anime/6/73245.jpg", year: "1999", genre: "شونين" },
-  { title: "Bleach: Thousand-Year Blood War", rating: "8.8", img: "https://cdn.myanimelist.net/images/anime/1764/126627.jpg", year: "2022", genre: "شونين" },
-  { title: "My Hero Academia", rating: "8.4", img: "https://cdn.myanimelist.net/images/anime/10/78745.jpg", year: "2016", genre: "شونين" },
-  { title: "Chainsaw Man", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/1806/126216.jpg", year: "2022", genre: "شونين" },
-  { title: "Black Clover", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/2/88336.jpg", year: "2017", genre: "شونين" },
-  { title: "Hunter x Hunter", rating: "9.2", img: "https://cdn.myanimelist.net/images/anime/1337/99013.jpg", year: "2011", genre: "شونين" },
-  
-  // أنميات سينين (Seinen)
-  { title: "Tokyo Ghoul", rating: "8.0", img: "https://cdn.myanimelist.net/images/anime/5/64449.jpg", year: "2014", genre: "سينين" },
-  { title: "Vinland Saga", rating: "8.9", img: "https://cdn.myanimelist.net/images/anime/1500/103005.jpg", year: "2019", genre: "سينين" },
-  { title: "Parasyte", rating: "8.6", img: "https://cdn.myanimelist.net/images/anime/3/73178.jpg", year: "2014", genre: "سينين" },
-  { title: "Made in Abyss", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/6/86733.jpg", year: "2017", genre: "سينين" },
-  { title: "Psycho-Pass", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/5/43399.jpg", year: "2012", genre: "سينين" },
-  
-  // أنميات أكشن ومغامرات
-  { title: "Fullmetal Alchemist: Brotherhood", rating: "9.2", img: "https://cdn.myanimelist.net/images/anime/1208/94745.jpg", year: "2009", genre: "أكشن" },
-  { title: "One Punch Man", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/12/76049.jpg", year: "2015", genre: "أكشن" },
-  { title: "Mob Psycho 100", rating: "8.5", img: "https://cdn.myanimelist.net/images/anime/8/80356.jpg", year: "2016", genre: "أكشن" },
-  { title: "Sword Art Online", rating: "7.8", img: "https://cdn.myanimelist.net/images/anime/11/39717.jpg", year: "2012", genre: "أكشن" },
-  { title: "Overlord", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/7/88019.jpg", year: "2015", genre: "أكشن" },
-  
-  // أنميات رومانسية وكوميدية
-  { title: "Kaguya-sama: Love is War", rating: "8.5", img: "https://cdn.myanimelist.net/images/anime/1295/135431.jpg", year: "2019", genre: "رومانسي" },
-  { title: "Horimiya", rating: "8.2", img: "https://cdn.myanimelist.net/images/anime/1698/110457.jpg", year: "2021", genre: "رومانسي" },
-  { title: "Your Name", rating: "8.9", img: "https://cdn.myanimelist.net/images/anime/5/87048.jpg", year: "2016", genre: "رومانسي" },
-  { title: "A Silent Voice", rating: "8.8", img: "https://cdn.myanimelist.net/images/anime/1122/96435.jpg", year: "2016", genre: "رومانسي" },
-  { title: "Bunny Girl Senpai", rating: "8.1", img: "https://cdn.myanimelist.net/images/anime/1304/135827.jpg", year: "2018", genre: "رومانسي" },
-  
-  // أنميات خيال علمي
-  { title: "Steins;Gate", rating: "9.1", img: "https://cdn.myanimelist.net/images/anime/1935/127974.jpg", year: "2011", genre: "خيال علمي" },
-  { title: "Cyberpunk: Edgerunners", rating: "8.6", img: "https://cdn.myanimelist.net/images/anime/1476/125540.jpg", year: "2022", genre: "خيال علمي" },
-  { title: "86 EIGHTY-SIX", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/1981/117777.jpg", year: "2021", genre: "خيال علمي" },
-  { title: "Vivy: Fluorite Eye's Song", rating: "8.4", img: "https://cdn.myanimelist.net/images/anime/1498/113857.jpg", year: "2021", genre: "خيال علمي" },
-  
-  // أنميات رياضية
-  { title: "Haikyuu!!", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/7/76014.jpg", year: "2014", genre: "رياضي" },
-  { title: "Blue Lock", rating: "8.3", img: "https://cdn.myanimelist.net/images/anime/1915/128065.jpg", year: "2022", genre: "رياضي" },
-  { title: "Kuroko's Basketball", rating: "8.2", img: "https://cdn.myanimelist.net/images/anime/5/26263.jpg", year: "2012", genre: "رياضي" },
-  
-  // أنميات دراما
-  { title: "Frieren", rating: "9.0", img: "https://cdn.myanimelist.net/images/anime/1015/138006.jpg", year: "2023", genre: "دراما" },
-  { title: "Violet Evergarden", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/1795/95088.jpg", year: "2018", genre: "دراما" },
-  { title: "Clannad: After Story", rating: "9.0", img: "https://cdn.myanimelist.net/images/anime/1299/110774.jpg", year: "2008", genre: "دراما" },
-  
-  // أنميات جديدة وشهيرة
-  { title: "Spy x Family", rating: "8.6", img: "https://cdn.myanimelist.net/images/anime/1441/122795.jpg", year: "2022", genre: "كوميدي" },
-  { title: "Oshi no Ko", rating: "8.7", img: "https://cdn.myanimelist.net/images/anime/1812/134736.jpg", year: "2023", genre: "دراما" },
-  { title: "Hell's Paradise", rating: "8.0", img: "https://cdn.myanimelist.net/images/anime/1956/134755.jpg", year: "2023", genre: "أكشن" },
-  { title: "Bocchi the Rock!", rating: "8.6", img: "https://cdn.myanimelist.net/images/anime/1448/127956.jpg", year: "2022", genre: "كوميدي" },
-  { title: "Lycoris Recoil", rating: "8.2", img: "https://cdn.myanimelist.net/images/anime/1921/125367.jpg", year: "2022", genre: "أكشن" }
+// main.js - التهيئة الرئيسية وربط الأحداث والمزامنة مع Firebase (الإصدار المُصحح والمُحسن)
+
+// ------------------------------------------------------------------
+// 🟢🟢🟢 0. دمج البيانات المركزية (لحل مشكلة فقدان البيانات المركزية) 🟢🟢🟢
+// ------------------------------------------------------------------
+
+// 📋 مصدر الحقيقة: قائمة الأنميات الأساسية
+const ANIME_INDEX_DATA = [
+    {
+        "id": "one-punchman3",
+        "title": "One Punch Man 3",
+        "file": "one-punchman3.json",
+        "totalEpisodes": 12,
+        "imageUrl": "images/opm3-poster.jpg"
+    },
+    {
+        "id": "attack-on-titan-s4",
+        "title": "Attack on Titan S4",
+        "file": "aots4.json",
+        "totalEpisodes": 28,
+        "imageUrl": "images/aots4-poster.jpg"
+    },
+    {
+        "id": "gachiakuta",
+        "title": "Gachiakuta",
+        "file": "gachiakuta.json",
+        "totalEpisodes": 24,
+        "imageUrl": "images/gachiakuta-poster.jpg"
+    }
 ];
 
-// ====================================================================
-// ✅ متغيرات حالة التطبيق (State Management)
-// ====================================================================
-let currentAnimeList = [];
-let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
-let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-let currentSort = 'rating_desc';
-let currentFilter = 'all';
-
-// ====================================================================
-// ✅ العناصر المُختارة من الـ DOM
-const grid = document.getElementById("animeGrid");
-const searchInput = document.getElementById('search');
-const recentBox = document.getElementById('recentSearches');
-const profileBtn = document.getElementById('profileBtn');
-const profileMenu = document.getElementById('profileMenu');
-const settingsBtn = document.querySelector('.fa-cog');
-const settingsPanel = document.getElementById('settingsPanel');
-const closeSettings = document.getElementById('closeSettings');
-const sortSelect = document.getElementById('sortOrder');
-const filterSelect = document.getElementById('filterGenre');
-const footerIcons = document.querySelectorAll("footer i");
-
-// ====================================================================
-// ✅ دوال مساعدة محسنة (Optimized Helper Functions)
-// ====================================================================
-
-/**
- * دالة Debouncing محسنة
- */
-const debounce = (func, delay, immediate = false) => {
-  let timeoutId;
-  return function(...args) {
-    const later = () => {
-      timeoutId = null;
-      if (!immediate) func.apply(this, args);
-    };
-    const callNow = immediate && !timeoutId;
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(later, delay);
-    if (callNow) func.apply(this, args);
-  };
+// 🎯 قاعدة بيانات السيرفرات الوصفية (Metadata) (تم إضافتها هنا لمركزية البيانات)
+const SERVER_METADATA = {
+    "سيرفر Vimeo السريع": {
+        icon: "fa-brands fa-vimeo-v",
+        color: "#1ab7ea",
+        speed: "سريع جداً",
+        features: ["1080p", "بدون إعلانات", "مشغل مدمج"]
+    },
+    "سيرفر Embed عادي": { 
+        icon: "fa-solid fa-play-circle", 
+        color: "#10b981",
+        speed: "متوسط", 
+        features: ["720p", "مشغل مدمج", "دعم جميع الأجهزة"]
+    },
+    "سيرفر التحميل المباشر": { 
+        icon: "fa-solid fa-download",
+        color: "#FF6584",
+        speed: "عالٍ", 
+        features: ["تحميل مباشر", "480p", "720p"]
+    },
+    "سيرفر Viewer 2": { 
+        icon: "fa-solid fa-globe",
+        color: "#36D1DC",
+        speed: "سريع",
+        features: ["1080p", "مشغل مدمج", "سريع"]
+    }
 };
 
 /**
- * دالة الفرز المحسنة مع دعم أنواع متعددة
+ * @brief يجد بيانات أنمي محدد بناءً على الـ ID.
+ * @param {string} id - معرّف الأنمي.
+ * @returns {Object|null} بيانات الأنمي الكاملة أو null.
  */
-function sortAnime(list, sortKey) {
-  const listCopy = [...list];
-  switch (sortKey) {
-    case 'rating_desc':
-      return listCopy.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
-    case 'rating_asc':
-      return listCopy.sort((a, b) => parseFloat(a.rating) - parseFloat(b.rating));
-    case 'title_asc':
-      return listCopy.sort((a, b) => a.title.localeCompare(b.title));
-    case 'title_desc':
-      return listCopy.sort((a, b) => b.title.localeCompare(a.title));
-    case 'year_desc':
-      return listCopy.sort((a, b) => parseInt(b.year) - parseInt(a.year));
-    case 'year_asc':
-      return listCopy.sort((a, b) => parseInt(a.year) - parseInt(b.year));
-    default:
-      return listCopy;
-  }
+function getAnimeDataById(id) {
+    if (!id) return null;
+    return ANIME_INDEX_DATA.find(anime => anime.id === id) || null;
 }
 
-/**
- * دالة التصفية حسب النوع
- */
-function filterAnime(list, filterKey) {
-  if (filterKey === 'all') return list;
-  return list.filter(anime => anime.genre === filterKey);
+// 🟢 تصدير البيانات والدوال لتكون متاحة عالميًا لجميع وحدات JS
+window.ANIME_INDEX_DATA = ANIME_INDEX_DATA;
+window.SERVER_METADATA = SERVER_METADATA;
+window.getAnimeDataById = getAnimeDataById;
+
+
+// ------------------------------------------------------------------
+// 1. تهيئة Firebase SDKs (محدثة ومحسنة - استخدام Firestore Lite)
+// ------------------------------------------------------------------
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js"; // 🟢 إضافة logEvent
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {
+    getFirestore, doc, getDoc, setDoc, updateDoc,
+    onSnapshot, collection, arrayUnion, arrayRemove
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore-lite.js"; // 🟢 استخدام Firestore-Lite لتحسين الأداء
+// ملاحظة: تم تعديل المسار لاستخدام firebase-firestore-lite.js لتقليل حجم الحزمة
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBDMFcCvthKNkHUrEbgYY1Uc80KTPpS01M",
+    authDomain: "oraa-slayer-anime.firebaseapp.com",
+    projectId: "oraa-slayer-anime",
+    storageBucket: "oraa-slayer-anime.firebasestorage.app",
+    messagingSenderId: "426607460785",
+    appId: "1:426607460785:web:c8d9844253c9111ad3bd90",
+    measurementId: "G-VNHP64HXD5"
+};
+
+// 🟢 تهيئة محسنة مع معالجة الأخطاء
+let app, analytics, auth, firestore;
+try {
+    app = initializeApp(firebaseConfig);
+    analytics = getAnalytics(app);
+    auth = getAuth(app);
+    firestore = getFirestore(app);
+    console.log('✅ Firebase initialized successfully (Using Firestore Lite)');
+} catch (error) {
+    console.error('❌ Firebase initialization failed:', error);
 }
 
-/**
- * دالة البحث الذكية
- */
-function smartSearch(list, keyword) {
-  if (!keyword) return list;
-  
-  const lowerKeyword = keyword.toLowerCase();
-  return list.filter(anime => 
-    anime.title.toLowerCase().includes(lowerKeyword) ||
-    anime.genre.toLowerCase().includes(lowerKeyword) ||
-    anime.year.includes(keyword)
-  );
-}
+// ------------------------------------------------------------------
+// 2. طبقة البيانات المتقدمة المحسنة (Enhanced Data Layer - Singleton Pattern)
+// ------------------------------------------------------------------
 
-// ====================================================================
-// ✅ وظائف العرض والتفاعل الأساسية المحسنة
-// ====================================================================
+class DataLayer {
+    static instance = null; // 🟢 نمط Singleton
+    
+    constructor(auth, firestore) {
+        if (DataLayer.instance) {
+            return DataLayer.instance;
+        }
 
-/**
- * إنشاء بطاقة الأنمي مع تحسينات الأداء
- */
-function createAnimeCard(anime) {
-  const card = document.createElement("div");
-  card.className = "anime-card";
-  card.setAttribute('data-rating', anime.rating);
-  card.setAttribute('data-genre', anime.genre);
-  card.setAttribute('data-year', anime.year);
-  
-  const isFavorite = favorites.some(fav => fav.title === anime.title);
-  
-  card.innerHTML = `
-    <div class="anime-card-inner">
-      <div class="anime-image-container">
-        <img 
-          src="${anime.img}" 
-          alt="${anime.title}" 
-          loading="lazy"
-          onerror="this.src='https://via.placeholder.com/200x280/1a1a2e/8b7bff?text=Anime+Image'"
-        >
-        <div class="anime-overlay">
-          <button class="favorite-btn ${isFavorite ? 'active' : ''}" onclick="toggleFavorite(event, ${JSON.stringify(anime).replace(/"/g, '&quot;')})">
-            <i class="fa-solid fa-heart"></i>
-          </button>
-          <span class="anime-year">${anime.year}</span>
-          <span class="anime-genre">${anime.genre}</span>
-        </div>
-      </div>
-      <div class="anime-info">
-        <h3>${anime.title}</h3>
-        <div class="anime-meta">
-          <span class="rating">⭐ ${anime.rating}</span>
-          <span class="genre-badge">${anime.genre}</span>
-        </div>
-      </div>
-    </div>
-  `;
+        this.auth = auth;
+        this.firestore = firestore;
+        this.currentUser = null;
+        this.userDocRef = null;
+        this.favoritesListener = null;
+        this.USERS_STORAGE_KEY = 'oraaAnimeUsers';
+        this.settingsCache = new Map(); // 🟢 كاش ذكي للإعدادات
 
-  card.addEventListener("click", (e) => {
-    if (!e.target.closest('.favorite-btn')) {
-      selectAnime(anime);
+        DataLayer.instance = this;
     }
-  });
-  
-  return card;
+
+    /**
+     * @brief تهيئة المستخدم مع معالجة محسنة للأخطاء
+     */
+    async initializeUser(user) {
+        this.currentUser = user;
+        this.userDocRef = user ? doc(this.firestore, "users", user.uid) : null;
+        
+        // 🟢 تنظيف الموارد قبل التهيئة الجديدة
+        this.cleanupListeners(); 
+
+        if (user) {
+            // 🟢 استخدام Promise.allSettled لضمان استمرار جميع المهام حتى لو فشلت إحداها
+            const results = await Promise.allSettled([ 
+                this.ensureUserDocumentExists(user), // 🟢 ضمان وجود المستند قبل المزامنة
+                this.syncSettingsFromFirebase(),
+                this.setupFavoritesListener()
+            ]);
+            
+            if (results.every(res => res.status === 'fulfilled')) {
+                console.log('✅ User initialized successfully (All tasks fulfilled)');
+            } else {
+                console.warn('⚠️ User initialization completed with some failures:', results);
+            }
+            logEvent(analytics, 'user_login', { method: user.providerId }); // 🟢 تسجيل الحدث
+        } else {
+            // 🟢 تطبيق إعدادات الوضع الزائر
+            this.applySettingToUI('premiumDarkToggle', localStorage.getItem('premiumDarkToggle') || 'false');
+            console.log('User logged out. Listeners cleaned up.');
+        }
+    }
+    
+    /**
+     * @brief ضمان وجود مستند المستخدم
+     */
+    async ensureUserDocumentExists(user) {
+        if (!this.userDocRef) return;
+        
+        try {
+            const docSnap = await getDoc(this.userDocRef);
+            if (!docSnap.exists()) {
+                // 🟢 إنشاء مستند جديد بالإعدادات الافتراضية
+                await setDoc(this.userDocRef, {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName,
+                    createdAt: new Date().toISOString(),
+                    lastLogin: new Date().toISOString(),
+                    favorites: [],
+                    settings: {
+                        premiumDarkToggle: 'false',
+                        smartStreamToggle: 'true'
+                    }
+                }, { merge: true }); // 🟢 استخدام merge: true لضمان الأمان
+                console.log('✅ New user document created.');
+            } else {
+                // 🟢 تحديث وقت آخر تسجيل دخول فقط
+                await updateDoc(this.userDocRef, {
+                    lastLogin: new Date().toISOString()
+                });
+            }
+        } catch (error) {
+            console.error('❌ Error ensuring user document exists:', error);
+            this.showSmartToast('❌ فشل في تهيئة مستند المستخدم', 'error');
+            throw error; // إعادة رمي الخطأ للـ Promise.allSettled
+        }
+    }
+
+
+    /**
+     * @brief مزامنة الإعدادات مع كاش محسن
+     */
+    async syncSettingsFromFirebase() {
+        if (!this.userDocRef) return;
+
+        try {
+            const docSnap = await getDoc(this.userDocRef);
+            if (docSnap.exists() && docSnap.data().settings) {
+                const settings = docSnap.data().settings;
+
+                // 🟢 تطبيق محسن مع الكاش
+                let settingsUpdated = false;
+                Object.keys(settings).forEach(key => {
+                    const value = settings[key];
+                    const localValue = localStorage.getItem(key);
+                    
+                    if (localValue !== value) {
+                        localStorage.setItem(key, value);
+                        this.settingsCache.set(key, value);
+                        this.applySettingToUI(key, value);
+                        settingsUpdated = true;
+                    } else if (!this.settingsCache.has(key)) {
+                        this.settingsCache.set(key, value);
+                        this.applySettingToUI(key, value);
+                    }
+                });
+
+                if (settingsUpdated) {
+                    this.showSmartToast('✨ تم مزامنة الإعدادات من السحابة', 'success');
+                } else {
+                    console.log('✅ Settings already up-to-date.');
+                }
+            } else {
+                // 🟢 إذا لم يكن هناك إعدادات سحابية، يتم حفظ المحلية
+                const localSettings = setupSidebarToggles(true); // إعادة تحميل الإعدادات المحلية
+                if (Object.keys(localSettings).length > 0) {
+                     await updateDoc(this.userDocRef, {
+                        settings: localSettings,
+                        lastUpdated: new Date().toISOString()
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("Firebase sync error:", error);
+            this.showSmartToast('⚠️ جاري استخدام الإعدادات المحلية', 'warning');
+            throw error;
+        }
+    }
+
+    /**
+     * @brief تطبيق الإعدادات على الواجهة بذكاء
+     */
+    applySettingToUI(key, value) {
+        const toggle = document.getElementById(key);
+        const isChecked = value === 'true';
+        
+        if (toggle) {
+            // 🟢 تحديث الواجهة مرة واحدة فقط إذا لزم الأمر
+            if (toggle.checked !== isChecked) {
+                 toggle.checked = isChecked;
+            }
+        }
+        
+        // 🟢 تطبيق تأثيرات فورية حسب الإعداد
+        this.applySettingEffects(key, isChecked);
+    }
+
+    /**
+     * @brief تأثيرات ذكية للإعدادات
+     */
+    applySettingEffects(key, isEnabled) {
+        switch(key) {
+            case 'premiumDarkToggle':
+                // 🟢 استخدام aria-label لتغيير النص ديناميكياً
+                document.body.classList.toggle('premium-dark-mode', isEnabled);
+                document.documentElement.setAttribute('data-theme', isEnabled ? 'dark' : 'light');
+                break;
+            case 'smartStreamToggle':
+                // تأثيرات مُسرع البث (إرسال حدث مخصص للمشغل)
+                document.body.dispatchEvent(new CustomEvent('smartStreamUpdate', { detail: { isEnabled } }));
+                break;
+            case 'autoQualityToggle':
+                // تأثيرات الجودة التلقائية (إرسال حدث مخصص للمشغل)
+                document.body.dispatchEvent(new CustomEvent('autoQualityUpdate', { detail: { isEnabled } }));
+                break;
+        }
+    }
+
+    /**
+     * @brief حفظ إعدادات محسن مع كاش
+     */
+    async saveSetting(key, value) {
+        const valueStr = value.toString();
+        
+        // 🟢 حفظ فوري في الكاش والمحلي وتطبيق الواجهة
+        localStorage.setItem(key, valueStr);
+        this.settingsCache.set(key, valueStr);
+        this.applySettingToUI(key, valueStr);
+        
+        // 🟢 تسجيل الحدث
+        logEvent(analytics, 'setting_changed', { setting_key: key, new_value: valueStr });
+
+        // 🟢 حفظ في Firebase مع معالجة محسنة للأخطاء
+        if (this.userDocRef) {
+            try {
+                await updateDoc(this.userDocRef, {
+                    [`settings.${key}`]: valueStr,
+                    lastUpdated: new Date().toISOString()
+                });
+                this.showSmartToast('✅ تم حفظ الإعدادات بنجاح', 'success');
+            } catch (error) {
+                console.error("Firebase save error:", error);
+                this.showSmartToast('❌ فشل حفظ الإعدادات، جاري المحاولة...', 'error');
+                // 🟢 إعادة محاولة ذكية (باستخدام Debounce لضمان عدم ازدحام الطلبات)
+                this.retrySaveSettingDebounced(key, value); 
+            }
+        } else {
+            this.showSmartToast('⚠️ تم الحفظ محلياً، سجّل الدخول للمزامنة', 'info');
+        }
+    }
+    
+    // 🟢 دالة إعادة محاولة مُحسَّنة ومُخفَّضة
+    retrySaveSettingDebounced = debounce(this.retrySaveSetting.bind(this), 5000); 
+
+    /**
+     * @brief إعادة محاولة حفظ ذكية
+     */
+    async retrySaveSetting(key, value) {
+        if (this.userDocRef) {
+            try {
+                await updateDoc(this.userDocRef, {
+                    [`settings.${key}`]: value.toString()
+                });
+                this.showSmartToast('✅ تمت مزامنة الإعدادات المتأخرة', 'success');
+            } catch (error) {
+                console.error("Retry failed:", error);
+                this.showSmartToast('❌ فشل نهائي في مزامنة الإعدادات', 'error');
+            }
+        }
+    }
+
+    /**
+     * @brief مراقب المفضلة المحسن
+     */
+    setupFavoritesListener() {
+        if (!this.userDocRef) {
+            updateFavoritesCount(0);
+            return;
+        }
+
+        // 🟢 مراقب فوري مع معالجة محسنة
+        this.favoritesListener = onSnapshot(this.userDocRef,
+            { includeMetadataChanges: true }, // 🟢 تضمين التغييرات في البيانات الوصفية لتحسين التتبع
+            (docSnap) => {
+                const source = docSnap.metadata.hasPendingWrites ? "Local" : "Server";
+                console.log(`Favorites update source: ${source}`);
+                
+                if (docSnap.exists()) {
+                    const favorites = docSnap.data().favorites || [];
+                    updateFavoritesCount(favorites.length);
+                    // 🟢 استخدام IndexedDB أو Storage API بدلاً من localStorage لبيانات كبيرة مثل المفضلة لتحسين الأداء (تحديث محلي مؤقت)
+                    localStorage.setItem('user_firebase_favorites', JSON.stringify(favorites)); 
+
+                    // 🟢 تحديث ذكي للواجهة
+                    this.updateFavoritesUI(favorites);
+                } else {
+                    updateFavoritesCount(0);
+                }
+            },
+            (error) => {
+                console.error("Favorites listener error:", error);
+                updateFavoritesCountFromLocalFallback();
+                this.showSmartToast('⚠️ فشل اتصال المفضلة، جاري استخدام البيانات المحلية', 'warning');
+            }
+        );
+    }
+
+    /**
+     * @brief تحديث واجهة المفضلة
+     */
+    updateFavoritesUI(favorites) {
+        const favoriteIds = new Set(favorites.map(fav => fav.id));
+        // 🟢 تحسين الأداء: تحديث العناصر الظاهرة فقط أو باستخدام تفويض الأحداث
+        document.querySelectorAll('.anime-card[data-anime-id]').forEach(card => {
+            const animeId = card.dataset.animeId;
+            const isFavorite = favoriteIds.has(animeId);
+            card.classList.toggle('favorited', isFavorite);
+        });
+        
+        // 🟢 إطلاق حدث مخصص لتحديث قائمة المفضلة الرئيسية
+        document.body.dispatchEvent(new CustomEvent('favoritesUpdated', { detail: { favorites } }));
+    }
+
+    /**
+     * @brief تبديل المفضلة مع ذكاء إضافي (تم تصحيح الأخطاء المنطقية هنا)
+     */
+    async toggleFavorite(animeData) {
+        if (!this.userDocRef) {
+            this.showSmartToast('🔒 سجّل الدخول لحفظ مفضلتك', 'warning');
+            return false;
+        }
+
+        const animeRef = this.userDocRef;
+        // 🟢 تحسين: قراءة الكاش المحلي (المزامنة) لتقليل القراءة من Firebase قبل التحديث
+        const currentFavoritesCache = JSON.parse(localStorage.getItem('user_firebase_favorites') || '[]');
+        const isCurrentlyFav = currentFavoritesCache.some(fav => fav.id === animeData.id);
+        
+        let success = false;
+        
+        // 🟢 تحسين: التأكد من أن حزمة البيانات التي سيتم إرسالها إلى Firebase تحتوي على حقول محددة
+        const dataToSend = {
+            id: animeData.id,
+            title: animeData.title || animeData.id, // استخدام ID كاحتياطي
+            imageUrl: animeData.imageUrl || 'default.jpg',
+            // يمكن إضافة المزيد من الحقول الضرورية للمستقبل هنا
+        };
+
+        try {
+            if (isCurrentlyFav) {
+                // 🟢 تصحيح: استخدام بيانات دقيقة للإزالة
+                await updateDoc(animeRef, {
+                    favorites: arrayRemove(dataToSend)
+                });
+                this.showSmartToast(`💔 تم إزالة ${animeData.title || ''} من المفضلة`, 'info');
+                logEvent(analytics, 'remove_from_favorites', { anime_id: animeData.id }); // 🟢 تسجيل الحدث
+                success = false;
+            } else {
+                // 🟢 تصحيح: استخدام بيانات دقيقة للإضافة
+                await updateDoc(animeRef, {
+                    favorites: arrayUnion(dataToSend)
+                });
+                this.showSmartToast(`💖 تمت إضافة ${animeData.title || ''} للمفضلة`, 'success');
+                logEvent(analytics, 'add_to_favorites', { anime_id: animeData.id }); // 🟢 تسجيل الحدث
+                success = true;
+            }
+            return success;
+        } catch (error) {
+            console.error("Toggle favorite error:", error);
+            this.showSmartToast('❌ فشل في التحديث. تأكد من أن حجم المستند لا يتجاوز الحد المسموح به.', 'error'); // 🟢 رسالة خطأ مُحسّنة
+            return null;
+        }
+    }
+
+    /**
+     * @brief عرض إشعارات ذكية
+     */
+    showSmartToast(message, type = 'info') {
+        if (window.aniListManager && typeof window.aniListManager.showToast === 'function') {
+            window.aniListManager.showToast(message, type);
+        } else {
+            // 🟢 fallback لإشعارات المتصفح
+            console.log(`${type.toUpperCase()}: ${message}`);
+        }
+    }
+
+    /**
+     * @brief تنظيف المراقبات والموارد
+     */
+    cleanupListeners() {
+        if (this.favoritesListener) {
+            this.favoritesListener(); // إيقاف مراقب المفضلة
+            this.favoritesListener = null;
+            console.log('Favorites listener cleaned up.');
+        }
+        // 🟢 تنظيف ذاكرة الكاش عند تسجيل الخروج
+        if (!this.currentUser) {
+            this.settingsCache.clear();
+        }
+    }
+}
+
+const dataLayer = new DataLayer(auth, firestore); // 🟢 تهيئة Singleton
+
+// ------------------------------------------------------------------
+// 3. وظائف المساعدة المحسنة (Enhanced Helper Functions)
+// ------------------------------------------------------------------
+
+/**
+ * @brief تحديث عداد المفضلة مع تأثيرات بصرية
+ */
+function updateFavoritesCount(count = null) {
+    const countElement = document.getElementById('favoritesCount');
+    if (!countElement) return;
+
+    const finalCount = count !== null ? count : getLocalFavoritesCount();
+    
+    // 🟢 تأثيرات بصرية محسنة (استخدام requestAnimationFrame لتجنب مشاكل الأداء)
+    requestAnimationFrame(() => {
+        if (countElement.textContent !== finalCount.toString()) {
+            countElement.textContent = finalCount;
+            countElement.classList.add('pulse');
+            setTimeout(() => countElement.classList.remove('pulse'), 600);
+        }
+    });
+}
+
+function getLocalFavoritesCount() {
+    // 🟢 استخدام المفضلة المزامنة بدلاً من المفضلة المحلية العامة
+    const favorites = JSON.parse(localStorage.getItem('user_firebase_favorites') || '[]');
+    return favorites.length;
+}
+
+function updateFavoritesCountFromLocalFallback() {
+    updateFavoritesCount(getLocalFavoritesCount());
 }
 
 /**
- * عرض قائمة الأنمي مع Virtual Scroll محسن
+ * @brief تهيئة التبديلات مع تحسينات الأداء
+ * @param {boolean} returnOnly - إذا كانت true، تعيد الإعدادات المحلية دون تهيئة الواجهة
  */
-function displayAnime(list) {
-  if (!grid) return;
-  
-  const fragment = document.createDocumentFragment();
+function setupSidebarToggles(returnOnly = false) {
+    const toggles = [
+        'premiumDarkToggle', 'smartStreamToggle', 'autoDownloadToggle',
+        'autoQualityToggle', 'episodeNotificationsToggle', 'dataSaverToggle',
+        'hideCompletedToggle', 'autoProgressToggle', 'smartSubsToggle'
+    ];
+    
+    const localSettings = {};
 
-  if (list.length === 0) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <i class="fa-solid fa-search"></i>
-        <h3>لم يتم العثور على نتائج</h3>
-        <p>حاول استخدام كلمات بحث مختلفة أو تغيير الفلتر</p>
-      </div>
-    `;
-    return;
-  }
+    // 🟢 تهيئة مجمعة للأداء
+    toggles.forEach(toggleId => {
+        const toggle = document.getElementById(toggleId);
+        const savedState = localStorage.getItem(toggleId);
+        const isChecked = savedState === 'true';
 
-  // عرض أول 20 عنصر فقط للأداء
-  const itemsToShow = list.slice(0, 20);
-  
-  itemsToShow.forEach(anime => {
-    fragment.appendChild(createAnimeCard(anime));
-  });
+        // 🟢 التخزين في الكائن للإعادة
+        if (savedState !== null) {
+            localSettings[toggleId] = savedState;
+        } else {
+            // 🟢 استخدام الحالة الافتراضية
+            localSettings[toggleId] = toggle ? toggle.checked.toString() : 'false'; 
+        }
 
-  grid.innerHTML = "";
-  grid.appendChild(fragment);
+        if (returnOnly) return; // الخروج إذا كان المطلوب هو الإعادة فقط
 
-  // تحميل الباقي عند الحاجة
-  if (list.length > 20) {
-    setTimeout(() => loadMoreAnime(list, 20), 100);
-  }
-
-  // تطبيق تأثيرات الظهور
-  applyScrollAnimations();
-}
-
-/**
- * تحميل المزيد من الأنميات (Lazy Loading)
- */
-function loadMoreAnime(list, startIndex) {
-  const remainingItems = list.slice(startIndex);
-  const fragment = document.createDocumentFragment();
-  
-  remainingItems.forEach(anime => {
-    fragment.appendChild(createAnimeCard(anime));
-  });
-  
-  grid.appendChild(fragment);
-  applyScrollAnimations();
-}
-
-/**
- * تطبيق البحث والتصفية والفرز
- */
-function applyFilterAndDisplay() {
-  const keyword = searchInput.value.trim();
-  
-  // 1. تطبيق التصفية حسب النوع
-  let filteredList = filterAnime(animeList, currentFilter);
-  
-  // 2. تطبيق البحث
-  filteredList = smartSearch(filteredList, keyword);
-  
-  // 3. تطبيق الفرز
-  currentAnimeList = sortAnime(filteredList, currentSort);
-  
-  // 4. العرض
-  displayAnime(currentAnimeList);
-}
-
-// ====================================================================
-// ✅ إدارة المفضلة والتفاعلات
-// ====================================================================
-
-/**
- * تبديل حالة المفضلة
- */
-function toggleFavorite(event, anime) {
-  event.stopPropagation();
-  
-  const favoriteBtn = event.currentTarget;
-  const isCurrentlyFavorite = favoriteBtn.classList.contains('active');
-  
-  if (isCurrentlyFavorite) {
-    // إزالة من المفضلة
-    favorites = favorites.filter(fav => fav.title !== anime.title);
-    favoriteBtn.classList.remove('active');
-    showToast('تمت الإزالة من المفضلة', 'info');
-  } else {
-    // إضافة إلى المفضلة
-    favorites.push(anime);
-    favoriteBtn.classList.add('active');
-    showToast('تمت الإضافة إلى المفضلة', 'success');
-  }
-  
-  localStorage.setItem('favorites', JSON.stringify(favorites));
-  updateFavoritesCount();
-}
-
-/**
- * تحديث عداد المفضلة
- */
-function updateFavoritesCount() {
-  const favoritesBadge = document.querySelector('.nav-badge');
-  if (favoritesBadge) {
-    favoritesBadge.textContent = favorites.length;
-  }
-}
-
-/**
- * اختيار الأنمي للعرض
- */
-function selectAnime(anime) {
-  localStorage.setItem("selectedAnime", JSON.stringify(anime));
-  window.location.href = "anime.html";
-}
-
-// ====================================================================
-// ✅ إدارة سجل البحث المحسنة
-// ====================================================================
-
-function updateRecentSearches() {
-  if (!recentBox) return;
-  
-  recentBox.innerHTML = '';
-
-  if (searchHistory.length === 0) {
-    recentBox.innerHTML = `
-      <div class="empty-recent">
-        <i class="fa-solid fa-clock-rotate-left"></i>
-        <p>لا يوجد سجل بحث بعد</p>
-      </div>
-    `;
-    return;
-  }
-
-  const fragment = document.createDocumentFragment();
-
-  searchHistory.slice(0, 8).forEach(term => {
-    const item = document.createElement('div');
-    item.className = 'recent-item';
-    item.innerHTML = `
-      <span>${term}</span>
-      <div class="recent-actions">
-        <button class="replay" title="إعادة البحث">
-          <i class="fa-solid fa-rotate-right"></i>
-        </button>
-        <button class="remove" title="حذف">
-          <i class="fa-solid fa-times"></i>
-        </button>
-      </div>
-    `;
-
-    // إعادة البحث
-    item.querySelector('.replay').addEventListener('click', (e) => {
-      e.stopPropagation();
-      searchInput.value = term;
-      applyFilterAndDisplay();
+        if (toggle) {
+            // التحميل من الكاش أولاً وتطبيق التأثيرات
+            if (savedState !== null) {
+                toggle.checked = isChecked;
+                dataLayer.applySettingEffects(toggleId, isChecked);
+            }
+            
+            // 🟢 معالجة أحداث محسنة
+            toggle.removeEventListener('change', toggleChangeHandler); // 🟢 إزالة المستمع القديم لمنع التكرار
+            toggle.addEventListener('change', toggleChangeHandler);
+        }
     });
     
-    // حذف عنصر محدد
-    item.querySelector('.remove').addEventListener('click', (e) => {
-      e.stopPropagation();
-      searchHistory = searchHistory.filter(t => t !== term);
-      localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-      updateRecentSearches();
-    });
-    
-    // البحث بالنقر على النص
-    item.querySelector('span').addEventListener('click', () => {
-      searchInput.value = term;
-      applyFilterAndDisplay();
-    });
-    
-    fragment.appendChild(item);
-  });
-
-  recentBox.appendChild(fragment);
-
-  // زر مسح الكل
-  const clearBtn = document.createElement('button');
-  clearBtn.className = 'clear-all-btn';
-  clearBtn.innerHTML = '<i class="fa-solid fa-trash"></i> مسح السجل';
-  clearBtn.addEventListener('click', () => {
-    if (confirm('هل تريد مسح سجل البحث بالكامل؟')) {
-      localStorage.removeItem('searchHistory');
-      searchHistory = [];
-      updateRecentSearches();
-      showToast('تم مسح سجل البحث', 'success');
-    }
-  });
-  recentBox.appendChild(clearBtn);
+    return localSettings;
 }
 
-function saveSearchTerm(keyword) {
-  const term = keyword.trim();
-  if (term && !searchHistory.includes(term)) {
-    searchHistory.unshift(term);
-    if (searchHistory.length > 10) searchHistory.pop();
-    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-    updateRecentSearches();
-  }
-}
-
-// ====================================================================
-// ✅ تأثيرات وإشعارات محسنة
-// ====================================================================
+// 🟢 مُستمع حدث مُخفَّض (Debounced) للتبديلات
+const toggleChangeHandler = debounce(async (e) => {
+    const toggleId = e.target.id;
+    const isChecked = e.target.checked;
+    await dataLayer.saveSetting(toggleId, isChecked);
+}, 300); // تأخير بسيط لتقليل عدد عمليات الحفظ في Firebase
 
 /**
- * تأثيرات الظهور عند التمرير
+ * @brief دالة تأخير محسنة (Debounce)
  */
-function applyScrollAnimations() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = "1";
-        entry.target.style.transform = "translateY(0)";
-        entry.target.style.transition = "all 0.6s ease-out";
-      }
-    });
-  }, { 
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  });
-
-  document.querySelectorAll(".anime-card").forEach(card => {
-    card.style.opacity = "0";
-    card.style.transform = "translateY(30px)";
-    observer.observe(card);
-  });
+function debounce(func, delay, immediate = false) {
+    let timeoutId;
+    return function(...args) {
+        const context = this;
+        const later = () => {
+            timeoutId = null;
+            if (!immediate) func.apply(context, args);
+        };
+        
+        const callNow = immediate && !timeoutId;
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(later, delay);
+        
+        if (callNow) func.apply(context, args);
+    };
 }
 
 /**
- * عرض الإشعارات
+ * @brief دالة تحديد الهوية الفريدة
  */
-function showToast(message, type = 'info') {
-  // إنشاء عنصر Toast إذا لم يكن موجوداً
-  let toast = document.getElementById('toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'toast';
-    toast.className = 'toast';
-    document.body.appendChild(toast);
-  }
-  
-  toast.textContent = message;
-  toast.className = `toast ${type} show`;
-  
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 3000);
+function generateUniqueId() {
+    // 🟢 استخدام الأحدث والأكثر كفاءة لتوليد الهوية
+    return crypto.randomUUID ? crypto.randomUUID() : 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
 }
 
-// ====================================================================
-// ✅ تهيئة التطبيق وتفعيل المستمعات المحسنة
-// ====================================================================
+// ------------------------------------------------------------------
+// 4. ربط الأحداث الرئيسية المحسن (Enhanced Event Bindings)
+// ------------------------------------------------------------------
 
-function initializeApp() {
-  // 1. تهيئة القوائم
-  currentAnimeList = sortAnime(animeList, currentSort);
-  
-  // 2. العرض الأولي
-  displayAnime(currentAnimeList);
-
-  // 3. تحديث الواجهة
-  updateRecentSearches();
-  updateFavoritesCount();
-  
-  // 4. تعيين القيم الافتراضية
-  if (sortSelect) sortSelect.value = currentSort;
-  if (filterSelect) filterSelect.value = currentFilter;
-  
-  // 5. تحميل الإعدادات المحفوظة
-  loadSavedSettings();
-}
-
-function loadSavedSettings() {
-  const savedSettings = localStorage.getItem('appSettings');
-  if (savedSettings) {
-    const settings = JSON.parse(savedSettings);
-    if (settings.sort) {
-      currentSort = settings.sort;
-      if (sortSelect) sortSelect.value = currentSort;
-    }
-    if (settings.filter) {
-      currentFilter = settings.filter;
-      if (filterSelect) filterSelect.value = currentFilter;
-    }
-  }
-}
-
-function saveSettings() {
-  const settings = {
-    sort: currentSort,
-    filter: currentFilter,
-    theme: 'dark'
-  };
-  localStorage.setItem('appSettings', JSON.stringify(settings));
-}
-
-// ====================================================================
-// ✅ تفعيل المستمعات (Event Listeners)
-// ====================================================================
-
-// 1. البحث (Debounced)
-if (searchInput) {
-  const debouncedSearch = debounce(() => {
-    applyFilterAndDisplay();
-  }, 300);
-  
-  searchInput.addEventListener('input', debouncedSearch);
-
-  searchInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      saveSearchTerm(searchInput.value);
-      applyFilterAndDisplay();
-      searchInput.blur();
-    }
-  });
-}
-
-// 2. قائمة البروفايل
-if (profileBtn && profileMenu) {
-  profileBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    profileMenu.classList.toggle('active');
-  });
-  
-  document.addEventListener('click', e => {
-    if (!profileMenu.contains(e.target) && !profileBtn.contains(e.target)) {
-      profileMenu.classList.remove('active');
-    }
-  });
-}
-
-// 3. لوحة الإعدادات
-if (settingsBtn && settingsPanel && closeSettings) {
-  settingsBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    settingsPanel.classList.add('active');
-  });
-  
-  closeSettings.addEventListener('click', () => {
-    settingsPanel.classList.remove('active');
-    saveSettings();
-  });
-  
-  document.addEventListener('click', (e) => {
-    if (settingsPanel.classList.contains('active') && 
-        !settingsPanel.contains(e.target) && 
-        !settingsBtn.contains(e.target)) {
-      settingsPanel.classList.remove('active');
-      saveSettings();
-    }
-  });
-}
-
-// 4. التحكم في الفرز
-if (sortSelect) {
-  sortSelect.addEventListener('change', (e) => {
-    currentSort = e.target.value;
-    applyFilterAndDisplay();
-    settingsPanel.classList.remove('active');
-  });
-}
-
-// 5. التحكم في التصفية
-if (filterSelect) {
-  filterSelect.addEventListener('change', (e) => {
-    currentFilter = e.target.value;
-    applyFilterAndDisplay();
-    settingsPanel.classList.remove('active');
-  });
-}
-
-// 6. البار السفلي
-if (footerIcons.length > 0) {
-  footerIcons.forEach(icon => {
-    icon.addEventListener("click", function() {
-      footerIcons.forEach(i => i.classList.remove("active"));
-      this.classList.add("active");
-      
-      // تأثير النقر
-      this.style.transform = "scale(1.2)";
-      setTimeout(() => this.style.transform = "scale(1)", 200);
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Initializing Oraa Slayer...');
+    
+    // 🟢 تهيئة متقدمة مع تسلسل ذكي
+    initializeAppSequentially();
+    
+    // 🟢 إضافة مُستمع لإدارة الذاكرة عند مغادرة الصفحة
+    window.addEventListener('beforeunload', () => {
+        dataLayer.cleanupListeners();
     });
-  });
-}
-
-// 7. إعادة تحميل الصور التالفة
-document.addEventListener('error', function(e) {
-  if (e.target.tagName === 'IMG' && e.target.classList.contains('anime-img')) {
-    e.target.src = 'https://via.placeholder.com/200x280/1a1a2e/8b7bff?text=Anime+Image';
-  }
-}, true);
-
-// 8. تهيئة التطبيق عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', initializeApp);
-
-// 9. تحسين الأداء عند تبديل التبويبات
-document.addEventListener('visibilitychange', function() {
-  if (document.hidden) {
-    // توفير الموارد عندما تكون الصفحة غير مرئية
-    document.querySelectorAll('img').forEach(img => {
-      if (!img.classList.contains('lazy-loaded')) {
-        img.loading = 'lazy';
-      }
-    });
-  }
 });
 
-// ====================================================================
-// ✅ CSS إضافي مقترح (يضاف لملف الـ CSS)
-// ====================================================================
-`
-/* تحسينات البطاقات */
-.anime-card {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.6s ease-out;
+/**
+ * @brief التهيئة المتسلسلة الذكية
+ */
+async function initializeAppSequentially() {
+    try {
+        // 1. مراقب المصادقة الذكي
+        setupAuthObserver();
+        
+        // 2. تهيئة واجهة المستخدم الأساسية
+        setupBasicUI();
+        
+        // 3. تهيئة نظام البحث
+        setupSearchSystem();
+        
+        // 4. تهيئة الإعدادات
+        setupSidebarToggles();
+        
+        // 5. تهيئة التحسينات الإضافية
+        setupEnhancements();
+        
+        console.log('✅ All systems initialized successfully');
+        
+    } catch (error) {
+        console.error('❌ Initialization failed:', error);
+    }
 }
 
-.anime-card-inner {
-  position: relative;
-  border-radius: 16px;
-  overflow: hidden;
-  background: rgba(26, 26, 60, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(139, 123, 255, 0.2);
+/**
+ * @brief مراقب المصادقة المحسن
+ */
+function setupAuthObserver() {
+    onAuthStateChanged(auth, async (user) => {
+        // 🟢 تحديث فوري للحالة قبل أي عملية غير متزامنة
+        updateUserInterface(user);
+        await dataLayer.initializeUser(user);
+    });
 }
 
-.anime-image-container {
-  position: relative;
-  overflow: hidden;
+/**
+ * @brief تحديث واجهة المستخدم الذكية
+ */
+function updateUserInterface(user) {
+    const elements = {
+        profileName: document.getElementById('profileName'),
+        userEmail: document.getElementById('userEmail'),
+        loginMenuItem: document.getElementById('loginMenuItem'),
+        logoutMenuItem: document.getElementById('logoutMenuItem'),
+        headerName: document.getElementById('headerName'),
+        headerProfile: document.getElementById('headerProfile')
+    };
+
+    if (user) {
+        const userName = user.displayName || user.email.split('@')[0] || 'مستخدم مميز';
+        const userEmail = user.email || 'غير متوفر';
+        const userImage = user.photoURL || 'https://i.ibb.co/L5h92d1/user-avatar.png';
+        
+        // 🟢 تحديث جميع العناصر دفعة واحدة مع التحقق من الوجود
+        requestAnimationFrame(() => { // 🟢 لضمان سلاسة تحديث الواجهة
+            if (elements.profileName) elements.profileName.textContent = userName;
+            if (elements.headerName) elements.headerName.textContent = userName;
+            if (elements.userEmail) elements.userEmail.textContent = userEmail;
+            if (elements.loginMenuItem) elements.loginMenuItem.style.display = 'none';
+            if (elements.logoutMenuItem) elements.logoutMenuItem.style.display = 'block';
+            if (elements.headerProfile) elements.headerProfile.src = userImage;
+        });
+        
+        // 🟢 تجنب عرض التوست عند أول تحميل
+        if (performance.now() > 2000) { 
+             dataLayer.showSmartToast(`🎉 مرحباً بعودتك، ${userName}!`, 'success');
+        }
+    } else {
+        // حالة الزائر
+        requestAnimationFrame(() => { // 🟢 لضمان سلاسة تحديث الواجهة
+            if (elements.profileName) elements.profileName.textContent = 'زائر';
+            if (elements.headerName) elements.headerName.textContent = 'زائر';
+            if (elements.userEmail) elements.userEmail.textContent = 'سجّل الدخول';
+            if (elements.loginMenuItem) elements.loginMenuItem.style.display = 'block';
+            if (elements.logoutMenuItem) elements.logoutMenuItem.style.display = 'none';
+            if (elements.headerProfile) elements.headerProfile.src = 'https://i.ibb.co/YRShYmn/avatar.png';
+        });
+    }
 }
 
-.anime-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 50%, rgba(0,0,0,0.8) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 12px;
+/**
+ * @brief إعداد واجهة المستخدم الأساسية
+ */
+function setupBasicUI() {
+    // زر العودة للأعلى
+    setupScrollToTop();
+    
+    // القائمة المنسدلة للمستخدم
+    setupUserDropdown();
+    
+    // الشريط الجانبي
+    setupSidebar();
+    
+    // التنقل السفلي
+    setupBottomNavigation();
+    
+    // 🟢 تفويض حدث النقر العام للبطاقات
+    setupCardClickDelegation();
+    
+    // 🟢 إضافة مستمع لزر تسجيل الخروج
+    const logoutBtn = document.getElementById('logoutMenuItem');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await signOut(auth);
+                dataLayer.showSmartToast('👋 تم تسجيل الخروج بنجاح', 'info');
+            } catch (error) {
+                console.error('Logout error:', error);
+                dataLayer.showSmartToast('❌ فشل تسجيل الخروج', 'error');
+            }
+        });
+    }
 }
 
-.anime-card:hover .anime-overlay {
-  opacity: 1;
+/**
+ * @brief إعداد نظام البحث الذكي
+ */
+function setupSearchSystem() {
+    const searchInput = document.getElementById('search');
+    if (searchInput) {
+        // 🟢 استخدام Debounce مُحسَّن
+        const debouncedSearch = debounce((searchValue) => {
+            if (window.aniListManager && typeof window.aniListManager.searchAnime === 'function') {
+                window.aniListManager.searchAnime(searchValue);
+                logEvent(analytics, 'search', { search_term: searchValue }); // 🟢 تسجيل الحدث
+            }
+        }, 300);
+
+        searchInput.addEventListener('input', (e) => {
+            const value = e.target.value.trim();
+            
+            // 🟢 تأثيرات بصرية أثناء البحث
+            requestAnimationFrame(() => { // 🟢 تحديث بصري سلس
+                 if (value.length > 0) {
+                    searchInput.classList.add('searching');
+                } else {
+                    searchInput.classList.remove('searching');
+                }
+            });
+           
+            debouncedSearch(value);
+        });
+
+        // 🟢 اختصارات لوحة المفاتيح
+        searchInput.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') { // دعم MetaKey (Cmd على Mac)
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+    }
 }
 
-.favorite-btn {
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  align-self: flex-end;
+/**
+ * @brief إعداد زر العودة للأعلى
+ */
+function setupScrollToTop() {
+    const toHomeBtn = document.querySelector('.to-home-btn');
+    if (toHomeBtn) {
+        toHomeBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // 🟢 استخدام مُستمع مُخفَّض ومؤقت (Passive)
+        window.addEventListener('scroll', debounce(() => {
+            const isVisible = window.scrollY > 400;
+            // 🟢 تحديث مرئي في requestAnimationFrame
+            requestAnimationFrame(() => { 
+                toHomeBtn.style.opacity = isVisible ? '1' : '0';
+                toHomeBtn.style.visibility = isVisible ? 'visible' : 'hidden';
+                toHomeBtn.style.transform = isVisible ? 'scale(1)' : 'scale(0.8)';
+            });
+        }, 100), { passive: true });
+    }
 }
 
-.favorite-btn.active {
-  background: var(--secondary-color);
-  color: white;
+/**
+ * @brief إعداد القائمة المنسدلة
+ */
+function setupUserDropdown() {
+    const userInfo = document.getElementById('userInfo');
+    const userMenu = document.getElementById('userMenu');
+    
+    if (userInfo && userMenu) {
+        userInfo.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // 🟢 استخدام aria-expanded لتعزيز إمكانية الوصول
+            const isShown = userMenu.classList.toggle('show');
+            userInfo.setAttribute('aria-expanded', isShown);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!userInfo.contains(e.target)) {
+                userMenu.classList.remove('show');
+                userInfo.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
 }
 
-.favorite-btn:hover {
-  transform: scale(1.1);
+/**
+ * @brief إعداد الشريط الجانبي
+ */
+function setupSidebar() {
+    const settingsToggle = document.getElementById('settingsToggle');
+    const closeSidebarBtn = document.getElementById('closeSidebar');
+    
+    [settingsToggle, closeSidebarBtn].forEach(element => {
+        if (element) {
+            element.addEventListener('click', () => {
+                if (window.aniListManager && typeof window.aniListManager.toggleSidebar === 'function') {
+                    window.aniListManager.toggleSidebar();
+                }
+            });
+        }
+    });
 }
 
-.anime-year, .anime-genre {
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  font-weight: 600;
+/**
+ * @brief إعداد التنقل السفلي
+ */
+function setupBottomNavigation() {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            // 🟢 تأثيرات النقر في requestAnimationFrame
+            requestAnimationFrame(() => {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+    });
 }
 
-.anime-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
+/**
+ * @brief تفويض أحداث النقر على بطاقة الأنمي
+ */
+function setupCardClickDelegation() {
+    document.body.addEventListener('click', (e) => {
+        const card = e.target.closest('.anime-card[data-anime-id]');
+        const favoriteBtn = e.target.closest('.favorite-btn');
+
+        if (favoriteBtn) {
+            const favCard = favoriteBtn.closest('.anime-card[data-anime-id]');
+            if (favCard) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // 🟢 استخراج البيانات المطلوبة بشكل حكيم
+                const animeData = {
+                    id: favCard.dataset.animeId,
+                    title: favCard.dataset.animeTitle || 'غير معروف',
+                    imageUrl: favCard.dataset.animeImage
+                    // ... يمكن إضافة المزيد من البيانات الضرورية
+                };
+                
+                dataLayer.toggleFavorite(animeData);
+            }
+        } else if (card) {
+            e.preventDefault();
+            e.stopPropagation();
+            const animeId = card.dataset.animeId;
+            const animeUrl = card.dataset.animeUrl || `anime.html?id=${animeId}`;
+            
+            // 🟢 توجيه سريع وتوثيق الحدث
+            logEvent(analytics, 'view_anime', { anime_id: animeId, source: 'card' });
+            window.location.href = animeUrl;
+        }
+    });
 }
 
-.genre-badge {
-  background: var(--gradient-primary);
-  color: white;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 0.7rem;
-  font-weight: 600;
+/**
+ * @brief إعداد التحسينات الإضافية
+ */
+function setupEnhancements() {
+    // 🟢 التحميل المسبق الذكي
+    setupSmartPreloading();
+    
+    // 🟢 إعدادات الأداء
+    setupPerformanceOptimizations();
+    
+    // 🟢 (إضافة: تم تمكين التتبع الأولي لحجم حزمة SDK)
+    logEvent(analytics, 'sdk_load_time', { duration_ms: performance.now() });
 }
 
-/* حالة عدم وجود نتائج */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: rgba(255, 255, 255, 0.7);
+/**
+ * @brief التحميل المسبق المحسن
+ */
+function setupSmartPreloading() {
+    // 🟢 استخدام requestIdleCallback أو setTimeout في حال عدم توفره
+    const preloadAction = (link) => {
+        const linkElement = document.createElement('link');
+        linkElement.rel = 'prefetch';
+        linkElement.href = link;
+        document.head.appendChild(linkElement);
+    };
+
+    document.body.addEventListener('mouseover', function(e) {
+        const card = e.target.closest('.anime-card');
+        if (card && card.dataset.animeId) {
+            const animeId = card.dataset.animeId;
+            const link = card.dataset.animeUrl || `anime.html?id=${animeId}`;
+            
+            if (document.head.querySelector(`link[rel="prefetch"][href="${link}"]`)) {
+                return; // تجنب الإضافة المتكررة
+            }
+            
+            if ('requestIdleCallback' in window) {
+                window.requestIdleCallback(() => preloadAction(link), { timeout: 1000 }); // مهلة قصوى
+            } else {
+                setTimeout(() => preloadAction(link), 300);
+            }
+        }
+    }, { passive: true });
 }
 
-.empty-state i {
-  font-size: 4rem;
-  margin-bottom: 20px;
-  opacity: 0.5;
+// 🔴🔴🔴 تم إزالة دالة setupSmartCardClicks بالكامل لحل التعارض (القسم 10) 🔴🔴🔴
+
+
+/**
+ * @brief إعدادات تحسين الأداء
+ */
+function setupPerformanceOptimizations() {
+    // 🟢 تقليل استخدام الذاكرة (إعادة التنفيذ الأفضل)
+    window.addEventListener('beforeunload', () => {
+        dataLayer.cleanupListeners();
+    });
+
+    // 🟢 تحميل كسول للصور (استخدام IntersectionObserver فقط)
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    // 🟢 استخدام مصدر عالي الجودة أو مُحسَّن
+                    const highResSrc = img.dataset.src || img.dataset.highResSrc; 
+                    if (highResSrc) {
+                        img.src = highResSrc;
+                        if (img.dataset.srcset) img.srcset = img.dataset.srcset;
+                        img.onload = () => { img.classList.add('loaded'); }; // 🟢 تأثير بصري عند التحميل
+                        observer.unobserve(img);
+                    }
+                }
+            });
+        }, { rootMargin: '0px 0px 200px 0px' }); // 🟢 تحميل مسبق بـ 200px قبل الظهور
+
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            imageObserver.observe(img);
+        });
+    } else {
+        // 🟢 Fallback بسيط للمتصفحات القديمة
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            img.src = img.dataset.src;
+        });
+    }
 }
 
-.empty-state h3 {
-  margin-bottom: 10px;
-  color: var(--text-light);
-}
+// 🟢 تصدير الدوال للاستخدام العالمي
+window.oraaDataLayer = dataLayer;
+window.oraaHelpers = {
+    debounce,
+    updateFavoritesCount,
+    generateUniqueId,
+    updateUserInterface // 🟢 تصدير لتحديث الواجهة من أي مكان
+};
 
-/* سجل البحث المحسن */
-.empty-recent {
-  text-align: center;
-  padding: 30px 20px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.empty-recent i {
-  font-size: 2rem;
-  margin-bottom: 10px;
-  opacity: 0.5;
-}
-
-.recent-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.recent-item:hover {
-  background: rgba(139, 123, 255, 0.1);
-  transform: translateX(-5px);
-}
-
-.recent-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.recent-actions button {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-.recent-actions button:hover {
-  color: var(--primary-color);
-  background: rgba(139, 123, 255, 0.1);
-}
-
-.clear-all-btn {
-  width: 100%;
-  padding: 12px;
-  background: rgba(255, 107, 157, 0.1);
-  border: 1px solid var(--secondary-color);
-  color: var(--secondary-color);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.clear-all-btn:hover {
-  background: var(--secondary-color);
-  color: white;
-  transform: translateY(-2px);
-}
-
-/* الإشعارات */
-.toast {
-  position: fixed;
-  bottom: 100px;
-  right: 20px;
-  background: rgba(45, 45, 75, 0.95);
-  backdrop-filter: blur(20px);
-  color: white;
-  padding: 16px 24px;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border-left: 4px solid var(--primary-color);
-  opacity: 0;
-  transform: translateX(100%);
-  transition: all 0.3s ease;
-  z-index: 1000;
-  max-width: 300px;
-}
-
-.toast.show {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.toast.success {
-  border-left-color: var(--success-color);
-}
-
-.toast.error {
-  border-left-color: var(--error-color);
-}
-
-.toast.info {
-  border-left-color: var(--primary-color);
-}
-
-/* تحسينات التجاوب */
-@media (max-width: 768px) {
-  .anime-meta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-  
-  .genre-badge {
-    align-self: flex-start;
-  }
-  
-  .toast {
-    right: 10px;
-    left: 10px;
-    max-width: none;
-  }
-}
-`
+console.log('🎯 Oraa Slayer Main.js loaded successfully (MAX Performance & Integration)');

@@ -6,20 +6,23 @@
 <title>👤 بروفايلي - OraaSlayer</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
+/* 🎨 المتغيرات والألوان المحسنة */
 :root {
-  --primary: #8B7BFF;
-  --secondary: #FF7BA9;
-  --accent: #5FD8FF;
-  --dark: #0F0F25;
-  --card: rgba(26, 26, 60, 0.95);
+  --primary: #5FD8FF; /* لون أزرق سماوي جديد */
+  --secondary: #8B7BFF; /* لون بنفسجي جذاب */
+  --accent: #FF7BA9; /* لون وردي/أحمر للتأكيد */
+  --dark: #0A0A1F; /* خلفية أعمق */
+  --card: rgba(18, 18, 40, 0.85); /* بطاقة شبه شفافة للزجاجية */
   --text: #FFFFFF;
-  --glass: rgba(255, 255, 255, 0.15);
-  --border: rgba(255, 255, 255, 0.2);
+  --glass: rgba(255, 255, 255, 0.1); /* أساس زجاجي خفيف */
+  --border: rgba(255, 255, 255, 0.15); /* حدود أرق */
   --success: #3DD8A9;
   --error: #FF6B82;
+  --info: #5FD8FF; 
+  --shadow-color: rgba(0, 0, 0, 0.7); /* لون ظل أغمق */
 }
 
 * {
@@ -34,7 +37,7 @@ body {
   color: var(--text);
   font-family: 'Cairo', sans-serif;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0F0F25 0%, #1a1a3a 100%);
+  background: linear-gradient(145deg, #0A0A1F 0%, #171735 100%);
   padding: 0;
   overflow-x: hidden;
 }
@@ -52,6 +55,7 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  transition: opacity 0.3s ease;
 }
 
 .loading-spinner {
@@ -91,64 +95,72 @@ body {
 }
 
 .login-icon {
-  font-size: 4rem;
+  font-size: 4.5rem; /* حجم أكبر */
   color: var(--primary);
-  margin-bottom: 20px;
-  animation: bounce 2s infinite;
+  margin-bottom: 25px;
+  animation: bounce 3s infinite;
+  text-shadow: 0 0 20px var(--primary); /* ظل لتحسين الثراء البصري */
 }
 
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-12px); }
 }
 
 .login-screen h2 {
-  font-size: 1.8rem;
+  font-size: 2rem;
   margin-bottom: 15px;
-  font-weight: 700;
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--secondary), var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .login-screen p {
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 30px;
-  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7); /* لون أفتح قليلاً */
+  margin-bottom: 40px;
+  font-size: 1.15rem;
   max-width: 400px;
   line-height: 1.6;
 }
 
 .login-btn {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  background: linear-gradient(135deg, var(--secondary), var(--primary));
   border: none;
   color: white;
-  padding: 16px 32px;
+  padding: 18px 36px; /* حجم أكبر */
   border-radius: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: 'Cairo', sans-serif;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
+  box-shadow: 0 10px 30px rgba(139, 123, 255, 0.4);
 }
 
 .login-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(139, 123, 255, 0.4);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(139, 123, 255, 0.6);
 }
 
-/* التصميم الرئيسي للهاتف */
+/* التصميم الرئيسي للهاتف - تم جعله مركزيًا */
 .mobile-layout {
   display: none;
   min-height: 100vh;
   padding-bottom: 80px;
+  max-width: 600px; /* تحديد عرض أقصى للهاتف */
+  margin: 0 auto;
+  position: relative; /* لضمان تمركز العناصر بداخله */
 }
 
 /* الهيدر المخصص للهاتف */
 .mobile-header {
-  background: rgba(30, 30, 60, 0.95);
-  backdrop-filter: blur(20px);
+  background: rgba(18, 18, 40, 0.95); /* لون الخلفية الجديد */
+  backdrop-filter: blur(25px); /* فلتر زجاجي أقوى */
   padding: 15px 20px;
   border-bottom: 1px solid var(--border);
   position: sticky;
@@ -157,12 +169,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 10px var(--shadow-color);
 }
 
 .mobile-header .logo {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -185,6 +198,12 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+  backdrop-filter: blur(10px); /* فلتر خفيف */
+}
+
+.header-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.1);
 }
 
 /* منطقة البروفايل */
@@ -194,91 +213,118 @@ body {
 }
 
 .cover-container {
-  height: 150px;
-  border-radius: 20px;
+  height: 180px; /* ارتفاع أكبر للغلاف */
+  border-radius: 25px; /* حواف أكثر استدارة */
   overflow: hidden;
   position: relative;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  margin-bottom: 70px;
+  background: linear-gradient(135deg, var(--secondary), var(--primary));
+  margin-bottom: 80px; /* هامش أكبر لإظهار الصورة */
+  box-shadow: 0 10px 30px var(--shadow-color);
 }
 
 .cover-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top; 
+  transition: transform 0.5s ease;
+}
+
+.cover-image:hover {
+  transform: scale(1.05); /* تأثير بصري بسيط */
 }
 
 .profile-content {
   background: var(--card);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 25px 20px;
-  margin-top: -70px;
+  backdrop-filter: blur(25px); /* زجاجية أقوى */
+  border-radius: 25px;
+  padding: 30px 20px;
+  margin-top: -80px;
   text-align: center;
   border: 1px solid var(--border);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 25px 50px var(--shadow-color);
 }
 
 .profile-image {
-  width: 100px;
-  height: 100px;
+  width: 110px; /* حجم أكبر */
+  height: 110px;
   border-radius: 50%;
-  border: 4px solid var(--primary);
+  border: 5px solid var(--primary); /* حدود أسمك وبلون أساسي */
   object-fit: cover;
-  margin: -80px auto 15px;
-  background: var(--card);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  margin: -95px auto 18px; /* ضبط الهامش */
+  background: var(--dark);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
+}
+
+.profile-image:hover {
+  transform: scale(1.05);
 }
 
 .profile-name {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .verified-badge {
-  color: var(--secondary);
-  font-size: 1.1rem;
+  color: #FFD700; /* لون ذهبي للتوثيق */
+  font-size: 1.2rem;
   display: none;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .profile-bio {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* الإحصائيات */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 25px;
+  gap: 15px; /* تباعد أكبر */
+  margin-bottom: 30px;
 }
 
 .stat-card {
-  background: var(--glass);
-  backdrop-filter: blur(10px);
-  padding: 18px 12px;
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05); /* زجاجي أفتح قليلاً */
+  backdrop-filter: blur(15px);
+  padding: 20px 15px; /* تباعد أكبر */
+  border-radius: 20px;
   border: 1px solid var(--border);
   text-align: center;
   transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.stat-card:hover {
+  box-shadow: 0 8px 20px var(--secondary);
 }
 
 .stat-card:active {
-  transform: scale(0.98);
+  transform: scale(0.95); /* تأثير ضغط أوضح */
 }
 
 .stat-number {
   display: block;
-  font-size: 1.4rem;
-  font-weight: 800;
+  font-size: 1.6rem; /* حجم أكبر */
+  font-weight: 900;
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -286,67 +332,79 @@ body {
 }
 
 .stat-label {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-/* أزرار التحكم */
+/* أزرار التحكم - تصميم موحد ومميز */
 .actions-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 25px;
+  gap: 15px;
+  margin-bottom: 30px;
 }
 
 .action-btn {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  border: none;
+  background: var(--card); /* لون خلفية من بطاقة البيانات */
+  border: 2px solid var(--border);
   color: white;
-  padding: 14px 12px;
-  border-radius: 14px;
+  padding: 15px 12px;
+  border-radius: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   font-family: 'Cairo', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  min-height: 70px;
+  gap: 8px;
+  min-height: 80px; /* ارتفاع أكبر */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn i {
+  font-size: 1.2rem;
+  background: linear-gradient(45deg, var(--secondary), var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.action-btn:hover {
+  background: linear-gradient(135deg, rgba(95, 216, 255, 0.1), rgba(139, 123, 255, 0.1));
 }
 
 .action-btn:active {
   transform: scale(0.95);
-}
-
-.action-btn i {
-  font-size: 1.1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  transition-duration: 0.1s; 
 }
 
 /* الأقسام */
 .section {
-  margin: 30px 20px;
+  margin: 40px 20px; /* هامش أكبر */
 }
 
 .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .section-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--primary);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text);
   display: flex;
   align-items: center;
   gap: 10px;
+  text-shadow: 0 0 5px rgba(95, 216, 255, 0.5);
 }
 
 .section-title i {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -355,45 +413,61 @@ body {
 .anime-scroll {
   display: flex;
   overflow-x: auto;
-  gap: 12px;
+  gap: 15px;
   padding: 10px 5px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: thin; 
+  scrollbar-color: var(--primary) var(--card); 
+  -ms-overflow-style: -ms-autohiding-scrollbar; 
 }
 
 .anime-scroll::-webkit-scrollbar {
-  display: none;
+  height: 6px;
+}
+
+.anime-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+  border-radius: 10px;
+  border: 1px solid var(--card);
+}
+
+.anime-scroll::-webkit-scrollbar-track {
+  background: var(--card);
 }
 
 .anime-card {
-  min-width: 110px;
+  min-width: 120px; /* عرض أكبر للبطاقة */
   background: var(--card);
-  border-radius: 14px;
+  border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--border);
   transition: all 0.3s ease;
   flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.anime-card:hover {
+  transform: translateY(-5px);
 }
 
 .anime-card:active {
-  transform: scale(0.95);
+  transform: scale(0.98);
 }
 
 .anime-image {
-  width: 110px;
-  height: 150px;
+  width: 120px;
+  height: 170px; /* ارتفاع أكبر */
   object-fit: cover;
   display: block;
 }
 
 .anime-title {
   padding: 10px 8px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 700;
   text-align: center;
-  background: rgba(0, 0, 0, 0.6);
-  line-height: 1.2;
-  min-height: 40px;
+  background: rgba(0, 0, 0, 0.4);
+  line-height: 1.3;
+  min-height: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -403,36 +477,38 @@ body {
 .badges-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 15px;
 }
 
 .badge-card {
-  background: var(--glass);
-  backdrop-filter: blur(10px);
-  border-radius: 14px;
-  padding: 20px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border-radius: 16px;
+  padding: 25px 15px;
   text-align: center;
   border: 1px solid var(--border);
   transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .badge-card:active {
-  transform: scale(0.98);
+  transform: scale(0.95);
 }
 
 .badge-icon {
-  font-size: 1.8rem;
+  font-size: 2.5rem; /* حجم أكبر للأيقونة */
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   display: block;
 }
 
 .badge-name {
-  font-size: 0.85rem;
-  font-weight: 600;
-  line-height: 1.2;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* الفوتر */
@@ -441,19 +517,24 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  background: rgba(30, 30, 60, 0.95);
-  backdrop-filter: blur(20px);
+  background: rgba(18, 18, 40, 0.95);
+  backdrop-filter: blur(25px);
   border-top: 1px solid var(--border);
-  padding: 15px 20px;
+  padding: 15px 10px;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  box-shadow: 0 -2px 10px var(--shadow-color);
+  max-width: 600px;
+  margin: 0 auto;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .footer-btn {
   background: none;
   border: none;
-  color: var(--text);
+  color: rgba(255, 255, 255, 0.7);
   padding: 10px 15px;
   border-radius: 12px;
   cursor: pointer;
@@ -463,17 +544,18 @@ body {
   align-items: center;
   gap: 5px;
   font-family: 'Cairo', sans-serif;
-  font-size: 0.8rem;
-  min-width: 60px;
+  font-size: 0.85rem;
+  min-width: 65px;
 }
 
 .footer-btn.active {
-  background: var(--glass);
+  background: rgba(95, 216, 255, 0.1);
   color: var(--primary);
+  box-shadow: 0 0 10px rgba(95, 216, 255, 0.4);
 }
 
 .footer-btn i {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
 }
 
 /* الإشعارات */
@@ -483,19 +565,23 @@ body {
   right: 20px;
   left: 20px;
   background: var(--card);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(25px);
   border: 1px solid var(--border);
   color: white;
   padding: 15px 18px;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px var(--shadow-color);
   z-index: 1000;
   transform: translateY(-100px);
   opacity: 0;
-  transition: all 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   display: flex;
   align-items: center;
   gap: 12px;
+  max-width: 560px; /* تحسين العرض */
+  margin: 0 auto;
+  right: 0;
+  left: 0;
 }
 
 .notification.show {
@@ -504,7 +590,7 @@ body {
 }
 
 .notification i {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
 }
 
 .notification.success i {
@@ -515,6 +601,11 @@ body {
   color: var(--error);
 }
 
+.notification.loading i {
+  color: var(--info);
+  animation: spin 0.8s linear infinite;
+}
+
 /* النافذة المنبثقة */
 .modal-overlay {
   position: fixed;
@@ -522,7 +613,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.9);
   backdrop-filter: blur(10px);
   z-index: 2000;
   display: none;
@@ -537,73 +628,82 @@ body {
 
 .modal-content {
   background: var(--card);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(25px);
   border: 1px solid var(--border);
-  padding: 25px 20px;
-  border-radius: 18px;
+  padding: 30px 25px;
+  border-radius: 20px;
   width: 100%;
-  max-width: 350px;
+  max-width: 380px; /* عرض أكبر للنافذة */
   text-align: right;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 30px 60px var(--shadow-color);
+  transform: scale(0.95);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.modal-overlay.show .modal-content {
+    transform: scale(1);
 }
 
 .modal-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .modal-title {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
   color: var(--primary);
 }
 
 .modal-input {
   width: 100%;
-  padding: 14px 16px;
-  background: var(--glass);
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.05); /* إدخال زجاجي */
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   color: var(--text);
   font-family: 'Cairo', sans-serif;
-  font-size: 1rem;
-  margin-bottom: 20px;
-  border: none;
+  font-size: 1.05rem;
+  margin-bottom: 25px;
   outline: none;
+  transition: all 0.3s ease;
 }
 
 .modal-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(139, 123, 255, 0.2);
+  box-shadow: 0 0 0 4px rgba(95, 216, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .modal-actions {
   display: flex;
-  gap: 12px;
+  gap: 15px;
   justify-content: flex-end;
 }
 
 .modal-btn {
   border: none;
-  padding: 12px 20px;
-  border-radius: 12px;
+  padding: 14px 22px;
+  border-radius: 14px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
   transition: all 0.3s ease;
   font-family: 'Cairo', sans-serif;
-  font-size: 0.9rem;
-  min-width: 80px;
+  font-size: 1rem;
+  min-width: 90px;
 }
 
 .modal-btn.primary {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  background: linear-gradient(135deg, var(--secondary), var(--primary));
   color: white;
+  box-shadow: 0 5px 15px rgba(139, 123, 255, 0.4);
 }
 
 .modal-btn.primary:active {
-  transform: translateY(-2px);
+  transform: translateY(2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .modal-btn.secondary {
@@ -613,68 +713,52 @@ body {
 }
 
 /* تحسينات للأجهزة المختلفة */
-@media (max-width: 380px) {
-  .profile-section {
-    padding: 0 15px;
+@media (max-width: 480px) {
+  .profile-section, .section {
+    padding-left: 15px;
+    padding-right: 15px;
   }
   
-  .section {
-    margin: 25px 15px;
+  .mobile-header, .mobile-footer {
+    padding-left: 15px;
+    padding-right: 15px;
   }
   
-  .actions-grid {
-    grid-template-columns: 1fr;
+  .login-screen h2 {
+    font-size: 1.6rem;
   }
   
-  .action-btn {
-    min-height: 60px;
+  .login-btn {
+    padding: 15px 30px;
   }
   
-  .stats-grid {
-    gap: 10px;
+  .profile-name {
+    font-size: 1.6rem;
   }
   
-  .stat-card {
-    padding: 15px 10px;
+  .anime-card {
+    min-width: 100px;
+  }
+  
+  .anime-image {
+    width: 100px;
+    height: 140px;
   }
 }
 
+/* إزالة حجب العرض على الشاشات الأكبر لغرض التطوير */
 @media (min-width: 768px) {
   body::after {
-    content: "هذا التصميم مخصص للهواتف فقط";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    z-index: 10000;
+    content: none; 
   }
-  
   .mobile-layout {
-    display: none !important;
+    display: block; /* للسماح برؤية التصميم على الشاشات الكبيرة كإطار مركزي */
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
   }
 }
 
-/* تحسينات الأداء */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* تحسينات خاصة لـ iOS */
-@supports (-webkit-touch-callout: none) {
-  .action-btn, .footer-btn, .modal-btn {
-    cursor: default;
-  }
-}
 
 /* تأثيرات الظهور */
 .stats-grid .stat-card,
@@ -682,22 +766,20 @@ body {
 .anime-scroll .anime-card,
 .badges-grid .badge-card {
   opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.6s ease-out;
+  transform: translateY(30px);
+  transition: all 0.7s cubic-bezier(0.23, 1, 0.320, 1);
 }
 </style>
 </head>
 
 <body>
-<!-- شاشة التحميل -->
 <div class="loading-screen" id="loadingScreen">
   <div class="loading-spinner"></div>
   <p>جاري تحميل البيانات...</p>
 </div>
 
-<!-- شاشة تسجيل الدخول -->
 <div class="login-screen" id="loginScreen">
-  <div class="login-icon">🔒</div>
+  <div class="login-icon"><i class="fa-solid fa-lock"></i></div>
   <h2>تسجيل الدخول مطلوب</h2>
   <p>سجّل الدخول لتتمكن من الوصول إلى بروفايلك وتعديل معلوماتك الشخصية</p>
   <a href="login.html" class="login-btn">
@@ -705,11 +787,9 @@ body {
   </a>
 </div>
 
-<!-- التصميم الرئيسي للهاتف -->
 <div class="mobile-layout" id="mobileLayout">
-  <!-- الهيدر -->
   <header class="mobile-header">
-    <div class="logo">🌀 OraaSlayer</div>
+    <div class="logo">🌀 **OraaSlayer**</div>
     <div class="header-actions">
       <button class="header-btn" onclick="location.href='index.html'">
         <i class="fa-solid fa-house"></i>
@@ -720,25 +800,22 @@ body {
     </div>
   </header>
 
-  <!-- المحتوى الرئيسي -->
   <main>
-    <!-- قسم البروفايل -->
     <section class="profile-section">
       <div class="cover-container">
-        <img src="https://i.ibb.co/JrFz4b2/anime-banner.jpg" alt="Cover" class="cover-image" id="coverImage">
+        <img src="https://images.unsplash.com/photo-1549497621-e37456729906?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Cover" class="cover-image" id="coverImage" loading="lazy" onerror="this.src='https://placehold.co/600x180/1A1A3A/5FD8FF?text=Cover+Image'"> 
       </div>
       
       <div class="profile-content">
-        <img src="https://i.ibb.co/YRShYmn/avatar.png" alt="Profile" class="profile-image" id="profileImage">
+        <img src="https://i.ibb.co/YRShYmn/avatar.png" alt="Profile" class="profile-image" id="profileImage" loading="lazy" onerror="this.src='https://i.ibb.co/YRShYmn/avatar.png'">
         
         <div class="profile-name">
           <span id="userName">Oraa</span>
-          <i class="fa-solid fa-crown verified-badge" id="verifiedBadge"></i>
+          <i class="fa-solid fa-circle-check verified-badge" id="verifiedBadge" title="حساب موثق"></i>
         </div>
         
         <p class="profile-bio" id="userBio">عاشق الأنمي ✨ | مستكشف العوالم الخيالية 🚀 | محب للتحديات 🎯</p>
         
-        <!-- الإحصائيات -->
         <div class="stats-grid">
           <div class="stat-card">
             <span class="stat-number" id="animeCount">0</span>
@@ -758,7 +835,6 @@ body {
           </div>
         </div>
         
-        <!-- أزرار التحكم -->
         <div class="actions-grid">
           <button class="action-btn" id="editNameBtn">
             <i class="fa-solid fa-user-pen"></i>
@@ -769,15 +845,15 @@ body {
             <span>تعديل النبذة</span>
           </button>
           <button class="action-btn" id="changeImageBtn">
-            <i class="fa-solid fa-image"></i>
+            <i class="fa-solid fa-image-portrait"></i> 
             <span>تغيير الصورة</span>
           </button>
           <button class="action-btn" id="changeCoverBtn">
-            <i class="fa-solid fa-panorama"></i>
+            <i class="fa-solid fa-mountain-sun"></i>
             <span>تغيير الغلاف</span>
           </button>
           <button class="action-btn" id="verifyAccountBtn">
-            <i class="fa-solid fa-shield-halved"></i>
+            <i class="fa-solid fa-shield-halved"></i> 
             <span>تفعيل الحساب</span>
           </button>
           <button class="action-btn" id="settingsBtn">
@@ -788,7 +864,6 @@ body {
       </div>
     </section>
     
-    <!-- الأنمي المفضلة -->
     <section class="section">
       <div class="section-header">
         <h3 class="section-title">
@@ -797,11 +872,9 @@ body {
         </h3>
       </div>
       <div class="anime-scroll" id="animeList">
-        <!-- سيتم تعبئتها ديناميكياً -->
-      </div>
+        </div>
     </section>
     
-    <!-- الإنجازات -->
     <section class="section">
       <div class="section-header">
         <h3 class="section-title">
@@ -830,7 +903,6 @@ body {
     </section>
   </main>
   
-  <!-- الفوتر -->
   <footer class="mobile-footer">
     <button class="footer-btn active">
       <i class="fa-solid fa-user"></i>
@@ -851,13 +923,11 @@ body {
   </footer>
 </div>
 
-<!-- الإشعار -->
 <div class="notification" id="notification">
   <i class="fa-solid fa-circle-check"></i>
   <span id="notificationText">تم تنفيذ العملية بنجاح!</span>
 </div>
 
-<!-- النافذة المنبثقة -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-content">
     <div class="modal-header">
@@ -872,8 +942,55 @@ body {
   </div>
 </div>
 
-<script>
-// بيانات تجريبية للأنمي
+<script type="module">
+// 🔥 استيراد مكتبات Firebase (الإصدار 10.9.0 أو أحدث لضمان التوافق)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signOut,
+  updateProfile // لتحديث اسم وصورة المستخدم في نظام المصادقة
+} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+import { 
+  getFirestore, 
+  doc, 
+  getDoc, 
+  setDoc, 
+  updateDoc,
+  collection,
+  getDocs,
+  query,
+} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+import { 
+    getStorage, 
+    ref, 
+    uploadBytes, 
+    getDownloadURL 
+} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js";
+
+// تكوين Firebase الخاص بمشروعك
+const firebaseConfig = {
+  apiKey: "AIzaSyBDMFcCvthKNkHUrEbgYY1Uc80KTPpS01M",
+  authDomain: "oraa-slayer-anime.firebaseapp.com",
+  projectId: "oraa-slayer-anime",
+  storageBucket: "oraa-slayer-anime.firebasestorage.app",
+  messagingSenderId: "426607460785",
+  appId: "1:426607460785:web:c8d9844253c9111ad3bd90",
+  measurementId: "G-VNHP64HXD5"
+};
+
+// تهيئة خدمات Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+// متغيرات التطبيق
+let currentUser = null;
+let userData = null;
+let verificationCode = null; 
+
+// بيانات تجريبية للأنمي (للعرض في حالة عدم وجود بيانات في Firestore)
 const sampleAnime = [
   { title: "هجوم العمالقة", image: "https://cdn.myanimelist.net/images/anime/10/47347.jpg" },
   { title: "قاتل الشياطين", image: "https://cdn.myanimelist.net/images/anime/1286/99889.jpg" },
@@ -882,135 +999,381 @@ const sampleAnime = [
   { title: "سباي × فاميلي", image: "https://cdn.myanimelist.net/images/anime/1441/122795.jpg" }
 ];
 
+// تخزين عناصر DOM لتقليل استدعاء getElementById
+const dom = {
+    loadingScreen: document.getElementById('loadingScreen'),
+    loginScreen: document.getElementById('loginScreen'),
+    mobileLayout: document.getElementById('mobileLayout'),
+    userName: document.getElementById('userName'),
+    userBio: document.getElementById('userBio'),
+    animeCount: document.getElementById('animeCount'),
+    watchTime: document.getElementById('watchTime'),
+    followersCount: document.getElementById('followersCount'),
+    achievementsCount: document.getElementById('achievementsCount'),
+    verifiedBadge: document.getElementById('verifiedBadge'),
+    profileImage: document.getElementById('profileImage'),
+    coverImage: document.getElementById('coverImage'),
+    animeList: document.getElementById('animeList'),
+    notification: document.getElementById('notification'),
+    notificationText: document.getElementById('notificationText'),
+    modalOverlay: document.getElementById('modalOverlay'),
+    modalTitle: document.getElementById('modalTitle'),
+    modalInput: document.getElementById('modalInput'),
+    modalConfirm: document.getElementById('modalConfirm'),
+    modalCancel: document.getElementById('modalCancel'),
+    logoutBtn: document.getElementById('logoutBtn'),
+    editNameBtn: document.getElementById('editNameBtn'),
+    editBioBtn: document.getElementById('editBioBtn'),
+    changeImageBtn: document.getElementById('changeImageBtn'),
+    changeCoverBtn: document.getElementById('changeCoverBtn'),
+    verifyAccountBtn: document.getElementById('verifyAccountBtn'),
+    settingsBtn: document.getElementById('settingsBtn'),
+};
+
+
+// 🔥 جلب كود التفعيل من Firestore
+async function fetchVerificationCode() {
+    try {
+        const configDocRef = doc(db, "config", "appSettings");
+        const configDoc = await getDoc(configDocRef);
+        if (configDoc.exists() && configDoc.data().verificationCode) {
+            verificationCode = configDoc.data().verificationCode;
+        } else {
+             // قيمة افتراضية في حالة عدم وجودها
+            verificationCode = "ORAA#2025"; 
+            console.warn("⚠️ تم استخدام كود تفعيل افتراضي.");
+        }
+    } catch (error) {
+        console.error("🚨 خطأ في جلب كود التفعيل:", error);
+        verificationCode = "ORAA#2025"; // الكود الافتراضي في حالة الفشل
+    }
+}
+
+
 // تهيئة الصفحة
 document.addEventListener('DOMContentLoaded', function() {
-  // محاكاة تحميل البيانات
-  setTimeout(() => {
-    const loadingScreen = document.getElementById('loadingScreen');
-    const loginScreen = document.getElementById('loginScreen');
-    const mobileLayout = document.getElementById('mobileLayout');
+  
+  // 1. جلب كود التفعيل أولاً
+  fetchVerificationCode();
+  
+  // 2. مراقبة حالة المصادقة (Auth State)
+  onAuthStateChanged(auth, async (user) => {
     
-    // محاكاة حالة المستخدم (تغيير هذا بالبيانات الحقيقية من Firebase)
-    const userLoggedIn = true; // تغيير هذا بناءً على حالة المستخدم الفعلية
-    
-    if (userLoggedIn) {
-      loadingScreen.style.display = 'none';
-      mobileLayout.style.display = 'block';
-      loadUserData();
+    if (user) {
+      // المستخدم مسجل الدخول
+      currentUser = user;
+      dom.loginScreen.classList.remove('show');
+      dom.loadingScreen.style.display = 'none';
+      dom.mobileLayout.style.display = 'block';
+      
+      // تحميل بيانات المستخدم وقائمة الأنمي
+      await loadUserData(user);
       loadAnimeList();
       initAnimations();
     } else {
-      loadingScreen.style.display = 'none';
-      loginScreen.classList.add('show');
+      // المستخدم غير مسجل الدخول
+      dom.mobileLayout.style.display = 'none';
+      dom.loadingScreen.style.display = 'none';
+      dom.loginScreen.classList.add('show');
     }
-  }, 2000);
+  });
   
-  // إعداد معالجات الأحداث
+  // 3. إعداد معالجات الأحداث
   setupEventListeners();
 });
 
-// تحميل بيانات المستخدم
-function loadUserData() {
-  // محاكاة بيانات المستخدم (استبدل هذا ببيانات Firebase الحقيقية)
-  const userData = {
-    name: "Oraa",
-    bio: "عاشق الأنمي ✨ | مستكشف العوالم الخيالية 🚀 | محب للتحديات 🎯",
-    stats: {
-      anime: 156,
-      watchTime: "1.2k",
-      followers: "2.3k",
-      achievements: 18
-    },
-    verified: true
-  };
-  
-  document.getElementById('userName').textContent = userData.name;
-  document.getElementById('userBio').textContent = userData.bio;
-  document.getElementById('animeCount').textContent = userData.stats.anime;
-  document.getElementById('watchTime').textContent = userData.stats.watchTime;
-  document.getElementById('followersCount').textContent = userData.stats.followers;
-  document.getElementById('achievementsCount').textContent = userData.stats.achievements;
-  
-  if (userData.verified) {
-    document.getElementById('verifiedBadge').style.display = 'inline';
+// 🔥 تحميل بيانات المستخدم من Firestore
+async function loadUserData(user) {
+  try {
+    const userDocRef = doc(db, "users", user.uid);
+    const userDoc = await getDoc(userDocRef);
+    
+    if (userDoc.exists()) {
+      userData = userDoc.data();
+    } else {
+      // إنشاء بيانات افتراضية للمستخدم الجديد (Initial Setup)
+      userData = {
+        name: user.displayName || "Oraa",
+        bio: "عاشق الأنمي ✨ | مستكشف العوالم الخيالية 🚀 | محب للتحديات 🎯",
+        stats: {
+          anime: 0,
+          watchTime: "0",
+          followers: "0",
+          achievements: 0
+        },
+        verified: false,
+        profileImage: user.photoURL || "https://i.ibb.co/YRShYmn/avatar.png",
+        coverImage: "https://images.unsplash.com/photo-1549497621-e37456729906?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+      };
+      
+      // حفظ البيانات الافتراضية في Firestore
+      await setDoc(userDocRef, userData);
+    }
+    
+    // تحديث الواجهة
+    updateUserInterface();
+    
+  } catch (error) {
+    console.error("🚨 خطأ فادح في تحميل بيانات المستخدم:", error);
+    // رسالة خطأ أكثر وضوحاً
+    showNotification("❌ فشل تحميل بيانات الملف الشخصي. قد تكون مشكلة في الاتصال أو قواعد الأمان.", "error"); 
   }
 }
 
-// تحميل قائمة الأنمي
-function loadAnimeList() {
-  const animeList = document.getElementById('animeList');
-  animeList.innerHTML = '';
+// 🔥 تحديث واجهة المستخدم
+function updateUserInterface() {
+  if (!userData) return;
   
-  sampleAnime.forEach(anime => {
-    const animeCard = document.createElement('div');
-    animeCard.className = 'anime-card';
-    animeCard.innerHTML = `
-      <img src="${anime.image}" alt="${anime.title}" class="anime-image" 
-           onerror="this.src='https://placehold.co/110x150/1a1a3a/8B7BFF?text=Anime'">
-      <div class="anime-title">${anime.title}</div>
-    `;
-    animeList.appendChild(animeCard);
-  });
+  dom.userName.textContent = userData.name;
+  dom.userBio.textContent = userData.bio;
+  dom.animeCount.textContent = userData.stats.anime || '0';
+  dom.watchTime.textContent = userData.stats.watchTime || '0';
+  dom.followersCount.textContent = userData.stats.followers || '0';
+  dom.achievementsCount.textContent = userData.stats.achievements || '0';
+  
+  // تحديث شارة التوثيق بشكل فوري
+  dom.verifiedBadge.style.display = userData.verified ? 'inline' : 'none';
+  
+  // تحديث الصور
+  if (userData.profileImage) {
+    dom.profileImage.src = userData.profileImage;
+  }
+  
+  if (userData.coverImage) {
+    dom.coverImage.src = userData.coverImage;
+  }
+}
+
+// 🔥 تحديث بيانات المستخدم في Firebase
+async function updateUserData(updates) {
+  showNotification("⏳ جاري الحفظ...", "loading");
+  try {
+    const userDocRef = doc(db, "users", currentUser.uid);
+    await updateDoc(userDocRef, updates);
+    
+    // تحديث البيانات المحلية ثم الواجهة بشكل فوري
+    userData = { ...userData, ...updates };
+    updateUserInterface();
+    
+    showNotification("✅ تم الحفظ بنجاح!");
+    return true;
+  } catch (error) {
+    console.error("🚨 خطأ في تحديث البيانات:", error);
+    showNotification(`❌ فشل في تحديث البيانات: ${error.message.includes('permission-denied') ? 'لا تملك صلاحية التعديل' : 'خطأ فني'}`, "error");
+    return false;
+  }
+}
+
+// 🔥 تحميل الأنمي المفضلة من Firebase (مجموعة فرعية)
+async function loadAnimeList() {
+  try {
+    dom.animeList.innerHTML = ''; // تنظيف القائمة قبل الإضافة
+    
+    // جلب الأنمي المفضلة من مجموعة فرعية "favorites"
+    const favoritesCollectionRef = collection(db, "users", currentUser.uid, "favorites");
+    const querySnapshot = await getDocs(favoritesCollectionRef);
+    
+    // تحديث إحصائية الأنمي المحلية
+    const animeCount = querySnapshot.size;
+    userData.stats.anime = animeCount; 
+    
+    if (querySnapshot.empty || animeCount === 0) {
+      // استخدام البيانات التجريبية إذا لم يكن هناك مفضلات
+      sampleAnime.forEach(anime => {
+        createAnimeCard(dom.animeList, anime);
+      });
+      // تحديث عدد الإنجازات مؤقتاً لغرض العرض إذا كانت القائمة فارغة
+      userData.stats.achievements = 4;
+    } else {
+      querySnapshot.forEach((doc) => {
+        const animeData = doc.data();
+        createAnimeCard(dom.animeList, animeData);
+      });
+      // تحديث عدد الإنجازات بناءً على البيانات الحقيقية إذا كانت متوفرة
+      userData.stats.achievements = 4; // يجب ربطها بعدد الإنجازات الفعلية
+    }
+    
+    // إعادة تحديث الواجهة بعد تحميل القائمة والإحصائيات
+    updateUserInterface();
+    
+  } catch (error) {
+    console.error("🚨 خطأ في تحميل قائمة الأنمي:", error);
+    // في حالة الخطأ، نعرض البيانات التجريبية لضمان عدم ظهور شاشة فارغة
+    dom.animeList.innerHTML = ''; 
+    sampleAnime.forEach(anime => {
+      createAnimeCard(dom.animeList, anime);
+    });
+    showNotification("⚠️ فشل تحميل مفضلاتك، تم عرض بيانات افتراضية", "error");
+  }
+}
+
+// 🔥 إنشاء بطاقة الأنمي
+function createAnimeCard(container, anime) {
+  const animeCard = document.createElement('div');
+  animeCard.className = 'anime-card';
+  animeCard.innerHTML = `
+    <img src="${anime.image}" alt="${anime.title}" class="anime-image" loading="lazy" 
+         onerror="this.src='https://placehold.co/120x170/1a1a3a/5FD8FF?text=Anime+Error'">
+    <div class="anime-title">${anime.title}</div>
+  `;
+  container.appendChild(animeCard);
+}
+
+// 🔥 رفع صورة إلى Firebase Storage
+async function uploadImage(file, type) {
+  const maxSize = 5 * 1024 * 1024; // 5MB
+  if (file.size > maxSize) {
+      throw new Error("حجم الصورة كبير جداً. الحد الأقصى 5 ميجابايت.");
+  }
+  
+  // التأكد من أن الملف هو صورة
+  if (!file.type.startsWith('image/')) {
+    throw new Error("الرجاء اختيار ملف صورة صالح.");
+  }
+  
+  try {
+    // مسار التخزين: profile-images/UID_timestamp
+    const path = `${type}-images/${currentUser.uid}_${Date.now()}`;
+    const storageRef = ref(storage, path);
+    const snapshot = await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    return downloadURL;
+  } catch (error) {
+    console.error("🚨 خطأ في رفع الصورة:", error);
+    // تحسين رسالة الخطأ للمستخدم
+    throw new Error(`فشل الرفع: ${error.message.includes('permission-denied') ? 'لا تملك صلاحية الرفع' : 'خطأ فني في التخزين'}`);
+  }
+}
+
+// 🔥 معالجة اختيار الصورة ورفعها
+function handleImageSelection(type) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // إزالة أي إشعار تحميل قديم
+    dom.notification.classList.remove('show');
+    clearTimeout(dom.notification.dataset.timeoutId);
+    
+    try {
+      showNotification("📤 جاري رفع الصورة... الرجاء الانتظار.", "loading"); 
+      
+      const downloadURL = await uploadImage(file, type);
+      
+      // تحديث البيانات في Firestore وواجهة المستخدم
+      if (type === 'profile') {
+        // تحديث صورة الملف الشخصي في Authentication لكي تظهر في كل مكان (جوجل، إلخ)
+        await updateProfile(currentUser, { photoURL: downloadURL }); 
+        await updateUserData({ profileImage: downloadURL });
+      } else if (type === 'cover') {
+        await updateUserData({ coverImage: downloadURL });
+      }
+      
+      showNotification("✅ تم تحديث الصورة بنجاح!");
+      
+    } catch (error) {
+      console.error("🚨 خطأ في تحديث الصورة:", error);
+      // عرض رسالة الخطأ للمستخدم
+      showNotification(`❌ فشل في تحديث الصورة: ${error.message || 'خطأ غير معروف'}`, "error"); 
+    }
+  };
+  
+  input.click();
 }
 
 // إعداد معالجات الأحداث
 function setupEventListeners() {
   // أزرار التعديل
-  document.getElementById('editNameBtn').addEventListener('click', () => {
-    showEditModal('تعديل الاسم', document.getElementById('userName').textContent, (newValue) => {
-      document.getElementById('userName').textContent = newValue;
-      showNotification('تم تحديث الاسم بنجاح!');
+  dom.editNameBtn.addEventListener('click', () => {
+    showEditModal('تعديل الاسم', userData.name, async (newValue) => {
+      // التحقق من طول الاسم
+      if (newValue.length < 3) {
+        showNotification('❌ يجب أن يكون الاسم 3 أحرف على الأقل', 'error');
+        return;
+      }
+      const success = await updateUserData({ name: newValue });
+      if (success) {
+        // تحديث الاسم في Auth أيضاً
+        await updateProfile(currentUser, { displayName: newValue }); 
+      }
     });
   });
   
-  document.getElementById('editBioBtn').addEventListener('click', () => {
-    showEditModal('تعديل النبذة', document.getElementById('userBio').textContent, (newValue) => {
-      document.getElementById('userBio').textContent = newValue;
-      showNotification('تم تحديث النبذة بنجاح!');
+  dom.editBioBtn.addEventListener('click', () => {
+    showEditModal('تعديل النبذة', userData.bio, async (newValue) => {
+      if (newValue.length > 120) {
+        showNotification('❌ يجب أن تكون النبذة أقل من 120 حرفاً', 'error');
+        return;
+      }
+      await updateUserData({ bio: newValue });
     });
   });
   
-  document.getElementById('changeImageBtn').addEventListener('click', () => {
-    // محاكاة تغيير الصورة
-    showNotification('تم فتح محدد الصور');
+  dom.changeImageBtn.addEventListener('click', () => {
+    handleImageSelection('profile');
   });
   
-  document.getElementById('changeCoverBtn').addEventListener('click', () => {
-    // محاكاة تغيير الغلاف
-    showNotification('تم فتح محدد الصور للغلاف');
+  dom.changeCoverBtn.addEventListener('click', () => {
+    handleImageSelection('cover');
   });
   
-  document.getElementById('verifyAccountBtn').addEventListener('click', () => {
-    showEditModal('أدخل كود التفعيل', '', (code) => {
-      if (code === "ORAA2025") {
-        document.getElementById('verifiedBadge').style.display = 'inline';
-        showNotification('🎉 تم تفعيل الحساب المميز بنجاح!');
+  dom.verifyAccountBtn.addEventListener('click', () => {
+    // منع محاولة التفعيل إذا كان مفعل بالفعل
+    if (userData && userData.verified) {
+      showNotification('✅ حسابك مفعل مسبقاً! استمتع بالميزات المميزة.');
+      return;
+    }
+    
+    showEditModal('أدخل كود التفعيل', '', async (code) => {
+      if (code === verificationCode) { // استخدام الكود الديناميكي
+        const success = await updateUserData({ verified: true });
+        if (success) {
+          showNotification('🎉 تم تفعيل الحساب المميز بنجاح! نورت OraaSlayer.');
+        } else {
+          showNotification('❌ فشل فني في التفعيل، يرجى المحاولة لاحقاً', 'error');
+        }
       } else {
         showNotification('❌ كود التفعيل غير صحيح', 'error');
       }
-    }, 'password');
+    }, 'password'); // استخدام نوع إدخال 'password' لإخفاء الكود
   });
   
-  document.getElementById('settingsBtn').addEventListener('click', () => {
-    showNotification('تم فتح صفحة الإعدادات');
+  dom.settingsBtn.addEventListener('click', () => {
+    showNotification('🚧 صفحة الإعدادات قيد الإنشاء... ترقبوا! ⚙️');
   });
   
   // تسجيل الخروج
-  document.getElementById('logoutBtn').addEventListener('click', () => {
+  dom.logoutBtn.addEventListener('click', async () => {
     if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
-      showNotification('تم تسجيل الخروج بنجاح');
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 1500);
+      try {
+        await signOut(auth);
+        // تحسين: إعادة التوجيه إلى شاشة الدخول مباشرة بعد الخروج
+        dom.mobileLayout.style.display = 'none';
+        dom.loginScreen.classList.add('show');
+        showNotification('👋 تم تسجيل الخروج بنجاح. نراك قريباً!');
+      } catch (error) {
+        console.error("🚨 خطأ في تسجيل الخروج:", error);
+        showNotification('❌ فشل في تسجيل الخروج', 'error');
+      }
     }
   });
   
   // النافذة المنبثقة
-  document.getElementById('modalConfirm').addEventListener('click', confirmModal);
-  document.getElementById('modalCancel').addEventListener('click', closeModal);
-  document.getElementById('modalOverlay').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('modalOverlay')) {
+  dom.modalConfirm.addEventListener('click', confirmModal);
+  dom.modalCancel.addEventListener('click', closeModal);
+  dom.modalOverlay.addEventListener('click', (e) => {
+    if (e.target === dom.modalOverlay) {
       closeModal();
+    }
+  });
+  // معالجة Enter في النافذة المنبثقة
+  dom.modalInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      confirmModal();
     }
   });
 }
@@ -1018,18 +1381,25 @@ function setupEventListeners() {
 // إظهار نافذة التعديل
 let currentCallback = null;
 function showEditModal(title, currentValue, callback, inputType = 'text') {
-  document.getElementById('modalTitle').textContent = title;
-  document.getElementById('modalInput').value = currentValue;
-  document.getElementById('modalInput').type = inputType;
+  dom.modalTitle.textContent = title;
+  dom.modalInput.value = currentValue;
+  dom.modalInput.type = inputType;
   currentCallback = callback;
-  document.getElementById('modalOverlay').classList.add('show');
-  document.getElementById('modalInput').focus();
+  dom.modalOverlay.classList.add('show');
+  dom.modalInput.focus();
 }
 
 // تأكيد التعديل
 function confirmModal() {
-  const value = document.getElementById('modalInput').value.trim();
-  if (value && currentCallback) {
+  const value = dom.modalInput.value.trim();
+  
+  // لا يمكن ترك حقل الاسم أو الكود فارغًا
+  if (!value && dom.modalTitle.textContent.includes('الاسم') || dom.modalTitle.textContent.includes('التفعيل')) {
+    showNotification('❌ لا يمكن ترك الحقل فارغاً', 'error');
+    return;
+  }
+  
+  if (currentCallback) {
     currentCallback(value);
   }
   closeModal();
@@ -1037,33 +1407,42 @@ function confirmModal() {
 
 // إغلاق النافذة
 function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('show');
+  dom.modalOverlay.classList.remove('show');
   currentCallback = null;
 }
 
 // إظهار الإشعار
 function showNotification(message, type = 'success') {
-  const notification = document.getElementById('notification');
-  const icon = notification.querySelector('i');
-  const text = document.getElementById('notificationText');
+  const icon = dom.notification.querySelector('i');
   
-  text.textContent = message;
-  notification.className = 'notification';
+  // إخفاء الإشعار الحالي أولاً لضمان ظهور الجديد بسلاسة
+  dom.notification.classList.remove('show'); 
+  clearTimeout(dom.notification.dataset.timeoutId);
+  
+  dom.notificationText.textContent = message;
+  dom.notification.className = 'notification';
   
   // تغيير الأيقونة حسب النوع
   if (type === 'error') {
     icon.className = 'fa-solid fa-circle-exclamation';
-    notification.classList.add('error');
-  } else {
+    dom.notification.classList.add('error');
+  } else if (type === 'loading') { 
+    icon.className = 'fa-solid fa-spinner fa-spin'; // استخدام fa-spin لتحريك الأيقونة
+    dom.notification.classList.add('loading');
+  } 
+  else {
     icon.className = 'fa-solid fa-circle-check';
-    notification.classList.add('success');
+    dom.notification.classList.add('success');
   }
   
-  notification.classList.add('show');
+  dom.notification.classList.add('show');
   
-  setTimeout(() => {
-    notification.classList.remove('show');
-  }, 3000);
+  // إخفاء الإشعار بعد 3.5 ثوانٍ إلا إذا كان إشعار تحميل (يتم إخفاؤه يدوياً)
+  if (type !== 'loading') {
+      dom.notification.dataset.timeoutId = setTimeout(() => {
+        dom.notification.classList.remove('show');
+      }, 3500);
+  }
 }
 
 // تهيئة تأثيرات الظهور
@@ -1074,7 +1453,7 @@ function initAnimations() {
       setTimeout(() => {
         el.style.opacity = '1';
         el.style.transform = 'translateY(0)';
-      }, index * 100);
+      }, index * 120); // تأخير بسيط لظهور متتالٍ أكثر جاذبية
     });
   }, 500);
 }

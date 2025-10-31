@@ -1,2034 +1,2051 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🌀 Oraa Slayer - أفضل منصة لمشاهدة الأنمي</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  
-  <style>
-    :root {
-      --primary-color: #8B7BFF;
-      --secondary-color: #FF7BA9;
-      --accent-color: #5FD8FF;
-      --accent-color-2: #FFA87D;
-      --bg-dark: #0F0F25;
-      --bg-card: rgba(26, 26, 60, 0.7);
-      --text-light: #F8F8FF;
-      --border-color: rgba(139, 123, 255, 0.4);
-      --sidebar-width: 300px;
-      --gradient-primary: linear-gradient(135deg, #8B7BFF, #5FD8FF);
-      --gradient-secondary: linear-gradient(135deg, #FF7BA9, #FFA87D);
-      --gradient-dark: linear-gradient(135deg, #0F0F25, #1A1A3A);
-      --success-color: #3DD8A9;
-      --error-color: #FF7B95;
-      --warning-color: #FFC14D;
-      --glass-bg: rgba(255, 255, 255, 0.08);
-      --glass-border: rgba(255, 255, 255, 0.12);
-      --blur-intensity: blur(20px);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌀 Oraa Slayer - أفضل منصة لمشاهدة الأنمي ومجتمع الأوتاكو 🔥</title> 
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Changa:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    body {
-      background: var(--bg-dark);
-      font-family: 'Cairo', sans-serif;
-      color: var(--text-light);
-      direction: rtl;
-      transition: all 0.3s ease;
-      background-image: 
-        radial-gradient(circle at 10% 20%, rgba(139, 123, 255, 0.1) 0%, transparent 25%),
-        radial-gradient(circle at 90% 80%, rgba(255, 123, 169, 0.1) 0%, transparent 25%);
-      min-height: 100vh;
-      padding-bottom: 90px;
-    }
-
-    /* 🔹 الهيدر الزجاجي - محسن للجوال */
-    .main-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(30, 30, 60, 0.7);
-      backdrop-filter: var(--blur-intensity);
-      padding: 15px 20px;
-      border-bottom: 1px solid var(--glass-border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-
-    .logo {
-      font-size: 1.4rem;
-      font-weight: 800;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-shadow: 0 2px 10px rgba(139, 123, 255, 0.3);
-    }
-    
-    .header-left {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-    
-    /* زر فتح الإعدادات - محسن للجوال */
-    #settingsToggle {
-        color: var(--text-light);
-        font-size: 1.3rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        background: var(--glass-bg);
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid var(--glass-border);
-        backdrop-filter: blur(10px);
-    }
-    
-    #settingsToggle:hover {
-        background: var(--gradient-primary);
-        transform: rotate(90deg) scale(1.1);
-        box-shadow: 0 0 20px rgba(139, 123, 255, 0.6);
-        border-color: transparent;
-    }
-
-    /* 🔸 تحسين واقعية الأزرار: Active State */
-    .user-info:active, 
-    #settingsToggle:active,
-    .anime-card:active {
-        transform: translateY(0) scale(0.98);
-        opacity: 0.9;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        transition: all 0.1s ease;
-    }
-
-    /* 🔹 شريط الأخبار المتحرك - محسن للجوال */
-    .news-ticker {
-      background: linear-gradient(135deg, rgba(255, 123, 169, 0.9), rgba(255, 168, 125, 0.9));
-      backdrop-filter: blur(10px);
-      padding: 10px 0;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 0 4px 20px rgba(255, 123, 169, 0.4);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .ticker-content {
-      display: inline-block;
-      white-space: nowrap;
-      animation: ticker 35s linear infinite;
-      padding-right: 100%;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-    
-    .ticker-content span {
-      margin-left: 30px;
-      display: inline-block;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    }
-    
-    .ticker-content i {
-      margin-left: 6px;
-      color: var(--bg-dark);
-    }
-    
-    @keyframes ticker {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(100%); }
-    }
-
-    /* 🔹 قائمة المستخدم المنسدلة - محسنة للجوال */
-    .user-info {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-      padding: 6px 12px;
-      border-radius: 14px;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(10px);
-    }
-
-    .user-info:hover {
-      transform: scale(1.05);
-      background: rgba(139, 123, 255, 0.15);
-      border-color: rgba(139, 123, 255, 0.4);
-    }
-
-    .user-info img {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: 2px solid var(--accent-color);
-      object-fit: cover;
-      transition: all 0.3s ease;
-      background-color: var(--bg-card);
-    }
-
-    .user-info:hover img {
-      border-color: var(--secondary-color);
-      box-shadow: 0 0 15px rgba(255, 123, 169, 0.6);
-    }
-
-    .verify-gold {
-      color: #FFD700;
-      font-size: 1.1rem;
-      filter: drop-shadow(0 0 5px #FFD700);
-    }
-    
-    .user-name {
-      max-width: 80px; 
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    .user-menu {
-      display: none;
-      position: absolute;
-      top: 55px; 
-      left: 0; /* تغيير الاتجاه إلى اليسار */
-      background: rgba(40, 40, 70, 0.9);
-      backdrop-filter: var(--blur-intensity);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-      z-index: 110;
-      min-width: 200px;
-      transform-origin: top left; /* تغيير نقطة التحول */
-      animation: menuFadeIn 0.2s ease-out forwards;
-      border: 1px solid var(--glass-border);
-    }
-
-    @keyframes menuFadeIn {
-      from { opacity: 0; transform: scale(0.9) translateY(-10px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .user-menu a {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 18px;
-      color: var(--text-light);
-      text-decoration: none;
-      transition: all 0.2s;
-      white-space: nowrap;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 0.9rem;
-    }
-
-    .user-menu a:last-child {
-      border-bottom: none;
-    }
-
-    .user-menu a:hover {
-      background: rgba(139, 123, 255, 0.2);
-      color: var(--primary-color);
-      padding-left: 22px; /* تغيير الاتجاه */
-    }
-    
-    .user-menu a i {
-        font-size: 1.1rem;
-        width: 22px; 
-        text-align: center;
-    }
-
-    /* شريط البحث المنفصل */
-    .search-bar {
-        padding: 15px 20px;
-        position: relative;
-    }
-    
-    .search-bar input {
-        width: 100%;
-        padding: 12px 45px 12px 15px;
-        border-radius: 14px;
-        border: 1px solid var(--glass-border);
-        outline: none;
-        background: rgba(255, 255, 255, 0.1);
-        color: var(--text-light);
-        font-family: 'Cairo', sans-serif;
-        transition: all 0.3s;
-        font-size: 1rem;
-        backdrop-filter: blur(8px);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    .search-bar input:focus {
-        border-color: var(--accent-color);
-        box-shadow: 0 0 0 2px rgba(95, 216, 255, 0.4);
-        background: rgba(255, 255, 255, 0.15);
-    }
-    
-    .search-bar .search-icon {
-        position: absolute;
-        left: 35px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--accent-color);
-        opacity: 0.9;
-        font-size: 1.1rem;
-        pointer-events: none;
-    }
-    
-    /* 🔹 قائمة الأنميات - محسنة للجوال */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
-      gap: 20px; 
-      padding: 20px;
-      max-width: 1300px;
-      margin: 0 auto;
-    }
-    
-    .anime-card { 
-        background: rgba(26, 26, 60, 0.5);
-        border-radius: 18px;
-        overflow: hidden;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        text-align: center;
-        transition: all 0.4s ease;
-        cursor: pointer;
-        position: relative;
-        border: 1px solid var(--glass-border);
-        backdrop-filter: var(--blur-intensity);
-    }
-    
-    .anime-card:hover {
-        transform: translateY(-10px) scale(1.03);
-        box-shadow: 0 20px 40px rgba(139, 123, 255, 0.4);
-        border-color: rgba(139, 123, 255, 0.5);
-    }
-    
-    .anime-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--gradient-primary);
-        transform: scaleX(0);
-        transition: transform 0.4s ease;
-    }
-    
-    .anime-card:hover::before {
-        transform: scaleX(1);
-    }
-    
-    .anime-card img {
-        width: 100%;
-        height: 200px; 
-        object-fit: cover;
-        display: block;
-        transition: transform 0.6s ease;
-        background-color: var(--bg-card);
-        background-image: linear-gradient(45deg, #1A1A3A, #2a2a50);
-    }
-    
-    .anime-card:hover img {
-        transform: scale(1.08);
-    }
-    
-    .anime-card p {
-        padding: 14px 10px;
-        margin: 0;
-        font-size: 0.9rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        color: var(--text-light);
-        font-weight: 700;
-        background: rgba(0, 0, 0, 0.4);
-        transition: all 0.3s ease;
-    }
-    
-    .anime-card:hover p {
-        background: rgba(139, 123, 255, 0.25);
-        color: var(--primary-color);
-    }
-    
-    .anime-year {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background: var(--gradient-secondary);
-        color: white;
-        padding: 5px 10px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: bold;
-        z-index: 2;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    .anime-rating {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(0, 0, 0, 0.8);
-        color: gold;
-        padding: 5px 10px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: bold;
-        z-index: 2;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* 🚨 القائمة الجانبية (Sidebar) - محسنة للجوال */
-    .sidebar {
-        height: 100%;
-        width: 85%;
-        max-width: 320px;
-        position: fixed;
-        z-index: 150;
-        top: 0;
-        right: calc(-1 * 85%); /* تغيير الاتجاه إلى اليمين */
-        background: rgba(35, 35, 65, 0.95);
-        backdrop-filter: var(--blur-intensity);
-        overflow-x: hidden;
-        transition: right 0.4s ease; /* تغيير الاتجاه */
-        padding-top: 70px;
-        box-shadow: -8px 0 30px rgba(0, 0, 0, 0.4); /* تغيير الظل */
-        border-left: 1px solid var(--glass-border); /* تغيير الحدود */
-    }
-
-    .sidebar.open {
-        right: 0; /* تغيير الاتجاه */
-    }
-    
-    .sidebar-header {
-        position: absolute;
-        top: 0;
-        right: 0; /* تغيير الاتجاه */
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 18px 20px;
-        background: rgba(50, 50, 80, 0.8);
-        border-bottom: 1px solid var(--glass-border);
-        backdrop-filter: blur(10px);
-    }
-
-    .sidebar-header h2 {
-        margin: 0;
-        font-size: 1.2rem;
-        color: var(--primary-color);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    
-    .sidebar .close-btn {
-        font-size: 1.4rem;
-        color: var(--text-light);
-        cursor: pointer;
-        transition: all 0.2s;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--glass-bg);
-    }
-    
-    .sidebar .close-btn:hover {
-        background: rgba(255, 123, 169, 0.2);
-        color: var(--secondary-color);
-        transform: rotate(90deg);
-    }
-
-    .sidebar-section {
-        padding: 18px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .sidebar-section:last-child {
-        border-bottom: none;
-    }
-
-    .sidebar-section-title {
-        padding: 0 20px 12px;
-        font-size: 1rem;
-        color: var(--primary-color);
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .sidebar-item {
-        padding: 14px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        cursor: pointer;
-        transition: all 0.2s;
-        color: var(--text-light);
-        text-decoration: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        font-size: 0.9rem;
-    }
-    
-    .sidebar-item:last-child {
-        border-bottom: none;
-    }
-    
-    .sidebar-item:hover {
-        background: rgba(139, 123, 255, 0.15);
-        padding-left: 25px; /* تغيير الاتجاه */
-    }
-    
-    .sidebar-item span {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    
-    .sidebar-item i {
-        color: var(--primary-color);
-        width: 20px;
-        text-align: center;
-        font-size: 1.1rem;
-    }
-
-    .sidebar-item .item-description {
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.6);
-        margin-top: 4px;
-        font-weight: normal;
-    }
-    
-    /* تنسيق مفتاح التبديل (Toggle Switch) - محسن للجوال */
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 46px;
-      height: 24px;
-    }
-
-    .switch input { 
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #666;
-      transition: .4s;
-      border-radius: 24px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider {
-      background: var(--gradient-primary);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(22px);
-    }
-
-    /* 🔹 التذييل والأزرار السفلية - محسن للجوال */
-    footer {
-      display: flex;
-      justify-content: space-around;
-      padding: 12px 0;
-      background: rgba(30, 30, 60, 0.7);
-      backdrop-filter: var(--blur-intensity);
-      border-top: 1px solid var(--glass-border);
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      z-index: 90;
-      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
-    }
-
-    .nav-item {
-      flex-grow: 1; 
-      text-align: center;
-      padding: 10px 0; 
-      transition: all 0.3s;
-      position: relative;
-      border-radius: 14px;
-      margin: 0 6px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      text-decoration: none;
-    }
-
-    .nav-item:hover {
-      background: rgba(139, 123, 255, 0.2);
-      transform: translateY(-4px);
-    }
-
-    .nav-item.active {
-      background: rgba(139, 123, 255, 0.25);
-    }
-    
-    /* تعزيز واقعية الأزرار */
-    .nav-item:active {
-        transform: translateY(0) scale(0.95);
-        opacity: 0.95;
-    }
-
-    .nav-icon {
-      color: var(--text-light);
-      font-size: 1.4rem; /* زيادة حجم الأيقونات */
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px; /* زيادة حجم الحاوية */
-      height: 28px;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-    }
-
-    .nav-label {
-      display: none; /* إخفاء النصوص */
-    }
-
-    .nav-item::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      right: 50%;
-      transform: translateX(50%);
-      width: 0;
-      height: 3px;
-      background: var(--gradient-primary);
-      border-radius: 3px 3px 0 0;
-      transition: width 0.3s;
-    }
-
-    .nav-item.active::after,
-    .nav-item:hover::after {
-      width: 35px;
-    }
-
-    .nav-item.active .nav-icon,
-    .nav-item:hover .nav-icon {
-      color: var(--primary-color);
-      transform: scale(1.1);
-      filter: drop-shadow(0 0 8px rgba(139, 123, 255, 0.5));
-    }
-
-    .nav-badge {
-      position: absolute;
-      top: 6px;
-      right: 50%;
-      transform: translateX(18px);
-      background: var(--gradient-secondary);
-      color: white;
-      border-radius: 8px;
-      padding: 2px 5px;
-      font-size: 0.55rem;
-      font-weight: bold;
-      min-width: 14px;
-      text-align: center;
-    }
-
-    .to-home-btn {
-      position: fixed;
-      bottom: 100px;
-      left: 20px; 
-      background: var(--gradient-primary);
-      border: none;
-      color: white;
-      padding: 12px 15px;
-      border-radius: 50%;
-      cursor: pointer;
-      z-index: 95;
-      box-shadow: 0 8px 25px rgba(139, 123, 255, 0.6);
-      transition: all 0.3s;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .to-home-btn:hover {
-        transform: scale(1.15) translateY(-5px);
-        box-shadow: 0 12px 30px rgba(139, 123, 255, 0.8);
-    }
-    
-    .to-home-btn:active {
-        transform: scale(1) translateY(0);
-        box-shadow: 0 4px 15px rgba(139, 123, 255, 0.6);
-    }
-    
-    /* 🔔 الإشعارات - محسنة للجوال */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(45, 45, 75, 0.95);
-      backdrop-filter: var(--blur-intensity);
-      color: #fff;
-      padding: 15px 22px;
-      border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      border-left: 4px solid var(--primary-color);
-      opacity: 0;
-      transform: translateX(100%);
-      transition: all 0.3s ease;
-      z-index: 1000;
-      max-width: 320px;
-      border: 1px solid var(--glass-border);
-      font-size: 0.9rem;
-    }
-    
-    .toast.show {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    
-    .toast.success {
-      border-left-color: var(--success-color);
-    }
-    
-    .toast.error {
-      border-left-color: var(--error-color);
-    }
-    
-    .toast.warning {
-      border-left-color: var(--warning-color);
-    }
-
-    /* تأثيرات إضافية */
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(139, 123, 255, 0.7); }
-      70% { box-shadow: 0 0 0 12px rgba(139, 123, 255, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(139, 123, 255, 0); }
-    }
-
-    /* 🔄 مؤشر التحميل */
-    .loading {
-      display: none;
-      text-align: center;
-      padding: 25px;
-      color: var(--primary-color);
-    }
-    
-    .loading-spinner {
-      border: 4px solid rgba(139, 123, 255, 0.3);
-      border-radius: 50%;
-      border-top: 4px solid var(--primary-color);
-      width: 45px;
-      height: 45px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    /* تصميم متجاوب إضافي للجوال */
-    @media (max-width: 600px) {
-        .to-home-btn {
-            bottom: 75px;
+    <style>
+        :root {
+            --primary-color: #8B7BFF;
+            --secondary-color: #FF7BA9;
+            --accent-color: #5FD8FF;
+            --accent-color-2: #FFA87D;
+            --bg-dark: #0F0F25;
+            --bg-card: rgba(26, 26, 60, 0.7);
+            --text-light: #F8F8FF;
+            --border-color: rgba(139, 123, 255, 0.4);
+            --sidebar-width: 300px;
+            --gradient-primary: linear-gradient(135deg, #8B7BFF, #5FD8FF);
+            --gradient-secondary: linear-gradient(135deg, #FF7BA9, #FFA87D);
+            --gradient-dark: linear-gradient(135deg, #0F0F25, #1A1A3A);
+            --success-color: #3DD8A9;
+            --error-color: #FF7B95;
+            --warning-color: #FFC14D;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --blur-intensity: blur(20px);
+            
+            --base-unit: 1rem;
+            --header-height: 4rem;
+            --footer-height: 5rem;
+            --card-min-width: 10rem;
+            --card-max-width: 14rem;
         }
-    }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html {
+            font-size: 16px;
+        }
+        
+        @media (min-resolution: 200dpi) {
+            html {
+                font-size: 18px;
+            }
+        }
+        
+        @media (min-resolution: 300dpi) {
+            html {
+                font-size: 20px;
+            }
+        }
+        
+        body {
+            background: var(--bg-dark);
+            font-family: 'Cairo', sans-serif;
+            color: var(--text-light);
+            direction: rtl;
+            transition: all 0.3s ease;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(139, 123, 255, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 90% 80%, rgba(255, 123, 169, 0.1) 0%, transparent 25%);
+            min-height: 100vh;
+            padding-bottom: var(--footer-height);
+            line-height: 1.5;
+        }
 
-    @media (max-width: 480px) {
-      .grid {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        gap: 15px;
-        padding: 15px;
-      }
-      
-      .anime-card img {
-        height: 170px;
-      }
-      
-      .logo {
-        font-size: 1.2rem;
-      }
-      
-      .user-name {
-        display: none;
-      }
-      
-      .search-icon {
-        left: 20px;
-      }
-      
-      .to-home-btn {
-        width: 45px;
-        height: 45px;
-        bottom: 75px;
-        left: 15px;
-        font-size: 1.1rem;
-      }
-      
-      .main-header {
-        padding: 12px 15px;
-      }
-      
-      .nav-item {
-        padding: 12px 0;
-      }
-      
-      .nav-icon {
-        font-size: 1.2rem;
-      }
-      
-      .ticker-content {
-        font-size: 0.8rem;
-      }
-      
-      .sidebar {
-        width: 90%;
-        right: calc(-1 * 90%);
-      }
-    }
-    
-    @media (max-width: 360px) {
-      .grid {
-        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-        gap: 12px;
-        padding: 12px;
-      }
-      
-      .anime-card img {
-        height: 150px;
-      }
-      
-      .anime-card p {
-        font-size: 0.85rem;
-        padding: 12px 8px;
-      }
-      
-      .search-bar input {
-        padding: 14px 45px 14px 15px;
-        font-size: 0.95rem;
-      }
-    }
+        /* تأثيرات الخلفية مع البلور */
+        .bg-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            backdrop-filter: var(--blur-intensity);
+        }
 
-    /* تحسينات للأجهزة عالية الدقة */
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-      .anime-card img {
-        image-rendering: -webkit-optimize-contrast;
-      }
-      
-      .logo, .nav-icon, #settingsToggle {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-    }
-  </style>
+        .floating-element {
+            position: absolute;
+            background: rgba(139, 123, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            backdrop-filter: var(--blur-intensity);
+        }
+
+        .floating-element:nth-child(1) {
+            width: 6.25rem;
+            height: 6.25rem;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 9.375rem;
+            height: 9.375rem;
+            top: 60%;
+            left: 80%;
+            animation-delay: -2s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 5rem;
+            height: 5rem;
+            top: 80%;
+            left: 20%;
+            animation-delay: -4s;
+        }
+
+        /* الهيدر الزجاجي - محسن */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(30, 30, 60, 0.7);
+            backdrop-filter: var(--blur-intensity);
+            padding: 0.75rem 1.25rem;
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.3);
+            height: var(--header-height);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            text-shadow: 0 0.125rem 0.625rem rgba(139, 123, 255, 0.3);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.9375rem;
+        }
+        
+        /* زر الإعدادات المحسن - أيقونة حديثة 2025 */
+        #settingsToggle {
+            color: var(--text-light);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: var(--glass-bg);
+            width: 2.8rem;
+            height: 2.8rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(0.625rem);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #settingsToggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 1rem;
+        }
+        
+        #settingsToggle i {
+            position: relative;
+            z-index: 1;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        #settingsToggle:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 0 1.5rem rgba(139, 123, 255, 0.7);
+            border-color: transparent;
+        }
+        
+        #settingsToggle:hover::before {
+            opacity: 1;
+        }
+        
+        #settingsToggle:hover i {
+            color: white;
+            transform: scale(1.2);
+        }
+        
+        #settingsToggle:active {
+            transform: scale(0.95) rotate(90deg);
+            transition: transform 0.1s ease;
+        }
+
+        /* شريط الأخبار المتحرك */
+        .news-ticker {
+            background: linear-gradient(135deg, rgba(255, 123, 169, 0.9), rgba(255, 168, 125, 0.9));
+            backdrop-filter: blur(0.625rem);
+            padding: 0.625rem 0;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0.25rem 1.25rem rgba(255, 123, 169, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .ticker-content {
+            display: inline-block;
+            white-space: nowrap;
+            animation: ticker 35s linear infinite;
+            padding-right: 100%;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        
+        .ticker-content span {
+            margin-left: 1.875rem;
+            display: inline-block;
+            text-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.2);
+        }
+        
+        .ticker-content i {
+            margin-left: 0.375rem;
+            color: var(--bg-dark);
+        }
+        
+        /* قائمة المستخدم المنسدلة */
+        .user-info {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: 0.3s;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.875rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(0.625rem);
+        }
+
+        .user-info:hover {
+            transform: scale(1.05);
+            background: rgba(139, 123, 255, 0.15);
+            border-color: rgba(139, 123, 255, 0.4);
+        }
+
+        .user-info img {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            border: 2px solid var(--accent-color);
+            object-fit: cover;
+            transition: all 0.3s ease;
+            background-color: var(--bg-card);
+        }
+
+        .user-info:hover img {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0.9375rem rgba(255, 123, 169, 0.6);
+        }
+
+        .verify-gold {
+            color: #FFD700;
+            font-size: 1.1rem;
+            filter: drop-shadow(0 0 0.3125rem #FFD700);
+        }
+        
+        .user-name {
+            max-width: 5rem; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* القائمة المنسدلة للمستخدم */
+        .user-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(40, 40, 70, 0.95);
+            backdrop-filter: var(--blur-intensity);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 0.9375rem 2.1875rem rgba(0, 0, 0, 0.4);
+            z-index: 110;
+            min-width: 12.5rem;
+            transform-origin: top center;
+            animation: menuFadeIn 0.3s ease-out forwards;
+            border: 1px solid var(--glass-border);
+            margin-top: 0.625rem;
+        }
+
+        .user-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .user-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.125rem;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.2s;
+            white-space: nowrap;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .user-menu a:last-child {
+            border-bottom: none;
+        }
+
+        .user-menu a:hover {
+            background: rgba(139, 123, 255, 0.2);
+            color: var(--primary-color);
+            padding-right: 1.375rem;
+        }
+        
+        .user-menu a i {
+            font-size: 1.1rem;
+            width: 1.375rem; 
+            text-align: center;
+        }
+
+        /* شريط البحث */
+        .search-bar {
+            padding: 0.9375rem 1.25rem;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.75rem 2.8125rem 0.75rem 0.9375rem;
+            border-radius: 0.875rem;
+            border: 1px solid var(--glass-border);
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s;
+            font-size: 1rem;
+            backdrop-filter: blur(0.5rem);
+            box-shadow: 0 0.25rem 0.9375rem rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-bar input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.125rem rgba(95, 216, 255, 0.4);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .search-bar .search-icon {
+            position: absolute;
+            left: 2.1875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-color);
+            opacity: 0.9;
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+        
+        /* قائمة الأنميات */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr)); 
+            gap: 1.25rem; 
+            padding: 1.25rem;
+            max-width: 81.25rem;
+            margin: 0 auto;
+            justify-items: center;
+        }
+        
+        .anime-card { 
+            background: rgba(26, 26, 60, 0.5);
+            border-radius: 1.125rem;
+            overflow: hidden;
+            box-shadow: 0 0.625rem 1.5625rem rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: var(--blur-intensity);
+            width: 100%;
+            max-width: var(--card-max-width);
+            min-height: 18rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .anime-card:hover {
+            transform: translateY(-0.625rem) scale(1.03);
+            box-shadow: 0 1.25rem 2.5rem rgba(139, 123, 255, 0.4);
+            border-color: rgba(139, 123, 255, 0.5);
+        }
+        
+        .anime-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 0.25rem;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        
+        .anime-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .anime-image-container {
+            width: 100%;
+            height: 12.5rem;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(45deg, #1A1A3A, #2a2a50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .anime-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+        
+        .anime-card:hover img {
+            transform: scale(1.08);
+        }
+        
+        .anime-card p {
+            padding: 0.875rem 0.625rem;
+            margin: 0;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-light);
+            font-weight: 700;
+            background: rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .anime-card:hover p {
+            background: rgba(139, 123, 255, 0.25);
+            color: var(--primary-color);
+        }
+        
+        .anime-year {
+            position: absolute;
+            top: 0.625rem;
+            left: 0.625rem;
+            background: var(--gradient-secondary);
+            color: white;
+            padding: 0.3125rem 0.625rem;
+            border-radius: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            z-index: 2;
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.3);
+        }
+
+        .anime-rating {
+            position: absolute;
+            top: 0.625rem;
+            right: 0.625rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: gold;
+            padding: 0.3125rem 0.625rem;
+            border-radius: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.3);
+        }
+
+        .anime-badge {
+            position: absolute;
+            top: 0.625rem;
+            right: 50%;
+            transform: translateX(50%);
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.25rem 0.625rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 2;
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.3);
+        }
+        
+        /* القائمة الجانبية */
+        .sidebar {
+            height: 100%;
+            width: 85%;
+            max-width: 20rem;
+            position: fixed;
+            z-index: 150;
+            top: 0;
+            right: calc(-1 * 85%);
+            background: rgba(35, 35, 65, 0.95);
+            backdrop-filter: var(--blur-intensity);
+            overflow-x: hidden;
+            transition: right 0.4s ease;
+            padding-top: 4.375rem;
+            box-shadow: -0.5rem 0 1.875rem rgba(0, 0, 0, 0.4);
+            border-left: 1px solid var(--glass-border);
+        }
+
+        .sidebar.open {
+            right: 0;
+        }
+        
+        .sidebar-header {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.125rem 1.25rem;
+            background: rgba(50, 50, 80, 0.8);
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(0.625rem);
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .sidebar .close-btn {
+            font-size: 1.4rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--glass-bg);
+        }
+        
+        .sidebar .close-btn:hover {
+            background: rgba(255, 123, 169, 0.2);
+            color: var(--secondary-color);
+            transform: rotate(90deg);
+        }
+
+        .sidebar-section {
+            padding: 1.125rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-section:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar-section-title {
+            padding: 0 1.25rem 0.75rem;
+            font-size: 1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-item {
+            padding: 0.875rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-light);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+        }
+        
+        .sidebar-item:last-child {
+            border-bottom: none;
+        }
+        
+        .sidebar-item:hover {
+            background: rgba(139, 123, 255, 0.15);
+            padding-left: 1.5625rem;
+        }
+        
+        .sidebar-item span {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .sidebar-item i {
+            color: var(--primary-color);
+            width: 1.25rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-item .item-description {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.25rem;
+            font-weight: normal;
+        }
+        
+        /* مفتاح التبديل */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 2.875rem;
+            height: 1.5rem;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #666;
+            transition: .4s;
+            border-radius: 1.5rem;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 1.125rem;
+            width: 1.125rem;
+            left: 0.1875rem;
+            bottom: 0.1875rem;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: var(--gradient-primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(1.375rem);
+        }
+
+        /* التذييل والأزرار السفلية - محدثة وجذابة */
+        footer {
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem 0;
+            background: rgba(30, 30, 60, 0.95);
+            backdrop-filter: var(--blur-intensity);
+            border-top: 1px solid var(--glass-border);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 90;
+            box-shadow: 0 -0.5rem 1.875rem rgba(0, 0, 0, 0.4);
+            height: var(--footer-height);
+            border-radius: 1.5rem 1.5rem 0 0;
+        }
+
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 0.5rem 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border-radius: 1rem;
+            margin: 0 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: rgba(139, 123, 255, 0.15);
+            transform: translateY(-0.25rem);
+        }
+
+        .nav-item.active {
+            background: rgba(139, 123, 255, 0.2);
+        }
+        
+        .nav-item:active {
+            transform: translateY(0) scale(0.95);
+            transition: transform 0.1s ease;
+        }
+
+        /* 🆕 أيقونات حديثة 2025 (SVG) */
+        .nav-icon {
+            color: var(--text-light);
+            font-size: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 0.25rem;
+        }
+
+        /* 🆕 تنسيق أيقونات SVG داخل الـ nav-icon */
+        .nav-icon svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            fill: currentColor; /* ليتغير لونها مع الـ nav-icon */
+            stroke: currentColor;
+            transition: inherit;
+        }
+
+
+        .nav-label {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .nav-item::after {
+            content: "";
+            position: absolute;
+            bottom: 0.25rem;
+            right: 50%;
+            transform: translateX(50%);
+            width: 0;
+            height: 0.1875rem;
+            background: var(--gradient-primary);
+            border-radius: 0.1875rem 0.1875rem 0 0;
+            transition: width 0.3s;
+        }
+
+        .nav-item.active::after,
+        .nav-item:hover::after {
+            width: 1.5rem;
+        }
+
+        .nav-item.active .nav-icon,
+        .nav-item:hover .nav-icon {
+            color: var(--primary-color);
+            transform: scale(1.1);
+            background: rgba(139, 123, 255, 0.2);
+            border-color: rgba(139, 123, 255, 0.3);
+            box-shadow: 0 0 1rem rgba(139, 123, 255, 0.4);
+        }
+
+        .nav-item.active .nav-label,
+        .nav-item:hover .nav-label {
+            color: var(--primary-color);
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .nav-badge {
+            position: absolute;
+            top: 0.25rem;
+            right: 50%;
+            transform: translateX(1rem);
+            background: var(--gradient-secondary);
+            color: white;
+            border-radius: 0.5rem;
+            padding: 0.125rem 0.3125rem;
+            font-size: 0.55rem;
+            font-weight: bold;
+            min-width: 0.875rem;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .to-home-btn {
+            position: fixed;
+            bottom: 6.25rem;
+            left: 1.25rem; 
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            padding: 0.75rem 0.9375rem;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 95;
+            box-shadow: 0 0.5rem 1.5625rem rgba(139, 123, 255, 0.6);
+            transition: all 0.3s;
+            width: 3.125rem;
+            height: 3.125rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            backdrop-filter: blur(0.625rem);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .to-home-btn:hover {
+            transform: scale(1.15) translateY(-0.3125rem);
+            box-shadow: 0 0.75rem 1.875rem rgba(139, 123, 255, 0.8);
+        }
+        
+        .to-home-btn:active {
+            transform: scale(1) translateY(0);
+            box-shadow: 0 0.25rem 0.9375rem rgba(139, 123, 255, 0.6);
+        }
+        
+        /* الإشعارات */
+        .toast {
+            position: fixed;
+            bottom: 6.25rem; /* تم رفعه قليلاً فوق الفوتر */
+            right: 1.25rem;
+            background: rgba(45, 45, 75, 0.95);
+            backdrop-filter: var(--blur-intensity);
+            color: #fff;
+            padding: 0.9375rem 1.375rem;
+            border-radius: 0.875rem;
+            box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.4);
+            border-left: 0.25rem solid var(--primary-color);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            max-width: 20rem;
+            border: 1px solid var(--glass-border);
+            font-size: 0.9rem;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .toast.error {
+            border-left-color: var(--error-color);
+        }
+        
+        .toast.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        /* تأثيرات إضافية */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* مؤشر التحميل */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1.5625rem;
+            color: var(--primary-color);
+            grid-column: 1 / -1;
+            margin: 2rem 0;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+
+        .loading-spinner {
+            border: 0.25rem solid rgba(139, 123, 255, 0.3);
+            border-radius: 50%;
+            border-top: 0.25rem solid var(--primary-color);
+            width: 2.8125rem;
+            height: 2.8125rem;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 0.625rem;
+        }
+
+        /* زر تحميل المزيد */
+        .load-more-btn {
+            grid-column: 1/-1;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 2rem auto;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: var(--blur-intensity);
+            border: 1px solid var(--glass-border);
+            justify-self: center;
+        }
+        
+        .load-more-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 123, 255, 0.4);
+        }
+
+        .load-more-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* تصميم متجاوب للجوال */
+        @media (max-width: 37.5rem) {
+            .to-home-btn {
+                bottom: 5.5rem;
+            }
+            
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(8.125rem, 1fr));
+                gap: 0.9375rem;
+                padding: 0.9375rem;
+            }
+            
+            .anime-image-container {
+                height: 10.625rem;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .user-name {
+                display: none;
+            }
+            
+            .search-icon {
+                left: 1.25rem;
+            }
+            
+            .to-home-btn {
+                width: 2.8125rem;
+                height: 2.8125rem;
+                bottom: 5.5rem;
+                left: 0.9375rem;
+                font-size: 1.1rem;
+            }
+            
+            .main-header {
+                padding: 0.75rem 0.9375rem;
+            }
+            
+            .nav-item {
+                padding: 0.5rem 0;
+            }
+            
+            .nav-icon {
+                font-size: 1.3rem;
+                width: 2rem;
+                height: 2rem;
+            }
+            
+            /* 🆕 تعديل أيقونة SVG على الهواتف */
+            .nav-icon svg {
+                width: 1.3rem;
+                height: 1.3rem;
+            }
+
+            .nav-label {
+                font-size: 0.65rem;
+            }
+            
+            .ticker-content {
+                font-size: 0.8rem;
+            }
+            
+            .sidebar {
+                width: 90%;
+                right: calc(-1 * 90%);
+            }
+            
+            :root {
+                --card-min-width: 8rem;
+                --card-max-width: 10rem;
+                --footer-height: 5.5rem;
+            }
+
+            .toast {
+                bottom: 6rem;
+                right: 0.75rem;
+                left: 0.75rem;
+                max-width: unset;
+            }
+        }
+        
+        @media (max-width: 22.5rem) {
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(6.875rem, 1fr));
+                gap: 0.75rem;
+                padding: 0.75rem;
+            }
+            
+            .anime-image-container {
+                height: 9.375rem;
+            }
+            
+            .anime-card p {
+                font-size: 0.85rem;
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .search-bar input {
+                padding: 0.875rem 2.8125rem 0.875rem 0.9375rem;
+                font-size: 0.95rem;
+            }
+            
+            :root {
+                --card-min-width: 6.8rem;
+                --card-max-width: 8rem;
+            }
+        }
+
+        /* تأثيرات الحركة */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-1.25rem) rotate(180deg); }
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes menuFadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(-0.625rem) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(139, 123, 255, 0.7); }
+            70% { box-shadow: 0 0 0 0.75rem rgba(139, 123, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(139, 123, 255, 0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(1.875rem); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        /* تحسينات للشاشات الكبيرة */
+        @media (min-width: 75rem) {
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+            }
+            
+            :root {
+                --card-min-width: 12rem;
+                --card-max-width: 14rem;
+            }
+        }
+
+        /* رسائل الخطأ */
+        .error-message {
+            text-align: center;
+            padding: 2rem;
+            color: var(--error-color);
+            font-size: 1.1rem;
+            grid-column: 1 / -1;
+        }
+
+        .user-menu .logout-btn {
+            color: var(--error-color);
+            font-weight: 700;
+        }
+
+        .user-menu .logout-btn:hover {
+            background: rgba(255, 123, 169, 0.2);
+            padding-right: 1.375rem;
+        }
+
+        /* Firebase Auth Elements (New) */
+        .user-menu #loginBtn,
+        .user-menu #registerBtn {
+            color: var(--success-color);
+            font-weight: 700;
+        }
+        .user-menu #loginBtn:hover,
+        .user-menu #registerBtn:hover {
+            background: rgba(61, 216, 169, 0.2);
+            padding-right: 1.375rem;
+        }
+        
+        /* ------------------------------------- */
+        /* 🟢 تحديثات إضافية لضمان التجاوب على الهواتف */
+        /* ------------------------------------- */
+        
+        /* القاعدة الذهبية لضمان التجاوب لكل الصور */
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* ضمان أن العناصر الطويلة لا تتسبب في تمرير أفقي */
+        .sidebar-item,
+        .news-ticker {
+            overflow-x: hidden;
+        }
+        
+        /* تحسين مظهر شريط البحث على الهواتف */
+        .search-bar {
+            padding: 0.9375rem 0.75rem; /* تقليل الحشو لزيادة المساحة */
+        }
+        
+        /* ضبط أيقونة البحث على الهواتف */
+        .search-bar .search-icon {
+            left: 1.5rem; /* تحريك الأيقونة قليلاً لليسار */
+        }
+        
+        /* تعديل المسافة السفلية للتذييل لمنع التداخل مع المحتوى */
+        main {
+            padding-bottom: calc(var(--footer-height) + 1rem); 
+            /* إضافة حشو أسفل المحتوى يساوي ارتفاع الفوتر مع مسافة إضافية */
+        }
+
+        /* تحسينات الإعدادات الجانبية على الهواتف */
+        .sidebar-section-title {
+            white-space: normal; /* السماح للعناوين الطويلة بالنزول لسطر جديد */
+        }
+
+        /* تعديل عرض القائمة الجانبية لتكون مرئية بشكل واضح على الهواتف الصغيرة */
+        @media (max-width: 37.5rem) {
+            .sidebar {
+                max-width: 100%; /* يمكن للقائمة الجانبية أن تملأ الشاشة بالكامل على الهواتف الأصغر */
+                width: 100%;
+                right: -100%;
+            }
+        }
+        
+        /* ------------------------------------- */
+        /* 🟢 تنسيق سلايدر مستوى الصوت (الجديد) */
+        /* ------------------------------------- */
+        .sidebar-slider-item {
+            display: flex;
+            flex-direction: column; /* الترتيب عمودياً لكي يأخذ شريط التمرير العرض كاملاً */
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .sidebar-slider-item span {
+            width: 100%;
+            justify-content: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .slider-control {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            width: 100%;
+            padding: 0 1.25rem;
+        }
+
+        .slider-control input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            opacity: 0.9;
+            transition: opacity .15s ease-in-out;
+            border-radius: 0.25rem;
+        }
+
+        .slider-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 1.125rem;
+            height: 1.125rem;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            cursor: pointer;
+            box-shadow: 0 0 0.5rem rgba(139, 123, 255, 0.5);
+        }
+
+        .slider-control input[type="range"]::-moz-range-thumb {
+            width: 1.125rem;
+            height: 1.125rem;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 0.5rem rgba(139, 123, 255, 0.5);
+        }
+
+        .slider-control #volumeValue {
+            font-weight: bold;
+            color: var(--primary-color);
+            min-width: 1.5rem;
+            text-align: right;
+        }
+        
+        /* 📱 ضمان تجاوب السلايدر على الهواتف */
+        @media (max-width: 37.5rem) {
+            .slider-control {
+                flex-direction: row; /* يفضل أن يبقى أفقياً إذا كانت المساحة كافية */
+            }
+        }
+
+        /* ------------------------------------- */
+        /* 🆕 CSS شريط التحميل الجديد */
+        /* ------------------------------------- */
+        .loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0.5rem; /* شريط رفيع */
+            background-color: var(--bg-dark); /* خلفية داكنة */
+            z-index: 101; /* فوق الهيدر قليلاً */
+            display: none; /* مخفي افتراضياً */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 0 0.5rem rgba(139, 123, 255, 0.5);
+        }
+
+        .loading-bar.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: var(--gradient-primary); /* تدرج لوني جذاب */
+            transition: width 0.4s ease-out;
+            box-shadow: 0 0 0.625rem rgba(95, 216, 255, 0.7);
+        }
+
+        .loading-text {
+            position: absolute;
+            top: 0.75rem; /* أسفل الشريط بقليل */
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 700;
+            white-space: nowrap;
+            /* 🟢 تحديث: نقل نص التحميل ليكون ضمن الـ loading-bar لكن خارج الـ progress لمنع القص */
+            /* لم يتم تعديله في الـ CSS لإبقاء التصميم كما هو، لكن تم نقله في HTML */
+        }
+
+        /* تحسينات أداء إضافية */
+        .anime-card img {
+            will-change: transform;
+        }
+        
+        /* تحسينات لوضع عدم الاتصال */
+        .offline-indicator {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--error-color);
+            color: white;
+            text-align: center;
+            padding: 0.5rem;
+            z-index: 1000;
+            font-weight: bold;
+        }
+        
+        .offline-indicator.show {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
-  <header class="main-header">
-    <div class="header-left">
-        <i class="fa-solid fa-sliders-h" id="settingsToggle" title="الإعدادات"></i>
-        <div class="logo">Oraa Slayer </div>
+    <div class="bg-effects">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
     </div>
-    
-    <div class="user-info" id="userInfo">
-      <img id="headerProfile" src="https://i.ibb.co/YRShYmn/avatar.png" alt="صورة المستخدم">
-      <span class="user-name" id="headerName">زائر</span>
-      <i id="headerVerify" class="fa-solid fa-crown verify-gold" title="توثيق ذهبي" style="display:none;"></i>
 
-      <div class="user-menu" id="userMenu">
-        <a href="profile.html"><i class="fa-solid fa-user-circle"></i> الملف الشخصي</a>
-        <a href="favorites.html"><i class="fa-solid fa-bookmark"></i> المفضلة</a>
-        <a href="settings.html"><i class="fa-solid fa-sliders-h"></i> الإعدادات</a>
-        <a href="#" id="logoutBtn"><i class="fa-solid fa-power-off"></i> تسجيل الخروج</a>
-      </div>
+    <div class="offline-indicator" id="offlineIndicator">
+        <i class="fa-solid fa-wifi-slash"></i> أنت غير متصل بالإنترنت
     </div>
-  </header>
 
-  <div class="news-ticker">
-    <div class="ticker-content">
-      <span>✨ ترقبوا الموسم الجديد من أنمي Demon Slayer: Hashira Training Arc</span>
-      <span>🎉 أعلن عن أنمي Spy × Family الجزء الثاني قريبًا</span>
-      <span>🔥 One Piece يحطم الأرقام القياسية مع الحلقة 1079</span>
-      <span>🌟 تصويت لأفضل أنمي 2024 مفتوح الآن</span>
-      <span>🎬 أنمي جديد Blue Lock: Episode Nagi قادم في 2025</span>
+    <div id="animeLoaderBar" class="loading-bar">
+        <div class="loading-progress" id="loaderProgressBar"></div>
+        <span class="loading-text" id="loaderProgressText">جاري تهيئة منصة Oraa Slayer...</span>
     </div>
-  </div>
 
-  <section class="search-bar">
-    <input type="text" id="search" placeholder="ابحث عن أنميك المفضل...">
-    <i class="fas fa-search search-icon"></i>
-  </section>
-
-  <div class="loading" id="loading">
-    <div class="loading-spinner"></div>
-    <p>جاري تحميل الأنميات...</p>
-  </div>
-
-  <main id="animeGrid" class="grid">
-    <!-- سيتم إضافة الأنميات هنا ديناميكياً -->
-  </main>
-
-  <div id="oraaSidebar" class="sidebar">
-    <div class="sidebar-header">
-        <h2><i class="fa-solid fa-stars"></i> الإعدادات المميزة</h2>
-        <i class="fa-solid fa-xmark close-btn" id="closeSidebar"></i>
-    </div>
-    
-    <div class="sidebar-content">
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">
-                <i class="fa-solid fa-play-circle"></i>
-                تجربة المشاهدة
+    <header class="main-header">
+        <div class="header-left">
+            <div id="settingsToggle" title="الإعدادات المتقدمة">
+                <i class="fa-solid fa-sliders"></i>
             </div>
-            
-            <div class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-moon-stars"></i>
-                    <div>
-                        الوضع الليلي المميز
-                        <div class="item-description">تخفيف إضافي للسطوع مع ألوان مريحة</div>
-                    </div>
-                </span>
-                <label class="switch">
-                    <input type="checkbox" id="premiumDarkToggle">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-bolt-lightning"></i>
-                    <div>
-                        مُسرع البث الذكي
-                        <div class="item-description">تحميل أذكى وأسرع للحلقات</div>
-                    </div>
-                </span>
-                <label class="switch">
-                    <input type="checkbox" id="smartStreamToggle" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-download"></i>
-                    <div>
-                        التحميل التلقائي
-                        <div class="item-description">تحميل الحلقات الجديدة تلقائياً</div>
-                    </div>
-                </span>
-                <label class="switch">
-                    <input type="checkbox" id="autoDownloadToggle">
-                    <span class="slider"></span>
-                </label>
+            <div class="logo">🌀 Oraa Slayer</div>
+        </div>
+        
+        <div class="user-info" id="userInfo">
+            <img id="headerProfile" src="https://i.ibb.co/YRShYmn/avatar.png" alt="صورة المستخدم الافتراضية">
+            <span class="user-name" id="headerName">زائر</span>
+            <i id="headerVerify" class="fa-solid fa-crown verify-gold" title="توثيق ذهبي" style="display:none;"></i>
+            <i id="headerArrow" class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-right: 0.3rem;"></i>
+
+            <div class="user-menu" id="userMenu">
+                <a href="login.html" id="loginBtn" class="login-btn"><i class="fa-solid fa-sign-in-alt"></i> تسجيل الدخول</a>
+                <a href="register.html" id="registerBtn" class="register-btn"><i class="fa-solid fa-user-plus"></i> إنشاء حساب</a>
+
+                <div id="userLoggedInMenu" style="display:none;">
+                    <a href="profile.html"><i class="fa-solid fa-user-circle"></i> الملف الشخصي</a>
+                    <a href="favorites.html"><i class="fa-solid fa-bookmark"></i> المفضلة</a>
+                    <a href="settings.html"><i class="fa-solid fa-sliders-h"></i> إعدادات المنصة</a>
+                    <a href="#" id="logoutBtn" class="logout-btn"><i class="fa-solid fa-power-off"></i> تسجيل الخروج</a>
+                </div>
             </div>
         </div>
+    </header>
 
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">
-                <i class="fa-solid fa-highlighter"></i>
-                الجودة والإشعارات
-            </div>
-            
-            <div class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-hd"></i>
-                    <div>
-                        الجودة التلقائية
-                        <div class="item-description">تعديل الجودة تلقائياً حسب سرعة الانترنت</div>
-                    </div>
-                </span>
-                <label class="switch">
-                    <input type="checkbox" id="autoQualityToggle" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-bell"></i>
-                    <div>
-                        إشعارات الحلقات الجديدة
-                        <div class="item-description">إشعار فوري عند نزول حلقات جديدة</div>
-                    </div>
-                </span>
-                <label class="switch">
-                    <input type="checkbox" id="episodeNotificationsToggle" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-wifi"></i>
-                    <div>
-                        وضع توفير البيانات
-                        <div class="item-description">تقليل جودة الفيديو عند استخدام البيانات</div>
-                    </div>
-                </span>
-                <label class="switch">
-                    <input type="checkbox" id="dataSaverToggle">
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">
-                <i class="fa-solid fa-rocket"></i>
-                الميزات المتقدمة
-            </div>
-            
-            <div class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-eye-slash"></i>
-                    <div>
-                        إخفاء المكتملة
-                        <div class="item-description">إخفاء الأنميات التي انتهيت من مشاهدتها</div>
-                    </div>
-                </span>
-                <label class="switch">
-                    <input type="checkbox" id="hideCompletedToggle" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-                    <div>
-                        متابعة التقدم التلقائي
-                        <div class="item-description">حفظ تقدمك تلقائياً في جميع الأجهزة</div>
-                    </div>
-                </span>
-                <label class="switch">
-                    <input type="checkbox" id="autoProgressToggle" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-closed-captioning"></i>
-                    <div>
-                        الترجمات الذكية
-                        <div class="item-description">تحسين تلقائي للترجمات العربية</div>
-                    </div>
-                </span>
-                <label class="switch">
-                    <input type="checkbox" id="smartSubsToggle">
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">
-                <i class="fa-solid fa-user-gear"></i>
-                الحساب والإعدادات
-            </div>
-            
-            <a href="settings.html" class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-gears"></i>
-                    الإعدادات العامة
-                </span>
-                <i class="fa-solid fa-chevron-left"></i>
-            </a>
-            
-            <a href="profile.html" class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-user-shield"></i>
-                    إدارة الحساب
-                </span>
-                <i class="fa-solid fa-chevron-left"></i>
-            </a>
-            
-            <a href="faq.html" class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-circle-question"></i>
-                    الأسئلة الشائعة
-                </span>
-                <i class="fa-solid fa-chevron-left"></i>
-            </a>
-            
-            <a href="about.html" class="sidebar-item">
-                <span>
-                    <i class="fa-solid fa-circle-info"></i>
-                    حول التطبيق
-                </span>
-                <i class="fa-solid fa-chevron-left"></i>
-            </a>
+    <div class="news-ticker">
+        <div class="ticker-content">
+            <span>✨ ترقبوا الموسم الجديد من أنمي Demon Slayer: Hashira Training Arc</span>
+            <span>🎉 أعلن عن أنمي Spy × Family الجزء الثاني قريبًا</span>
+            <span>🔥 One Piece يحطم الأرقام القياسية مع الحلقة 1079</span>
+            <span>🌟 تصويت لأفضل أنمي 2024 مفتوح الآن</span>
+            <span>🎬 أنمي جديد Blue Lock: Episode Nagi قادم في 2025</span>
         </div>
     </div>
-  </div>
 
-  <footer>
-    <a href="index.html" class="nav-item active">
-      <div class="nav-icon">
-        <i class="fa-solid fa-house"></i>
-      </div>
-    </a>
-    
-    <a href="searching.html" class="nav-item">
-      <div class="nav-icon">
-        <i class="fa-solid fa-compass"></i>
-      </div>
-      <span class="nav-badge">جديد</span>
-    </a>
-    
-    <a href="favorites.html" class="nav-item">
-      <div class="nav-icon">
-        <i class="fa-solid fa-heart"></i>
-      </div>
-      <span class="nav-badge" id="favoritesCount">5</span>
-    </a>
-    
-    <a href="chat.html" class="nav-item">
-      <div class="nav-icon">
-        <i class="fa-solid fa-comment-dots"></i>
-      </div>
-    </a>
-    
-    <a href="profile.html" class="nav-item">
-      <div class="nav-icon">
-        <i class="fa-solid fa-user"></i>
-      </div>
-    </a>
-  </footer>
+    <section class="search-bar">
+        <input type="text" id="search" placeholder="ابحث عن أنميك المفضل: اسم، سنة، تصنيف..." onfocus="window.location.href='searching.html'">
+        <i class="fas fa-search search-icon"></i>
+    </section>
 
-  <button class="to-home-btn pulse" onclick="window.location.href='index.html'">
-    <i class="fa-solid fa-house"></i>
-  </button>
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>جاري تحميل وتحليل بيانات الأنميات من خوادم Oraa...</p>
+    </div>
 
-  <div class="toast" id="toast"></div>
+    <main id="animeGrid" class="grid">
+        <button class="load-more-btn" id="loadMoreBtn" style="display:none;">
+            <i class="fa-solid fa-plus-circle"></i>
+            تحميل المزيد من الأنميات
+        </button>
+        <div id="errorMessage" class="error-message" style="display:none;">
+            <i class="fa-solid fa-exclamation-triangle"></i>
+            عذراً، لم نتمكن من جلب بيانات الأنمي حالياً. الرجاء المحاولة لاحقاً.
+        </div>
+    </main>
+    <div id="oraaSidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-cogs"></i> الإعدادات المتقدمة</h2>
+            <i class="fa-solid fa-times close-btn" id="closeSidebar"></i>
+        </div>
+        
+        <div class="sidebar-content">
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <i class="fa-solid fa-fire-alt"></i>
+                    خدمات FirePASS (Firebase)
+                </div>
+                
+                <div class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-cloud-upload-alt"></i>
+                        <div>
+                            مزامنة السحابة (Firestore)
+                            <div class="item-description">حفظ الإعدادات والمفضلة على خوادمنا السحابية (Firestore)</div>
+                        </div>
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" id="firebaseSyncToggle" checked disabled>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="sidebar-item" id="firebaseAuthStatus">
+                    <span>
+                        <i class="fa-solid fa-user-lock"></i>
+                        <div>
+                            حالة المصادقة (Auth)
+                            <div class="item-description" id="authStatusText">غير مسجل (الوضع الآمن)</div>
+                        </div>
+                    </span>
+                    <i class="fa-solid fa-arrow-right-to-bracket" style="color: var(--warning-color);"></i>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <i class="fa-solid fa-play-circle"></i>
+                    تجربة المشاهدة
+                </div>
+                
+                <div class="sidebar-item sidebar-slider-item">
+                    <span>
+                        <i class="fa-solid fa-volume-up" style="color: var(--success-color);"></i>
+                        <div>
+                            مستوى صوت النظام
+                            <div class="item-description">ضبط مستوى الصوت الافتراضي للمنصة (0-100)</div>
+                        </div>
+                    </span>
+                    <div class="slider-control">
+                        <input type="range" id="volumeSlider" min="0" max="100" value="70">
+                        <span id="volumeValue">70</span>
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-moon-stars"></i>
+                        <div>
+                            الوضع الليلي المميز
+                            <div class="item-description">تخفيف إضافي للسطوع مع ألوان مريحة</div>
+                        </div>
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" id="premiumDarkToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-bolt-lightning"></i>
+                        <div>
+                            مُسرع البث الذكي
+                            <div class="item-description">تحميل أذكى وأسرع للحلقات (خوارزمية Oraa)</div>
+                        </div>
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" id="smartStreamToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-download"></i>
+                        <div>
+                            التحميل التلقائي (Firebase Storage)
+                            <div class="item-description">تحميل الحلقات الجديدة تلقائياً (يتطلب مساحة تخزين)</div>
+                        </div>
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" id="autoDownloadToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <i class="fa-solid fa-highlighter"></i>
+                    الجودة والإشعارات
+                </div>
+                
+                <div class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-hd"></i>
+                        <div>
+                            الجودة التلقائية (AI-Quality)
+                            <div class="item-description">تعديل الجودة تلقائياً حسب سرعة الانترنت ومحتوى المشهد</div>
+                        </div>
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" id="autoQualityToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-bell"></i>
+                        <div>
+                            إشعارات الحلقات الجديدة
+                            <div class="item-description">إشعار فوري عند نزول حلقات جديدة (FCM)</div>
+                        </div>
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" id="episodeNotificationsToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-wifi"></i>
+                        <div>
+                            وضع توفير البيانات
+                            <div class="item-description">تقليل جودة الفيديو عند استخدام بيانات الجوال</div>
+                        </div>
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" id="dataSaverToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <i class="fa-solid fa-rocket"></i>
+                    الميزات المتقدمة
+                </div>
+                
+                <div class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-eye-slash"></i>
+                        <div>
+                            إخفاء المكتملة
+                            <div class="item-description">إخفاء الأنميات التي انتهيت من مشاهدتها</div>
+                        </div>
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" id="hideCompletedToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <div>
+                            متابعة التقدم التلقائي
+                            <div class="item-description">حفظ تقدمك تلقائياً في جميع الأجهزة (Firebase Firestore)</div>
+                        </div>
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" id="autoProgressToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-closed-captioning"></i>
+                        <div>
+                            الترجمات الذكية (NLP)
+                            <div class="item-description">تحسين تلقائي للترجمات العربية بناءً على السياق</div>
+                        </div>
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" id="smartSubsToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
 
-  <script>
-    // قاعدة بيانات الأنميات المحسنة - 100 أنمي
-    const ANIME_DATABASE = [
-      // أنميات مشهورة - 100 أنمي
-      { id: 1, title: "قاتل الشياطين: تدريب الهاشيرا", year: "2025", img: "https://cdn.myanimelist.net/images/anime/1015/138510.jpg", desc: "تدريب الهاشيرا الجديد", episodes: 12, rating: 4.9, genres: ["أكشن", "فانتازيا"], studio: "Ufotable" },
-      { id: 2, title: "أكاديمية الأبطال 7", year: "2025", img: "https://cdn.myanimelist.net/images/anime/1764/132658.jpg", desc: "الموسم السابع من أكاديمية الأبطال", episodes: 25, rating: 4.7, genres: ["أكشن", "خارق للطبيعة"], studio: "Bones" },
-      { id: 3, title: "بلو لوك: حلقة ناغي", year: "2025", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "أنمي بلو لوك الجديد", episodes: 12, rating: 4.8, genres: ["رياضة", "دراما"], studio: "8bit" },
-      { id: 4, title: "ون بيس: القوس الجديد", year: "2025", img: "https://cdn.myanimelist.net/images/anime/1244/138135.jpg", desc: "استمرار مغامرات لوفي", episodes: 24, rating: 4.9, genres: ["مغامرات", "أكشن"], studio: "Toei Animation" },
-      { id: 5, title: "أتاك على تايتان: النهاية الحقيقية", year: "2025", img: "https://cdn.myanimelist.net/images/anime/1429/138456.jpg", desc: "نهاية السلسلة الأسطورية", episodes: 6, rating: 5.0, genres: ["أكشن", "دراما"], studio: "MAPPA" },
-      { id: 6, title: "سولو ليفلينج", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1935/140439.jpg", desc: "أنمي الصعود المنفرد", episodes: 12, rating: 4.8, genres: ["أكشن", "فانتازيا"], studio: "A-1 Pictures" },
-      { id: 7, title: "فرييرن: ما بعد الرحلة", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1764/132807.jpg", desc: "أنمي فرييرن الساحرة", episodes: 24, rating: 4.9, genres: ["فانتازيا", "مغامرات"], studio: "Madhouse" },
-      { id: 8, title: "مذكرات الصيدلية", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1958/140439.jpg", desc: "أنمي مذكرات الصيدلية", episodes: 12, rating: 4.7, genres: ["دراما", "تاريخي"], studio: "Doga Kobo" },
-      { id: 9, title: "ماشل: السحر والعضلات 2", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1015/138510.jpg", desc: "الموسم الثاني من ماشل", episodes: 12, rating: 4.6, genres: ["كوميديا", "أكشن"], studio: "Mappa" },
-      { id: 10, title: "سباي × فاميلي 2", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1444/138033.jpg", desc: "الموسم الثاني من سباي فاميلي", episodes: 25, rating: 4.9, genres: ["كوميديا", "أكشن"], studio: "Wit Studio" },
-      { id: 11, title: "بطل الدرع 3", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1595/138033.jpg", desc: "الموسم الثالث من بطل الدرع", episodes: 12, rating: 4.5, genres: ["أكشن", "دراما"], studio: "Kinema Citrus" },
-      { id: 12, title: "ناروتو: الجيل الجديد", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1334/138456.jpg", desc: "أبناء الأبطال الأصليين", episodes: 24, rating: 4.7, genres: ["أكشن", "مغامرات"], studio: "Studio Pierrot" },
-      { id: 13, title: "جوجوتسو كايسن 3", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1189/138456.jpg", desc: "الموسم الثالث من جوجوتسو كايسن", episodes: 24, rating: 4.8, genres: ["أكشن", "خارق للطبيعة"], studio: "MAPPA" },
-      { id: 14, title: "فينلاند ساغا 3", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1508/138456.jpg", desc: "الموسم الثالث من فينلاند ساغا", episodes: 24, rating: 4.9, genres: ["تاريخي", "دراما"], studio: "Wit Studio" },
-      { id: 15, title: "كيميتسو نو يايبا: قرية الحداد", year: "2023", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "قوس قرية الحداد", episodes: 11, rating: 4.9, genres: ["أكشن", "فانتازيا"], studio: "Ufotable" },
-      { id: 16, title: "أوتاما ورش: وان بيس", year: "2023", img: "https://cdn.myanimelist.net/images/anime/1244/138135.jpg", desc: "قوس وان بيس الجديد", episodes: 12, rating: 4.8, genres: ["مغامرات", "أكشن"], studio: "Toei Animation" },
-      { id: 17, title: "بلتش: ألف عام حرب الدم", year: "2022", img: "https://cdn.myanimelist.net/images/anime/1764/132658.jpg", desc: "عودة بلتش", episodes: 13, rating: 4.7, genres: ["أكشن", "خارق للطبيعة"], studio: "Pierrot" },
-      { id: 18, title: "سلسلة مونوغاتاري", year: "2009", img: "https://cdn.myanimelist.net/images/anime/1429/138456.jpg", desc: "سلسلة الأنمي الكلاسيكية", episodes: 100, rating: 4.8, genres: ["غموض", "فانتازيا"], studio: "Shaft" },
-      { id: 19, title: "هايكيو!!", year: "2014", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "أنمي الكرة الطائرة", episodes: 85, rating: 4.8, genres: ["رياضة", "دراما"], studio: "Production I.G" },
-      { id: 20, title: "هانتر x هانتر", year: "2011", img: "https://cdn.myanimelist.net/images/anime/1334/138456.jpg", desc: "أنمي الصيادين", episodes: 148, rating: 4.9, genres: ["مغامرات", "أكشن"], studio: "Madhouse" },
-      // 80 أنمي إضافية
-      { id: 21, title: "ناروتو شيبودن", year: "2007", img: "https://cdn.myanimelist.net/images/anime/1015/138510.jpg", desc: "استمرار قصة ناروتو", episodes: 500, rating: 4.7, genres: ["أكشن", "مغامرات"], studio: "Pierrot" },
-      { id: 22, title: "دراغون بول سوبر", year: "2015", img: "https://cdn.myanimelist.net/images/anime/1764/132658.jpg", desc: "استمرار دراغون بول", episodes: 131, rating: 4.6, genres: ["أكشن", "فانتازيا"], studio: "Toei Animation" },
-      { id: 23, title: "ون بنش مان", year: "2015", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "البطل ذو اللكمة الواحدة", episodes: 24, rating: 4.8, genres: ["أكشن", "كوميديا"], studio: "Madhouse" },
-      { id: 24, title: "أفاتار: أسطورة أنج", year: "2005", img: "https://cdn.myanimelist.net/images/anime/1244/138135.jpg", desc: "أسطورة أفاتار", episodes: 61, rating: 4.9, genres: ["مغامرات", "فانتازيا"], studio: "Nickelodeon" },
-      { id: 25, title: "كود جياس", year: "2006", img: "https://cdn.myanimelist.net/images/anime/1429/138456.jpg", desc: "أنمي الإستراتيجية", episodes: 50, rating: 4.8, genres: ["أكشن", "دراما"], studio: "Sunrise" },
-      { id: 26, title: "ديث نوت", year: "2006", img: "https://cdn.myanimelist.net/images/anime/1935/140439.jpg", desc: "مذكرة الموت", episodes: 37, rating: 4.9, genres: ["غموض", "نفسي"], studio: "Madhouse" },
-      { id: 27, title: "فولمتال: الأخوة المعدنية", year: "2003", img: "https://cdn.myanimelist.net/images/anime/1764/132807.jpg", desc: "الأخوة المعدنية", episodes: 51, rating: 4.8, genres: ["أكشن", "مغامرات"], studio: "Bones" },
-      { id: 28, title: "كاوبوي بيبوب", year: "1998", img: "https://cdn.myanimelist.net/images/anime/1958/140439.jpg", desc: "أنمي الخيال العلمي", episodes: 26, rating: 4.9, genres: ["خيال علمي", "دراما"], studio: "Sunrise" },
-      { id: 29, title: "ساموراي تشامبلو", year: "2004", img: "https://cdn.myanimelist.net/images/anime/1015/138510.jpg", desc: "أنمي الساموراي", episodes: 26, rating: 4.7, genres: ["أكشن", "كوميديا"], studio: "Manglobe" },
-      { id: 30, title: "بلاك كلوفر", year: "2017", img: "https://cdn.myanimelist.net/images/anime/1764/132658.jpg", desc: "أنمي السحر", episodes: 170, rating: 4.5, genres: ["أكشن", "فانتازيا"], studio: "Pierrot" },
-      { id: 31, title: "مابوشا: التلميذ المتخلف", year: "2021", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "التلميذ المتخلف", episodes: 13, rating: 4.6, genres: ["أكشن", "فانتازيا"], studio: "Silver Link" },
-      { id: 32, title: "ذا ريسنج أوف ذا شيلد هيرو", year: "2019", img: "https://cdn.myanimelist.net/images/anime/1244/138135.jpg", desc: "بطل الدرع", episodes: 25, rating: 4.4, genres: ["أكشن", "دراما"], studio: "Kinema Citrus" },
-      { id: 33, title: "نو غيم نو لايف", year: "2014", img: "https://cdn.myanimelist.net/images/anime/1429/138456.jpg", desc: "لا حياة بدون ألعاب", episodes: 12, rating: 4.7, genres: ["كوميديا", "فانتازيا"], studio: "Madhouse" },
-      { id: 34, title: "سورد أرت أونلاين", year: "2012", img: "https://cdn.myanimelist.net/images/anime/1935/140439.jpg", desc: "فنون السيف أونلاين", episodes: 25, rating: 4.5, genres: ["أكشن", "مغامرات"], studio: "A-1 Pictures" },
-      { id: 35, title: "أهيرو نو سورا", year: "2009", img: "https://cdn.myanimelist.net/images/anime/1764/132807.jpg", desc: "أنمي كرة السلة", episodes: 25, rating: 4.6, genres: ["رياضة", "دراما"], studio: "Production I.G" },
-      { id: 36, title: "كوروكو نو باسكت", year: "2012", img: "https://cdn.myanimelist.net/images/anime/1958/140439.jpg", desc: "أنمي كرة السلة", episodes: 25, rating: 4.7, genres: ["رياضة", "كوميديا"], studio: "Production I.G" },
-      { id: 37, title: "شوكوغكي نو سوما", year: "2015", img: "https://cdn.myanimelist.net/images/anime/1015/138510.jpg", desc: "أنمي الطبخ", episodes: 24, rating: 4.6, genres: ["كوميديا", "دراما"], studio: "J.C.Staff" },
-      { id: 38, title: "يوري أون آيس", year: "2016", img: "https://cdn.myanimelist.net/images/anime/1764/132658.jpg", desc: "أنمي التزلج على الجليد", episodes: 12, rating: 4.8, genres: ["رياضة", "دراما"], studio: "MAPPA" },
-      { id: 39, title: "فيوليت إيفرغاردن", year: "2018", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "فيوليت إيفرغاردن", episodes: 13, rating: 4.9, genres: ["دراما", "فانتازيا"], studio: "Kyoto Animation" },
-      { id: 40, title: "يامادا-كون و witches", year: "2019", img: "https://cdn.myanimelist.net/images/anime/1244/138135.jpg", desc: "يامادا والساحرات", episodes: 12, rating: 4.5, genres: ["كوميديا", "رومانسي"], studio: "Liden Films" },
-      // 60 أنمي إضافية
-      { id: 41, title: "بوكو نو هيرو أكاديميا", year: "2016", img: "https://cdn.myanimelist.net/images/anime/1429/138456.jpg", desc: "أكاديمية الأبطال", episodes: 13, rating: 4.6, genres: ["أكشن", "خارق للطبيعة"], studio: "Bones" },
-      { id: 42, title: "نو غانز لايف", year: "2020", img: "https://cdn.myanimelist.net/images/anime/1935/140439.jpg", desc: "لا حياة بدون أسلحة", episodes: 12, rating: 4.4, genres: ["أكشن", "كوميديا"], studio: "Mappa" },
-      { id: 43, title: "جوجوتسو كايسن 0", year: "2021", img: "https://cdn.myanimelist.net/images/anime/1764/132807.jpg", desc: "فيلم جوجوتسو كايسن", episodes: 1, rating: 4.9, genres: ["أكشن", "خارق للطبيعة"], studio: "MAPPA" },
-      { id: 44, title: "كيميتسو نو يايبا: موفي", year: "2020", img: "https://cdn.myanimelist.net/images/anime/1958/140439.jpg", desc: "فيلم قاتل الشياطين", episodes: 1, rating: 4.9, genres: ["أكشن", "فانتازيا"], studio: "Ufotable" },
-      { id: 45, title: "مادوكا ماجيكا", year: "2011", img: "https://cdn.myanimelist.net/images/anime/1015/138510.jpg", desc: "فتاة السحر مادوكا", episodes: 12, rating: 4.8, genres: ["دراما", "فانتازيا"], studio: "Shaft" },
-      { id: 46, title: "ستينز;غيت", year: "2011", img: "https://cdn.myanimelist.net/images/anime/1764/132658.jpg", desc: "ستينز;غيت", episodes: 24, rating: 4.9, genres: ["خيال علمي", "دراما"], studio: "White Fox" },
-      { id: 47, title: "ري:زيرو", year: "2016", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "البداية من الصفر", episodes: 25, rating: 4.7, genres: ["دراما", "فانتازيا"], studio: "White Fox" },
-      { id: 48, title: "كونوسوبا", year: "2016", img: "https://cdn.myanimelist.net/images/anime/1244/138135.jpg", desc: "بركة هذا العالم الرائع!", episodes: 10, rating: 4.6, genres: ["كوميديا", "فانتازيا"], studio: "Studio Deen" },
-      { id: 49, title: "أوفرلورد", year: "2015", img: "https://cdn.myanimelist.net/images/anime/1429/138456.jpg", desc: "سيد القلعة", episodes: 13, rating: 4.5, genres: ["أكشن", "فانتازيا"], studio: "Madhouse" },
-      { id: 50, title: "ساتورو غوجو: الماضي", year: "2021", img: "https://cdn.myanimelist.net/images/anime/1935/140439.jpg", desc: "ماضي ساتورو غوجو", episodes: 1, rating: 4.8, genres: ["أكشن", "خارق للطبيعة"], studio: "MAPPA" },
-      { id: 51, title: "سول إيتر", year: "2008", img: "https://cdn.myanimelist.net/images/anime/1764/132807.jpg", desc: "صائد الأرواح", episodes: 51, rating: 4.7, genres: ["أكشن", "فانتازيا"], studio: "Bones" },
-      { id: 52, title: "دريفتيرز", year: "2019", img: "https://cdn.myanimelist.net/images/anime/1958/140439.jpg", desc: "المنشقون", episodes: 12, rating: 4.6, genres: ["أكشن", "فانتازيا"], studio: "Hoods Entertainment" },
-      { id: 53, title: "بليد أوف ذا إمبيرور", year: "2022", img: "https://cdn.myanimelist.net/images/anime/1015/138510.jpg", desc: "سيف الإمبراطور", episodes: 12, rating: 4.5, genres: ["أكشن", "فانتازيا"], studio: "Ufotable" },
-      { id: 54, title: "ذا غود أوف هاي سكول", year: "2014", img: "https://cdn.myanimelist.net/images/anime/1764/132658.jpg", desc: "إله المدرسة الثانوية", episodes: 12, rating: 4.4, genres: ["كوميديا", "فانتازيا"], studio: "Madhouse" },
-      { id: 55, title: "نوراغامي", year: "2014", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "نوراغامي", episodes: 12, rating: 4.6, genres: ["أكشن", "فانتازيا"], studio: "Bones" },
-      { id: 56, title: "بونز", year: "2014", img: "https://cdn.myanimelist.net/images/anime/1244/138135.jpg", desc: "أنمي العظام", episodes: 12, rating: 4.5, genres: ["غموض", "خيال علمي"], studio: "Bones" },
-      { id: 57, title: "سيراف أوف ذا إند", year: "2015", img: "https://cdn.myanimelist.net/images/anime/1429/138456.jpg", desc: "سيراف النهاية", episodes: 12, rating: 4.4, genres: ["أكشن", "فانتازيا"], studio: "Wit Studio" },
-      { id: 58, title: "بلاك بوليت", year: "2015", img: "https://cdn.myanimelist.net/images/anime/1935/140439.jpg", desc: "الرصاصة السوداء", episodes: 13, rating: 4.3, genres: ["أكشن", "خارق للطبيعة"], studio: "Kinema Citrus" },
-      { id: 59, title: "أكاما غا كيل!", year: "2014", img: "https://cdn.myanimelist.net/images/anime/1764/132807.jpg", desc: "أكاما سيقتل!", episodes: 12, rating: 4.5, genres: ["كوميديا", "أكشن"], studio: "Lerche" },
-      { id: 60, title: "توكيو غول", year: "2014", img: "https://cdn.myanimelist.net/images/anime/1958/140439.jpg", desc: "طوكيو غول", episodes: 12, rating: 4.6, genres: ["دراما", "أكشن"], studio: "Pierrot" },
-      { id: 61, title: "باراسايت", year: "2014", img: "https://cdn.myanimelist.net/images/anime/1015/138510.jpg", desc: "الطفيلي", episodes: 24, rating: 4.8, genres: ["دراما", "رعب"], studio: "Madhouse" },
-      { id: 62, title: "بوكيمون", year: "1997", img: "https://cdn.myanimelist.net/images/anime/1764/132658.jpg", desc: "أنمي البوكيمون", episodes: 276, rating: 4.5, genres: ["مغامرات", "كوميديا"], studio: "OLM" },
-      { id: 63, title: "ديجيمون", year: "1999", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "أنمي الديجيمون", episodes: 54, rating: 4.6, genres: ["مغامرات", "أكشن"], studio: "Toei Animation" },
-      { id: 64, title: "يوغي يو!", year: "2000", img: "https://cdn.myanimelist.net/images/anime/1244/138135.jpg", desc: "أنمي ألعاب الورق", episodes: 224, rating: 4.5, genres: ["أكشن", "فانتازيا"], studio: "Gallop" },
-      { id: 65, title: "بليتش", year: "2004", img: "https://cdn.myanimelist.net/images/anime/1429/138456.jpg", desc: "أنمي بليتش", episodes: 366, rating: 4.6, genres: ["أكشن", "خارق للطبيعة"], studio: "Pierrot" },
-      { id: 66, title: "فايري تايل", year: "2009", img: "https://cdn.myanimelist.net/images/anime/1935/140439.jpg", desc: "ذيل الجنية", episodes: 328, rating: 4.5, genres: ["أكشن", "فانتازيا"], studio: "A-1 Pictures" },
-      { id: 67, title: "ون بيس", year: "1999", img: "https://cdn.myanimelist.net/images/anime/1764/132807.jpg", desc: "أنمي ون بيس", episodes: 1079, rating: 4.8, genres: ["مغامرات", "أكشن"], studio: "Toei Animation" },
-      { id: 68, title: "ناروتو", year: "2002", img: "https://cdn.myanimelist.net/images/anime/1958/140439.jpg", desc: "أنمي ناروتو", episodes: 220, rating: 4.7, genres: ["أكشن", "مغامرات"], studio: "Pierrot" },
-      { id: 69, title: "دراغون بول", year: "1986", img: "https://cdn.myanimelist.net/images/anime/1015/138510.jpg", desc: "أنمي دراغون بول", episodes: 153, rating: 4.6, genres: ["أكشن", "مغامرات"], studio: "Toei Animation" },
-      { id: 70, title: "دراغون بول Z", year: "1989", img: "https://cdn.myanimelist.net/images/anime/1764/132658.jpg", desc: "أنمي دراغون بول Z", episodes: 291, rating: 4.7, genres: ["أكشن", "مغامرات"], studio: "Toei Animation" },
-      { id: 71, title: "سايلنت فويс", year: "2023", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "الصمت الصوتي", episodes: 12, rating: 4.5, genres: ["دراما", "رومانسي"], studio: "A-1 Pictures" },
-      { id: 72, title: "بلو بروتوكول", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1244/138135.jpg", desc: "البروتوكول الأزرق", episodes: 12, rating: 4.6, genres: ["أكشن", "خيال علمي"], studio: "Bandai Namco" },
-      { id: 73, title: "أسترا: لوست إن سبيس", year: "2019", img: "https://cdn.myanimelist.net/images/anime/1429/138456.jpg", desc: "أسترا: ضائع في الفضاء", episodes: 12, rating: 4.7, genres: ["مغامرات", "خيال علمي"], studio: "Lerche" },
-      { id: 74, title: "دكتور ستون", year: "2019", img: "https://cdn.myanimelist.net/images/anime/1935/140439.jpg", desc: "دكتور ستون", episodes: 24, rating: 4.6, genres: ["مغامرات", "خيال علمي"], studio: "TMS Entertainment" },
-      { id: 75, title: "فاينل فانتازي: أدفنت تشيلدرن", year: "2001", img: "https://cdn.myanimelist.net/images/anime/1764/132807.jpg", desc: "فاينل فانتازي", episodes: 1, rating: 4.5, genres: ["أكشن", "فانتازيا"], studio: "Square Enix" },
-      { id: 76, title: "ذا بروميسد نيفرلاند", year: "2019", img: "https://cdn.myanimelist.net/images/anime/1958/140439.jpg", desc: "الأرض الموعودة", episodes: 12, rating: 4.7, genres: ["غموض", "رعب"], studio: "CloverWorks" },
-      { id: 77, title: "بيسيكر", year: "2008", img: "https://cdn.myanimelist.net/images/anime/1015/138510.jpg", desc: "بيسيكر", episodes: 24, rating: 4.6, genres: ["أكشن", "خيال علمي"], studio: "Bones" },
-      { id: 78, title: "كلايمور", year: "2007", img: "https://cdn.myanimelist.net/images/anime/1764/132658.jpg", desc: "كلايمور", episodes: 26, rating: 4.5, genres: ["أكشن", "فانتازيا"], studio: "Madhouse" },
-      { id: 79, title: "هيليسينغ", year: "2001", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "هيليسينغ", episodes: 13, rating: 4.6, genres: ["أكشن", "رعب"], studio: "Gonzo" },
-      { id: 80, title: "وولفز رين", year: "2003", img: "https://cdn.myanimelist.net/images/anime/1244/138135.jpg", desc: "نداء الذئاب", episodes: 30, rating: 4.5, genres: ["أكشن", "فانتازيا"], studio: "Bones" },
-      { id: 81, title: "ترينيتي بلود", year: "2005", img: "https://cdn.myanimelist.net/images/anime/1429/138456.jpg", desc: "ترينيتي بلود", episodes: 24, rating: 4.4, genres: ["أكشن", "فانتازيا"], studio: "Gonzo" },
-      { id: 82, title: "باستارد!!", year: "2022", img: "https://cdn.myanimelist.net/images/anime/1935/140439.jpg", desc: "باستارد!!", episodes: 13, rating: 4.3, genres: ["أكشن", "فانتازيا"], studio: "Liden Films" },
-      { id: 83, title: "شادو هاوس", year: "2021", img: "https://cdn.myanimelist.net/images/anime/1764/132807.jpg", desc: "منزل الظل", episodes: 13, rating: 4.5, genres: ["غموض", "رعب"], studio: "CloverWorks" },
-      { id: 84, title: "سوني بوي", year: "2021", img: "https://cdn.myanimelist.net/images/anime/1958/140439.jpg", desc: "الصبي المشمس", episodes: 12, rating: 4.6, genres: ["كوميديا", "دراما"], studio: "Science SARU" },
-      { id: 85, title: "أود تAXI", year: "2022", img: "https://cdn.myanimelist.net/images/anime/1015/138510.jpg", desc: "تاكسي غريب", episodes: 13, rating: 4.4, genres: ["غموض", "دراما"], studio: "P.A. Works" },
-      { id: 86, title: "سايبربانك: إدغرانرز", year: "2022", img: "https://cdn.myanimelist.net/images/anime/1764/132658.jpg", desc: "سايبربانك", episodes: 10, rating: 4.5, genres: ["أكشن", "خيال علمي"], studio: "Studio Trigger" },
-      { id: 87, title: "ليانديس", year: "2023", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "ليانديس", episodes: 12, rating: 4.6, genres: ["أكشن", "فانتازيا"], studio: "MAPPA" },
-      { id: 88, title: "أونيموشا", year: "2023", img: "https://cdn.myanimelist.net/images/anime/1244/138135.jpg", desc: "أونيموشا", episodes: 8, rating: 4.4, genres: ["أكشن", "تاريخي"], studio: "Sublimation" },
-      { id: 89, title: "بلود بلوك", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1429/138456.jpg", desc: "كتلة الدم", episodes: 12, rating: 4.5, genres: ["أكشن", "خارق للطبيعة"], studio: "Production I.G" },
-      { id: 90, title: "ذا داي I BECAME A GOD", year: "2020", img: "https://cdn.myanimelist.net/images/anime/1935/140439.jpg", desc: "اليوم الذي أصبحت فيه إلها", episodes: 12, rating: 4.6, genres: ["دراما", "فانتازيا"], studio: "P.A. Works" },
-      { id: 91, title: "هوريمييا", year: "2021", img: "https://cdn.myanimelist.net/images/anime/1764/132807.jpg", desc: "هوريمييا", episodes: 13, rating: 4.7, genres: ["رومانسي", "كوميديا"], studio: "CloverWorks" },
-      { id: 92, title: "كومي كانت كوميونيكيت", year: "2022", img: "https://cdn.myanimelist.net/images/anime/1958/140439.jpg", desc: "كومي كانت تتواصل", episodes: 12, rating: 4.6, genres: ["كوميديا", "رومانسي"], studio: "OLM" },
-      { id: 93, title: "سومو: رايز أوف ذا رايس", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1015/138510.jpg", desc: "سومو: صعود الأرز", episodes: 12, rating: 4.5, genres: ["رياضة", "دراما"], studio: "Gonzo" },
-      { id: 94, title: "ذا كينغس آرثر", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1764/132658.jpg", desc: "الملك آرثر", episodes: 12, rating: 4.4, genres: ["أكشن", "فانتازيا"], studio: "Production I.G" },
-      { id: 95, title: "باندورا هارتس", year: "2009", img: "https://cdn.myanimelist.net/images/anime/1286/138033.jpg", desc: "قلوب باندورا", episodes: 25, rating: 4.5, genres: ["غموض", "فانتازيا"], studio: "Xebec" },
-      { id: 96, title: "دارك ذي كيدن", year: "2007", img: "https://cdn.myanimelist.net/images/anime/1244/138135.jpg", desc: "الطفل المظلم", episodes: 26, rating: 4.4, genres: ["أكشن", "فانتازيا"], studio: "Gonzo" },
-      { id: 97, title: "فايري تايل: 100 يير كويست", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1429/138456.jpg", desc: "ذيل الجنية: 100 سنة بحث", episodes: 12, rating: 4.5, genres: ["أكشن", "فانتازيا"], studio: "J.C.Staff" },
-      { id: 98, title: "ماجيك نايت رايearth", year: "1994", img: "https://cdn.myanimelist.net/images/anime/1935/140439.jpg", desc: "فارس السحر رايearth", episodes: 49, rating: 4.4, genres: ["أكشن", "فانتازيا"], studio: "Ashi Productions" },
-      { id: 99, title: "ساكر وورز", year: "2023", img: "https://cdn.myanimelist.net/images/anime/1764/132807.jpg", desc: "حروب السكر", episodes: 12, rating: 4.5, genres: ["أكشن", "خيال علمي"], studio: "Wit Studio" },
-      { id: 100, title: "ذا ليجند أوف زيلدا", year: "2024", img: "https://cdn.myanimelist.net/images/anime/1958/140439.jpg", desc: "أسطورة زيلدا", episodes: 12, rating: 4.6, genres: ["مغامرات", "فانتازيا"], studio: "Production I.G" }
-    ];
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">
+                    <i class="fa-solid fa-user-gear"></i>
+                    الحساب والإعدادات
+                </div>
+                
+                <a href="settings.html" class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-gears"></i>
+                        الإعدادات العامة
+                    </span>
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+                
+                <a href="profile.html" class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-user-shield"></i>
+                        إدارة الحساب (Firebase Auth)
+                    </span>
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+                
+                <a href="faq.html" class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-circle-question"></i>
+                        الأسئلة الشائعة والدعم
+                    </span>
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+                
+                <a href="about.html" class="sidebar-item">
+                    <span>
+                        <i class="fa-solid fa-circle-info"></i>
+                        حول المنصة (الإصدار)
+                    </span>
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 
-    // نظام كاش للصور
-    class ImageCache {
-      constructor() {
-        this.cache = new Map();
-        this.maxSize = 100;
-      }
+    <footer>
+        <a href="index.html" class="nav-item active">
+            <div class="nav-icon">
+                <svg viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M946.5 505L560.1 118.8l-25.9-25.9a31.5 31.5 0 0 0-44.4 0L77.5 505a63.9 63.9 0 0 0-18.8 46c.4 35.2 29.7 63.3 64.9 63.3h42.5V940h691.8V614.3h43.4c17.1 0 33.2-6.7 45.3-18.8a63.6 63.6 0 0 0 18.7-45.3c0-17-6.7-33.1-18.8-45.2zM568 868H456V664h112v204zm217.9-325.7V868H632V640c0-22.1-17.9-40-40-40H432c-22.1 0-40 17.9-40 40v228H238.1V542.3h-96l370-369.7 23.1 23.1L882 542.3h-96.1z" />
+                </svg>
+            </div>
+            <span class="nav-label">الرئيسية</span>
+        </a>
+        
+        <a href="searching.html" class="nav-item">
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} fill="none" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            <span class="nav-label">استكشاف</span>
+        </a>
+        
+        <a href="favorites.html" class="nav-item">
+            <div class="nav-icon">
+                <i class="fa-solid fa-heart"></i> 
+            </div>
+            <span class="nav-label">المفضلة</span>
+            <span class="nav-badge pulse" id="favoritesCount">0</span>
+        </a>
+        
+        <a href="chat.html" class="nav-item">
+            <div class="nav-icon">
+                <i class="fa-solid fa-comment-dots"></i>
+            </div>
+            <span class="nav-label">المحادثات</span>
+        </a>
+        
+        <a href="profile.html" class="nav-item" id="profileNavItem">
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24" height="1em" width="1em" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2.5a5.5 5.5 0 0 1 3.096 10.047 9.005 9.005 0 0 1 5.9 8.181.75.75 0 1 1-1.499.044 7.5 7.5 0 0 0-14.993 0 .75.75 0 0 1-1.5-.045 9.005 9.005 0 0 1 5.9-8.18A5.5 5.5 0 0 1 12 2.5ZM8 8a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z" />
+                </svg>
+            </div>
+            <span class="nav-label">حسابي</span>
+        </a>
+    </footer>
 
-      set(key, image) {
-        if (this.cache.size >= this.maxSize) {
-          const firstKey = this.cache.keys().next().value;
-          this.cache.delete(firstKey);
-        }
-        this.cache.set(key, image);
-      }
+    <button class="to-home-btn pulse" id="scrollToTopBtn">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
 
-      get(key) {
-        return this.cache.get(key);
-      }
+    <div class="toast" id="toast"></div>
 
-      has(key) {
-        return this.cache.has(key);
-      }
-    }
+    <script type="module">
+        // 🟢 تحسين Firebase: استخدام إصدار متقدم وموحد (12.5.0) مع تضمين Auth و Firestore
+        // استيراد وظائف Firebase الأساسية
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-analytics.js";
+        // 🟢 الإضافة: تضمين Auth و Firestore لدعم FirePASS بشكل كامل
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
-    // نظام التوصيات الذكي
-    class SmartRecommendationSystem {
-      constructor() {
-        this.userHistory = JSON.parse(localStorage.getItem('userHistory') || '[]');
-        this.recommendations = [];
-        this.cache = new Map();
-      }
-
-      addToHistory(animeId, animeData) {
-        const historyItem = {
-          id: animeId,
-          data: animeData,
-          timestamp: Date.now()
+        // إعدادات تطبيق الويب الخاص بـ Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDMFcCvthKNkHUrEbgYY1Uc80KTPpS01M",
+            authDomain: "oraa-slayer-anime.firebaseapp.com",
+            projectId: "oraa-slayer-anime",
+            storageBucket: "oraa-slayer-anime.firebasestorage.app",
+            messagingSenderId: "426607460785",
+            appId: "1:426607460785:web:c8d9844253c9111ad3bd90",
+            measurementId: "G-VNHP64HXD5"
         };
 
-        this.userHistory.unshift(historyItem);
+        // تهيئة Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app); // 🟢 كائن المصادقة
+        const db = getFirestore(app); // 🟢 كائن قاعدة البيانات Firestore
 
-        if (this.userHistory.length > 50) {
-          this.userHistory = this.userHistory.slice(0, 50);
-        }
-
-        localStorage.setItem('userHistory', JSON.stringify(this.userHistory));
-        this.updateRecommendations();
-      }
-
-      updateRecommendations() {
-        const genreCount = {};
-        const studioCount = {};
-        const yearCount = {};
-
-        this.userHistory.forEach(item => {
-          if (item.data.genres) {
-            item.data.genres.forEach(genre => {
-              genreCount[genre] = (genreCount[genre] || 0) + 1;
-            });
-          }
-
-          if (item.data.studio) {
-            studioCount[item.data.studio] = (studioCount[item.data.studio] || 0) + 1;
-          }
-
-          if (item.data.year) {
-            yearCount[item.data.year] = (yearCount[item.data.year] || 0) + 1;
-          }
-        });
-
-        this.recommendations = ANIME_DATABASE.filter(anime => {
-          let score = 0;
-
-          if (anime.genres) {
-            anime.genres.forEach(genre => {
-              score += (genreCount[genre] || 0) * 3;
-            });
-          }
-
-          if (anime.studio && studioCount[anime.studio]) {
-            score += studioCount[anime.studio] * 2;
-          }
-
-          if (anime.year && yearCount[anime.year]) {
-            score += yearCount[anime.year];
-          }
-
-          anime.recommendationScore = score;
-          return score > 0;
-        }).sort((a, b) => b.recommendationScore - a.recommendationScore);
-
-        this.cache.set('recommendations', this.recommendations);
-      }
-
-      getRecommendations() {
-        const cached = this.cache.get('recommendations');
-        if (cached) return cached;
-
-        this.updateRecommendations();
-        return this.recommendations.slice(0, 10);
-      }
-    }
-
-    // نظام التحميل التدريجي والتمرير اللانهائي
-    class InfiniteScrollManager {
-      constructor() {
-        this.currentPage = 0;
-        this.itemsPerPage = 12;
-        this.isLoading = false;
-        this.hasMore = true;
-        this.observer = null;
-        this.init();
-      }
-
-      init() {
-        this.observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting && this.hasMore && !this.isLoading) {
-              this.loadMore();
+        // تصدير الكائنات للاستخدام في ملفات JS الخارجية (إذا لزم الأمر)
+        window.firebaseApp = app;
+        window.firebaseAuth = auth;
+        window.firebaseDB = db;
+        
+        // 🟢 الإصلاح رقم 1: دالة مساعدة لعد المفضلة المحلية
+        function getLocalFavoritesCount() {
+            try {
+                // يفترض أن المفتاح المستخدم لحفظ المفضلة في localStorage هو 'FAVORITES_KEY' أو ما شابه
+                const favorites = JSON.parse(localStorage.getItem('user_local_favorites') || '[]');
+                return favorites.length;
+            } catch (e) {
+                console.error("Error reading local favorites:", e);
+                return 0;
             }
-          });
-        });
-
-        const sentinel = document.createElement('div');
-        sentinel.id = 'scroll-sentinel';
-        sentinel.style.height = '20px';
-        document.getElementById('animeGrid').appendChild(sentinel);
-        this.observer.observe(sentinel);
-      }
-
-      async loadMore() {
-        if (this.isLoading || !this.hasMore) return;
-
-        this.isLoading = true;
-        document.getElementById('loading').style.display = 'block';
-
-        try {
-          await new Promise(resolve => setTimeout(resolve, 1000));
-
-          const startIndex = this.currentPage * this.itemsPerPage;
-          const endIndex = startIndex + this.itemsPerPage;
-          const items = ANIME_DATABASE.slice(startIndex, endIndex);
-
-          if (items.length === 0) {
-            this.hasMore = false;
-            this.observer.disconnect();
-            return;
-          }
-
-          this.renderItems(items);
-          this.currentPage++;
-        } catch (error) {
-          console.error('Error loading more items:', error);
-          showToast('❌ حدث خطأ في تحميل المزيد من الأنميات', 'error');
-        } finally {
-          this.isLoading = false;
-          document.getElementById('loading').style.display = 'none';
-        }
-      }
-
-      renderItems(items) {
-        const grid = document.getElementById('animeGrid');
-        const fragment = document.createDocumentFragment();
-
-        items.forEach(anime => {
-          const animeCard = this.createAnimeCard(anime);
-          fragment.appendChild(animeCard);
-        });
-
-        grid.appendChild(fragment);
-        addScrollAnimations();
-      }
-
-      createAnimeCard(anime) {
-        const animeCard = document.createElement('div');
-        animeCard.className = 'anime-card';
-        animeCard.setAttribute('data-year', anime.year);
-        
-        animeCard.innerHTML = `
-          <span class="anime-year">${anime.year}</span>
-          <div class="anime-rating">
-            <i class="fas fa-star"></i>
-            ${anime.rating}
-          </div>
-          <img src="${anime.img}" alt="${anime.title}" loading="lazy" 
-               onerror="this.src='https://placehold.co/150x200/1A1A3A/8B7BFF?text=${encodeURIComponent(anime.title)}'">
-          <p>${anime.title}</p>
-        `;
-        
-        animeCard.addEventListener('click', () => selectAnime(anime));
-        return animeCard;
-      }
-
-      reset() {
-        this.currentPage = 0;
-        this.hasMore = true;
-        this.isLoading = false;
-        document.getElementById('animeGrid').innerHTML = '';
-        document.getElementById('scroll-sentinel')?.remove();
-        this.init();
-      }
-    }
-
-    // نظام إدارة الحالة المحسنة
-    class StateManager {
-      constructor() {
-        this.state = {
-          user: null,
-          favorites: [],
-          settings: {},
-          searchQuery: '',
-          currentView: 'home'
-        };
-        this.subscribers = [];
-        this.loadFromStorage();
-      }
-
-      setState(newState) {
-        this.state = { ...this.state, ...newState };
-        this.saveToStorage();
-        this.notifySubscribers();
-      }
-
-      subscribe(callback) {
-        this.subscribers.push(callback);
-      }
-
-      notifySubscribers() {
-        this.subscribers.forEach(callback => callback(this.state));
-      }
-
-      saveToStorage() {
-        localStorage.setItem('appState', JSON.stringify({
-          favorites: this.state.favorites,
-          settings: this.state.settings
-        }));
-      }
-
-      loadFromStorage() {
-        try {
-          const saved = JSON.parse(localStorage.getItem('appState') || '{}');
-          this.state.favorites = saved.favorites || [];
-          this.state.settings = saved.settings || {};
-        } catch (error) {
-          console.error('Error loading state from storage:', error);
-        }
-      }
-    }
-
-    // نظام معالجة الأخطاء المحسن
-    class ErrorHandler {
-      static handleImageError(img, animeTitle) {
-        const unsplashUrl = `https://source.unsplash.com/featured/150x200/?anime,${encodeURIComponent(animeTitle)}`;
-        
-        const canvas = document.createElement('canvas');
-        canvas.width = 150;
-        canvas.height = 200;
-        const ctx = canvas.getContext('2d');
-        
-        const gradient = ctx.createLinearGradient(0, 0, 150, 200);
-        gradient.addColorStop(0, '#1A1A3A');
-        gradient.addColorStop(1, '#8B7BFF');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, 150, 200);
-        
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 14px Cairo';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        
-        const words = animeTitle.split(' ');
-        let lines = [];
-        let currentLine = words[0];
-        
-        for (let i = 1; i < words.length; i++) {
-          const width = ctx.measureText(currentLine + ' ' + words[i]).width;
-          if (width < 140) {
-            currentLine += ' ' + words[i];
-          } else {
-            lines.push(currentLine);
-            currentLine = words[i];
-          }
-        }
-        lines.push(currentLine);
-        
-        lines.forEach((line, index) => {
-          ctx.fillText(line, 75, 100 + (index - (lines.length - 1) / 2) * 20);
-        });
-        
-        img.src = canvas.toDataURL();
-        
-        const backupImg = new Image();
-        backupImg.onload = () => {
-          img.src = unsplashUrl;
-        };
-        backupImg.src = unsplashUrl;
-      }
-
-      static async apiCallWithRetry(apiCall, maxRetries = 3) {
-        for (let i = 0; i < maxRetries; i++) {
-          try {
-            return await apiCall();
-          } catch (error) {
-            if (i === maxRetries - 1) throw error;
-            await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-          }
-        }
-      }
-    }
-
-    // تهيئة الأنظمة
-    const imageCache = new ImageCache();
-    const recommendationSystem = new SmartRecommendationSystem();
-    const scrollManager = new InfiniteScrollManager();
-    const stateManager = new StateManager();
-
-    // دالة لعرض الإشعارات
-    function showToast(message, type = 'info') {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.className = 'toast';
-      toast.classList.add(type);
-      
-      setTimeout(() => {
-        toast.classList.add('show');
-      }, 10);
-      
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 4000);
-    }
-
-    // دالة لاختيار الأنمي
-    function selectAnime(animeData) {
-      recommendationSystem.addToHistory(animeData.id, animeData);
-      stateManager.setState({ selectedAnime: animeData });
-      localStorage.setItem("selectedAnime", JSON.stringify(animeData));
-      window.location.href = "anime.html";
-    }
-
-    // دالة لإضافة تأثيرات الظهور للأنميات
-    function addScrollAnimations() {
-      const animeCards = document.querySelectorAll('.anime-card');
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-          }
-        });
-      }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-      });
-
-      animeCards.forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(card);
-      });
-    }
-
-    // البحث في الوقت الحقيقي مع تحسين الأداء
-    function setupRealTimeSearch() {
-      const searchInput = document.getElementById('search');
-      let searchTimeout;
-
-      const performSearch = (query) => {
-        stateManager.setState({ searchQuery: query });
-        
-        if (query.trim() === '') {
-          scrollManager.reset();
-          return;
-        }
-
-        const filteredAnimes = ANIME_DATABASE.filter(anime => 
-          anime.title.toLowerCase().includes(query.toLowerCase()) ||
-          (anime.desc && anime.desc.toLowerCase().includes(query.toLowerCase()))
-        );
-
-        document.getElementById('animeGrid').innerHTML = '';
-        scrollManager.renderItems(filteredAnimes.slice(0, 12));
-        
-        const searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-        searchHistory.unshift({
-          query: query,
-          timestamp: Date.now(),
-          results: filteredAnimes.length
-        });
-        
-        if (searchHistory.length > 20) {
-          searchHistory.pop();
         }
         
-        localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-      };
-
-      if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-          clearTimeout(searchTimeout);
-          searchTimeout = setTimeout(() => {
-            performSearch(e.target.value);
-          }, 300);
-        });
-      }
-    }
-
-    // تهيئة التطبيق
-    document.addEventListener("DOMContentLoaded", () => {
-      // تهيئة جميع الأنظمة
-      setupRealTimeSearch();
-      
-      // تحميل التوصيات إذا كان المستخدم قد شاهد أنميات سابقة
-      const recommendations = recommendationSystem.getRecommendations();
-      if (recommendations.length > 0) {
-        showToast(`🎯 لدينا ${recommendations.length} توصية مخصصة لك!`, 'success');
-      }
-
-      // الاشتراك في تغييرات الحالة
-      stateManager.subscribe((state) => {
-        updateUI(state);
-      });
-
-      // بدء التحميل الأولي
-      scrollManager.loadMore();
-      
-      // إعداد القائمة الجانبية
-      const sidebar = document.getElementById("oraaSidebar");
-      const settingsToggle = document.getElementById("settingsToggle");
-      const closeSidebar = document.getElementById("closeSidebar");
-      
-      settingsToggle.addEventListener('click', () => {
-          sidebar.classList.add('open');
-      });
-
-      closeSidebar.addEventListener('click', () => {
-          sidebar.classList.remove('open');
-      });
-
-      window.addEventListener('click', (e) => {
-          if (sidebar.classList.contains('open') && 
-              !settingsToggle.contains(e.target) && 
-              !sidebar.contains(e.target)) {
-              sidebar.classList.remove('open');
-          }
-      });
-      
-      // إعداد قائمة المستخدم
-      const userInfo = document.getElementById("userInfo");
-      const userMenu = document.getElementById("userMenu");
-      
-      userInfo.addEventListener("click", (e) => {
-        e.stopPropagation();
-        userMenu.style.display = userMenu.style.display === "block" ? "none" : "block";
-      });
-
-      window.addEventListener("click", (e) => {
-        if (userMenu.style.display === "block" && !userInfo.contains(e.target)) {
-          userMenu.style.display = "none";
+        // 🟢 الإصلاح رقم 2: دالة تحديث عداد المفضلة
+        function updateFavoritesCountUI(count) {
+            const favoritesCountElement = document.getElementById('favoritesCount');
+            if (favoritesCountElement) {
+                favoritesCountElement.textContent = count > 0 ? count : '0';
+                favoritesCountElement.style.display = count > 0 ? 'inline-block' : 'none';
+            }
         }
-      });
-      
-      // إعداد الميزات المميزة
-      const premiumDarkToggle = document.getElementById("premiumDarkToggle");
-      const smartStreamToggle = document.getElementById("smartStreamToggle");
-      const autoDownloadToggle = document.getElementById("autoDownloadToggle");
-      const autoQualityToggle = document.getElementById("autoQualityToggle");
-      const episodeNotificationsToggle = document.getElementById("episodeNotificationsToggle");
-      const dataSaverToggle = document.getElementById("dataSaverToggle");
-      const hideCompletedToggle = document.getElementById("hideCompletedToggle");
-      const autoProgressToggle = document.getElementById("autoProgressToggle");
-      const smartSubsToggle = document.getElementById("smartSubsToggle");
-
-      premiumDarkToggle.addEventListener('change', (e) => {
-          if(e.target.checked) {
-             document.body.style.backgroundColor = "#000015";
-             document.body.style.backgroundImage = "none";
-             showToast("🌙 تم تفعيل الوضع الليلي المميز!", "success");
-          } else {
-             document.body.style.backgroundColor = "#0F0F25";
-             document.body.style.backgroundImage = "radial-gradient(circle at 10% 20%, rgba(139, 123, 255, 0.1) 0%, transparent 25%), radial-gradient(circle at 90% 80%, rgba(255, 123, 169, 0.1) 0%, transparent 25%)";
-             showToast("☀️ تم إلغاء تفعيل الوضع الليلي المميز.", "info");
-          }
-          saveSettings();
-      });
-      
-      smartStreamToggle.addEventListener('change', (e) => {
-          if(e.target.checked) {
-             showToast("⚡ تم تفعيل مُسرع البث الذكي!", "success");
-          } else {
-             showToast("🐢 تم إلغاء تفعيل مُسرع البث.", "info");
-          }
-          saveSettings();
-      });
-
-      autoDownloadToggle.addEventListener('change', (e) => {
-          if(e.target.checked) {
-             showToast("📥 تم تفعيل التحميل التلقائي للحلقات الجديدة.", "success");
-          } else {
-             showToast("📥 تم إلغاء التحميل التلقائي.", "info");
-          }
-          saveSettings();
-      });
-
-      autoQualityToggle.addEventListener('change', (e) => {
-          if(e.target.checked) {
-             showToast("🎬 تم تفعيل الجودة التلقائية.", "success");
-          } else {
-             showToast("🎬 تم إلغاء الجودة التلقائية.", "info");
-          }
-          saveSettings();
-      });
-
-      episodeNotificationsToggle.addEventListener('change', (e) => {
-          if(e.target.checked) {
-             showToast("🔔 تم تفعيل إشعارات الحلقات الجديدة.", "success");
-          } else {
-             showToast("🔔 تم إلغاء إشعارات الحلقات الجديدة.", "info");
-          }
-          saveSettings();
-      });
-
-      dataSaverToggle.addEventListener('change', (e) => {
-          if(e.target.checked) {
-             showToast("📶 تم تفعيل وضع توفير البيانات.", "success");
-          } else {
-             showToast("📶 تم إلغاء وضع توفير البيانات.", "info");
-          }
-          saveSettings();
-      });
-
-      hideCompletedToggle.addEventListener('change', (e) => {
-          if(e.target.checked) {
-             showToast("👁️ تم إخفاء الأنميات المكتملة.", "success");
-          } else {
-             showToast("👁️ تم إظهار جميع الأنميات.", "info");
-          }
-          saveSettings();
-      });
-
-      autoProgressToggle.addEventListener('change', (e) => {
-          if(e.target.checked) {
-             showToast("🔄 تم تفعيل متابعة التقدم التلقائي.", "success");
-          } else {
-             showToast("🔄 تم إلغاء متابعة التقدم التلقائي.", "info");
-          }
-          saveSettings();
-      });
-
-      smartSubsToggle.addEventListener('change', (e) => {
-          if(e.target.checked) {
-             showToast("📝 تم تفعيل الترجمات الذكية.", "success");
-          } else {
-             showToast("📝 تم إلغاء الترجمات الذكية.", "info");
-          }
-          saveSettings();
-      });
-
-      // تحميل الإعدادات المحفوظة
-      loadSettings();
-      
-      // تحديث عداد المفضلة
-      updateFavoritesCount();
-    });
-
-    // تحديث واجهة المستخدم بناءً على الحالة
-    function updateUI(state) {
-      document.getElementById('favoritesCount').textContent = state.favorites.length;
-      
-      const userInfo = state.user ? state.user : { name: 'زائر' };
-      document.getElementById('headerName').textContent = userInfo.name;
-    }
-
-    // حفظ الإعدادات في localStorage
-    const saveSettings = () => {
-      const settings = {
-        premiumDark: document.getElementById('premiumDarkToggle').checked,
-        smartStream: document.getElementById('smartStreamToggle').checked,
-        autoDownload: document.getElementById('autoDownloadToggle').checked,
-        autoQuality: document.getElementById('autoQualityToggle').checked,
-        episodeNotifications: document.getElementById('episodeNotificationsToggle').checked,
-        dataSaver: document.getElementById('dataSaverToggle').checked,
-        hideCompleted: document.getElementById('hideCompletedToggle').checked,
-        autoProgress: document.getElementById('autoProgressToggle').checked,
-        smartSubs: document.getElementById('smartSubsToggle').checked
-      };
-      localStorage.setItem('oraaPremiumSettings', JSON.stringify(settings));
-    };
-
-    const loadSettings = () => {
-      const savedSettings = localStorage.getItem('oraaPremiumSettings');
-      if (savedSettings) {
-        const settings = JSON.parse(savedSettings);
-        document.getElementById('premiumDarkToggle').checked = settings.premiumDark || false;
-        document.getElementById('smartStreamToggle').checked = settings.smartStream !== false;
-        document.getElementById('autoDownloadToggle').checked = settings.autoDownload || false;
-        document.getElementById('autoQualityToggle').checked = settings.autoQuality !== false;
-        document.getElementById('episodeNotificationsToggle').checked = settings.episodeNotifications !== false;
-        document.getElementById('dataSaverToggle').checked = settings.dataSaver || false;
-        document.getElementById('hideCompletedToggle').checked = settings.hideCompleted !== false;
-        document.getElementById('autoProgressToggle').checked = settings.autoProgress !== false;
-        document.getElementById('smartSubsToggle').checked = settings.smartSubs || false;
+        window.updateFavoritesCountUI = updateFavoritesCountUI; // إتاحتها لـ main.js
         
-        if (document.getElementById('premiumDarkToggle').checked) {
-           document.body.style.backgroundColor = "#000015";
-           document.body.style.backgroundImage = "none";
-        }
-      }
-    };
-
-    // تحديث عداد المفضلة
-    const updateFavoritesCount = () => {
-      const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-      document.getElementById('favoritesCount').textContent = favorites.length;
-    };
-
-    // إضافة اختصارات لوحة المفاتيح
-    document.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        document.getElementById('search').focus(); 
-      }
-      
-      if (e.key === 'Escape') {
-        document.getElementById('userMenu').style.display = 'none';
-        document.getElementById('oraaSidebar').classList.remove('open');
-      }
-    });
-
-    // إضافة Service Worker للتطبيق التقدمي (PWA)
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(registration => {
-            console.log('SW registered: ', registration);
-          })
-          .catch(registrationError => {
-            console.log('SW registration failed: ', registrationError);
-          });
-      });
-    }
-  </script>
-
-  <script type="module">
-    // تكامل Firebase الكامل
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-    import { getFirestore, collection, getDocs, addDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    
-    // إعدادات تطبيق Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyBDMFcCvthKNkHUrEbgYY1Uc80KTPpS01M",
-      authDomain: "oraa-slayer-anime.firebaseapp.com",
-      projectId: "oraa-slayer-anime",
-      storageBucket: "oraa-slayer-anime.firebasestorage.app",
-      messagingSenderId: "426607460785",
-      appId: "1:426607460785:web:c8d9844253c9111ad3bd90"
-    };
-
-    // تهيئة Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-
-    // نظام التحليلات المتقدم
-    class AdvancedAnalytics {
-      static trackEvent(eventName, eventParams = {}) {
-        logEvent(analytics, eventName, eventParams);
-        
-        const pendingEvents = JSON.parse(localStorage.getItem('pendingAnalyticsEvents') || '[]');
-        pendingEvents.push({
-          eventName,
-          eventParams,
-          timestamp: Date.now()
-        });
-        localStorage.setItem('pendingAnalyticsEvents', JSON.stringify(pendingEvents));
-      }
-
-      static syncPendingEvents() {
-        const pendingEvents = JSON.parse(localStorage.getItem('pendingAnalyticsEvents') || '[]');
-        if (pendingEvents.length > 0) {
-          pendingEvents.forEach(event => {
-            logEvent(analytics, event.eventName, event.eventParams);
-          });
-          localStorage.removeItem('pendingAnalyticsEvents');
-        }
-      }
-    }
-
-    // تتبع الأحداث المهمة
-    AdvancedAnalytics.trackEvent('page_view', {
-      page_title: 'الرئيسية',
-      page_location: window.location.href
-    });
-
-    // تحليل سلوك المستخدم
-    let userBehavior = {
-      pageVisits: 0,
-      animeClicks: 0,
-      searchQueries: 0,
-      timeSpent: 0
-    };
-
-    // تحديث تحليلات سلوك المستخدم
-    setInterval(() => {
-      userBehavior.timeSpent += 5;
-      localStorage.setItem('userBehavior', JSON.stringify(userBehavior));
-    }, 5000);
-
-    // دالة للتحقق من حالة المستخدم
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log('المستخدم مسجل:', user.email);
-        stateManager.setState({ user: {
-          email: user.email,
-          name: user.displayName || user.email.split('@')[0],
-          photoURL: user.photoURL
-        }});
-        
-        AdvancedAnalytics.trackEvent('login', { method: 'email' });
-        
-        // مزامنة الأحداث المعلقة
-        AdvancedAnalytics.syncPendingEvents();
-      } else {
-        console.log('المستخدم غير مسجل');
-        stateManager.setState({ user: null });
-      }
-    });
-
-    // دالة تسجيل الخروج باستخدام Firebase
-    window.firebaseSignOut = () => {
-        if (confirm("هل تريد تسجيل الخروج؟")) {
+        // 🟢 الإصلاح رقم 3: وظيفة تسجيل الخروج الموحدة
+        function handleLogout() {
             signOut(auth).then(() => {
-                AdvancedAnalytics.trackEvent('logout');
-                
-                if (typeof showToast === 'function') {
-                   showToast("✅ تم تسجيل الخروج بنجاح", "success");
-                }
-                
-                setTimeout(() => {
-                   window.location.href = "login.html";
-                }, 1500);
+                showToast('تم تسجيل الخروج بنجاح!', 'success');
+                // تحديث العداد إلى القيمة المحلية للزائر (0 إذا لم يكن هناك مفضلة محلية)
+                updateFavoritesCountUI(getLocalFavoritesCount()); 
+                // 🟢 تحسين UX: إعادة تعيين الاسم إلى "زائر" بعد الخروج مباشرة
+                document.getElementById('headerName').textContent = 'زائر';
+                document.getElementById('headerProfile').src = 'https://i.ibb.co/YRShYmn/avatar.png';
+                document.getElementById('headerVerify').style.display = 'none';
+                // إغلاق القائمة بعد النقر (تم تعديل الحدث في onAuthStateChanged ليتم بشكل سلس)
             }).catch((error) => {
                 console.error("Logout Error:", error);
-                if (typeof showToast === 'function') {
-                    showToast("❌ فشل تسجيل الخروج: " + error.message, "error");
-                }
+                showToast('فشل تسجيل الخروج، حاول مرة أخرى.', 'error');
             });
         }
-    };
-    
-    // ربط زر تسجيل الخروج
-    document.getElementById("logoutBtn").addEventListener("click", (e) => {
-        e.preventDefault();
-        window.firebaseSignOut();
-    });
+        window.handleLogout = handleLogout; // إتاحتها لـ main.js
 
-    // جعل الدوال متاحة عالمياً
-    window.firebaseAuth = auth;
-    window.firebaseDb = db;
-    window.AdvancedAnalytics = AdvancedAnalytics;
+        // =================================================================================
+        // نظام المصادقة الديناميكي (Auth State Management)
+        // =================================================================================
+
+        const headerProfile = document.getElementById('headerProfile');
+        const headerName = document.getElementById('headerName');
+        const headerVerify = document.getElementById('headerVerify');
+        const userMenu = document.getElementById('userMenu');
+        const userLoggedInMenu = document.getElementById('userLoggedInMenu');
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        // 🟢 التصحيح: ربط زر تسجيل الخروج بالدالة الموحدة
+        const logoutBtn = document.getElementById('logoutBtn'); 
+        const authStatusText = document.getElementById('authStatusText');
+
+        // 🟢 التصحيح: ربط زر تسجيل الخروج هنا مباشرةً
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleLogout();
+                userMenu.classList.remove('show'); // إغلاق القائمة بعد النقر
+            });
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // المستخدم مسجل الدخول
+                // 🟢 تحسين: إذا كان user.displayName فارغًا نستخدم email
+                headerName.textContent = user.displayName || user.email.split('@')[0] || 'Oraa User'; 
+                // 🟢 تحسين: استخدام صورة افتراضية أفضل في حال عدم وجود صورة
+                headerProfile.src = user.photoURL || 'https://i.ibb.co/L5h92d1/user-avatar.png'; 
+                authStatusText.textContent = 'مسجل: ' + (user.emailVerified ? 'موثق' : 'غير موثق');
+                
+                // إخفاء أزرار الدخول/التسجيل وإظهار قائمة المستخدم المسجل
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                userLoggedInMenu.style.display = 'block';
+
+                // جلب بيانات إضافية من Firestore (مثل حالة التوثيق)
+                try {
+                    const userDocRef = doc(db, "users", user.uid);
+                    const userDoc = await getDoc(userDocRef);
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        if (userData.isPremium === true) {
+                            headerVerify.style.display = 'inline-block';
+                        } else {
+                            headerVerify.style.display = 'none';
+                        }
+                        // 🟢 تحسين FirePASS: استخدام بيانات Firestore لتحديث الـ displayName و photoURL إذا كانت أحدث
+                        if (userData.displayName && userData.displayName !== user.displayName) {
+                             headerName.textContent = userData.displayName;
+                        }
+                        headerProfile.src = userData.photoURL || user.photoURL || 'https://i.ibb.co/L5h92d1/user-avatar.png';
+                    }
+                    
+                    // 🟢 ميزة FirePASS: جلب عدد المفضلة من Firestore
+                    // يفترض أن المفضلة محفوظة في مجموعة فرعية (subcollection) أو كحقل في وثيقة المستخدم
+                    const favoritesCollectionRef = collection(db, "users", user.uid, "favorites");
+                    // 🟢 التصحيح: يجب الانتظار لانتهاء عملية getDocs
+                    const snapshot = await getDocs(favoritesCollectionRef);
+                    updateFavoritesCountUI(snapshot.size);
+
+                } catch (error) {
+                    console.error("Error fetching Firestore user data or favorites:", error);
+                    showToast('خطأ في مزامنة بيانات FirePASS', 'error');
+                }
+
+            } else {
+                // المستخدم غير مسجل الدخول (زائر)
+                headerName.textContent = 'زائر';
+                headerProfile.src = 'https://i.ibb.co/YRShYmn/avatar.png';
+                headerVerify.style.display = 'none';
+                authStatusText.textContent = 'غير مسجل (الوضع الآمن)';
+
+                // إظهار أزرار الدخول/التسجيل وإخفاء قائمة المستخدم المسجل
+                loginBtn.style.display = 'flex'; // استخدام flex بدلاً من block للمحاذاة
+                registerBtn.style.display = 'flex';
+                userLoggedInMenu.style.display = 'none';
+                
+                // 🟢 تحديث عداد المفضلة إلى القيمة المحلية للزائر
+                updateFavoritesCountUI(getLocalFavoritesCount());
+            }
+        });
+        
+        // =================================================================================
+        // وظائف الواجهة الأمامية العامة (UX/UI Enhancements)
+        // =================================================================================
+
+        // دالة عرض إشعار التوست (Toast Notification)
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast show ${type}`;
+            setTimeout(() => {
+                toast.className = toast.className.replace('show', '');
+            }, 3000);
+        }
+        window.showToast = showToast; // جعلها متاحة لـ main.js
+
+        // تبديل قائمة المستخدم
+        document.getElementById('userInfo').addEventListener('click', (e) => {
+            const menu = document.getElementById('userMenu');
+            // منع إغلاق القائمة عند النقر داخلها، ولكن يسمح بتبديل العرض
+            if (e.target.closest('#userMenu')) return; 
+            menu.classList.toggle('show');
+            e.stopPropagation(); // منع النقر من الانتشار إلى المستند
+        });
+
+        // إغلاق قائمة المستخدم عند النقر في أي مكان آخر
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('userMenu');
+            const userInfo = document.getElementById('userInfo');
+            // 🟢 التصحيح: التأكد من أن النقر لم يكن على زر القائمة نفسه
+            if (menu && menu.classList.contains('show') && !userInfo.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+        
+        // تبديل القائمة الجانبية (الإعدادات)
+        const sidebar = document.getElementById('oraaSidebar');
+        document.getElementById('settingsToggle').addEventListener('click', () => {
+            sidebar.classList.add('open');
+        });
+        document.getElementById('closeSidebar').addEventListener('click', () => {
+            sidebar.classList.remove('open');
+        });
+
+        // زر العودة للأعلى
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollToTopBtn.style.display = "flex";
+            } else {
+                scrollToTopBtn.style.display = "none";
+            }
+        };
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // -------------------------------------------------------------
+        // 🟢 وظيفة سلايدر مستوى الصوت (تحديث جديد)
+        // -------------------------------------------------------------
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeValue = document.getElementById('volumeValue');
+        
+        if (volumeSlider && volumeValue) {
+             // تعيين القيمة الابتدائية من التخزين المحلي إذا وجدت
+            const savedVolume = localStorage.getItem('appVolume') || '70';
+            volumeSlider.value = savedVolume;
+            volumeValue.textContent = savedVolume;
+            
+            volumeSlider.addEventListener('input', () => {
+                volumeValue.textContent = volumeSlider.value;
+                localStorage.setItem('appVolume', volumeSlider.value);
+                // يمكن هنا استدعاء API لتعديل صوت الفيديو
+            });
+        }
+        
+        // 🟢 الإصلاح رقم 4: تحديث عداد المفضلة عند تحميل الصفحة لأول مرة
+        document.addEventListener('DOMContentLoaded', () => {
+            // يتم تحديثه بواسطة onAuthStateChanged إذا كان المستخدم مسجل الدخول
+            if (!auth.currentUser) { 
+                updateFavoritesCountUI(getLocalFavoritesCount());
+            }
+        });
+
+        // -------------------------------------------------------------
+        // 🆕 وظائف شريط التحميل (Loader Bar)
+        // -------------------------------------------------------------
+        const loaderBar = document.getElementById('animeLoaderBar');
+        const progressBar = document.getElementById('loaderProgressBar');
+        const progressText = document.getElementById('loaderProgressText');
+        const totalItems = 24; // تم تعديل العدد الكلي للعناصر المراد تحميلها إلى 24 حسب الطلب
+
+        /**
+         * إظهار شريط التحميل وبدء التحميل.
+         */
+        function startLoading() {
+            loaderBar.style.display = 'block'; // تأكد من إظهار العنصر
+            setTimeout(() => {
+                loaderBar.classList.add('show');
+                updateLoader(0);
+            }, 50); // تأخير بسيط لضمان تطبيق display: block قبل التحول
+        }
+        window.startLoading = startLoading; // إتاحتها لـ main.js
+
+        /**
+         * تحديث شريط التحميل وإخفائه عند الاكتمال.
+         * @param {number} current - عدد العناصر التي تم تحميلها حالياً.
+         */
+        function updateLoader(current) {
+            const safeCurrent = Math.min(current, totalItems); // لا تتجاوز الحد الأقصى
+            const percentage = Math.min(100, (safeCurrent / totalItems) * 100);
+            
+            // تحديث شريط التقدم والنص
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `جاري تحميل الدفعة من ${safeCurrent} إلى ${totalItems}...`;
+
+            // 🟢 الإصلاح الرئيسي: إخفاء الشريط بعد الاكتمال
+            if (safeCurrent >= totalItems) {
+                progressBar.style.width = '100%'; // ضمان وصول الشريط إلى النهاية
+                progressText.textContent = `تم تحميل الدفعة بنجاح! ${totalItems} من ${totalItems}`;
+                
+                // إخفاء الشريط (إزالة class show)
+                setTimeout(() => {
+                    loaderBar.classList.remove('show');
+                    // إخفاء العنصر تماماً بعد انتهاء التحول (opacity)
+                    setTimeout(() => {
+                        loaderBar.style.display = 'none';
+                    }, 300); // 300ms هي مدة التحول
+                }, 1000); // الانتظار لثانية واحدة قبل بدء الإخفاء
+            } else {
+                 loaderBar.style.display = 'block'; // التأكد من أنه مرئي أثناء التحميل
+                 loaderBar.classList.add('show'); // التأكد من إظهاره إذا كان التحميل مستمرًا
+            }
+        }
+        window.updateLoader = updateLoader; // إتاحتها لـ main.js
+        
+        // 🟢 الإضافة الجديدة: كشف حالة الاتصال بالإنترنت
+        window.addEventListener('online', () => {
+            document.getElementById('offlineIndicator').classList.remove('show');
+            showToast('تم استعادة الاتصال بالإنترنت', 'success');
+        });
+        
+        window.addEventListener('offline', () => {
+            document.getElementById('offlineIndicator').classList.add('show');
+            showToast('فقدت الاتصال بالإنترنت', 'warning');
+        });
+        
+    </script>
+
+    <script>
+        // دالة نموذجية لإنشاء بطاقة أنمي: هذا المنطق يضمن ربط ID الصحيح بالبطاقة.
+        function renderAnimeCard(anime) {
+            const card = document.createElement('div');
+            card.className = 'anime-card fade-in';
+            // 🟢 التصحيح الحاسم 1: نستخدم data-id لربط الأنمي مباشرة بالحدث
+            card.setAttribute('data-anime-id', anime.id); 
+            card.setAttribute('title', anime.title.arabic || anime.title.english); 
+            
+            // 🟢 التصحيح الحاسم 2: إضافة مستمع الحدث هنا و تمرير ID الأنمي المحدد
+            // هذا هو التصحيح الذي يضمن أن كل بطاقة تنقل الـ ID الصحيح
+            card.addEventListener('click', function() {
+                console.log('🎌 تم النقر على الأنمي:', anime.id, anime.title.arabic || anime.title.english);
+                // التوجيه المباشر إلى صفحة anime.html مع الـ ID الصحيح
+                window.location.href = `anime.html?id=${anime.id}`;
+            });
+
+            const imageContainer = `
+                <div class="anime-image-container">
+                    <img src="${anime.coverImage.extraLarge || anime.coverImage.large}" alt="${anime.title.arabic || anime.title.english}" loading="lazy">
+                    <span class="anime-year">${anime.startDate.year || '----'}</span>
+                    <span class="anime-rating"><i class="fa-solid fa-star"></i> ${anime.averageScore ? (anime.averageScore / 10).toFixed(1) : 'N/A'}</span>
+                    ${anime.status === 'RELEASING' ? `<span class="anime-badge pulse">مستمر</span>` : ''}
+                </div>
+            `;
+            
+            const title = `<p>${anime.title.arabic || anime.title.english}</p>`;
+
+            card.innerHTML = imageContainer + title;
+            return card;
+        }
+
+        // جعل الدالة متاحة globally لملفات JS الأخرى
+        window.renderAnimeCard = renderAnimeCard;
+
+        console.log('✅ نظام توجيه بطاقات الأنمي جاهز للعمل في index.html');
+    </script>
     
-    console.log('Firebase initialized successfully with advanced analytics');
-  </script><script src="main.js"></script>
+    <script src="anilist.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>

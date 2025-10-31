@@ -1,0 +1,55 @@
+{
+  "title": "Gachiakuta",
+  "totalEpisodes": 5,
+  "info": "يتابع هذا الأنمي مغامرات الشخصيات بطريقة كوميدية ومثيرة.",
+  "episodes": {
+    "1": [
+      {
+        "server": "سيرفر Vimeo السريع",
+        "url": "https://player.vimeo.com/video/123456789",
+        "type": "iframe",
+        "quality": "1080p",
+        "info": "سيرفر سريع وآمن",
+        "size": "750MB"
+      },
+      {
+        "server": "سيرفر Embed عادي",
+        "url": "https://www.youtube.com/embed/abcd1234",
+        "type": "iframe",
+        "quality": "720p",
+        "info": "مناسب للهواتف والإنترنت الضعيف",
+        "size": "400MB"
+      },
+      {
+        "server": "سيرفر التحميل المباشر",
+        "url": "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+        "type": "direct",
+        "quality": "720p",
+        "info": "رابط مباشر (تحميل)",
+        "size": "1MB"
+      }
+    ],
+    "2": [
+      {
+        "server": "سيرفر Vimeo السريع",
+        "url": "https://player.vimeo.com/video/987654321",
+        "type": "iframe",
+        "quality": "1080p",
+        "info": "جودة ممتازة",
+        "size": "700MB"
+      }
+    ],
+    "3": [
+      {
+        "server": "سيرفر Embed عادي",
+        "url": "https://www.youtube.com/embed/efgh5678",
+        "type": "iframe",
+        "quality": "720p",
+        "info": "جيد للهواتف",
+        "size": "400MB"
+      }
+    ],
+    "4": [],
+    "5": []
+  }
+}

@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title id="pageTitle">تفاصيل الأنمي</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -20,7 +20,7 @@
       --success-color: #10b981;
       --warning-color: #f59e0b;
       --danger-color: #ef4444;
-      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-bg: rgba(255, 255, 255, 0.08); /* 🟢 أساس الخلفية الزجاجية */
       --glass-border: rgba(255, 255, 255, 0.15);
       --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
@@ -40,16 +40,20 @@
       background-image: 
         radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 25%),
         radial-gradient(circle at 90% 80%, rgba(249, 115, 22, 0.1) 0%, transparent 25%);
+      /* 🟢 تحسين التصفح على الموبايل */
+      -webkit-overflow-scrolling: touch; 
+      overflow-x: hidden;
     }
 
     /* ⬆️ الهيدر وتفاصيل الأنمي - تصميم محسن */
     .anime-header {
       position: relative;
       padding: 40px 20px 30px;
-      background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(46, 16, 66, 0.9));
+      /* 🟢 دمج الخلفية الزجاجية للهيدر */
+      background: rgba(26, 26, 46, 0.8);
       text-align: center;
       overflow: hidden;
-      backdrop-filter: blur(15px);
+      backdrop-filter: blur(20px); /* 🟢 زيادة تأثير الـ Blur */
       border-bottom: 1px solid var(--glass-border);
       min-height: 65vh;
       display: flex;
@@ -71,7 +75,7 @@
       z-index: 0;
     }
 
-    /* 🔙 أزرار الرجوع في الأعلى */
+    /* 🔙 أزرار الرجوع في الأعلى - محسنة للموبايل */
     .header-buttons {
       position: absolute;
       top: 20px;
@@ -96,21 +100,13 @@
       font-size: 0.95rem;
       backdrop-filter: blur(15px);
       box-shadow: var(--glass-shadow);
+      touch-action: manipulation; 
+      text-decoration: none; /* 🟢 إضافة لضمان عدم ظهور خط تحت النص إذا كان عنصر a */
     }
 
     .header-back-btn:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
-    }
-
-    .header-back-btn.smart-back:hover {
-      background: var(--accent-color);
-      border-color: var(--accent-light);
-    }
-
-    .header-back-btn.fixed-back:hover {
-      background: var(--secondary-color);
-      border-color: #fb923c;
     }
 
     .anime-poster-container {
@@ -129,7 +125,7 @@
       transition: all 0.4s ease;
       position: relative;
       z-index: 10;
-      border: 2px solid var(--glass-border);
+      border: 3px solid var(--glass-border); /* 🟢 زيادة سماكة البوردر */
     }
 
     .anime-header img:hover {
@@ -160,6 +156,7 @@
       z-index: 10;
     }
 
+    /* 🟢 تحسين ظهور الـ meta items */
     .meta-item {
       background: var(--glass-bg);
       padding: 10px 18px;
@@ -169,11 +166,8 @@
       border: 1px solid var(--glass-border);
       box-shadow: var(--glass-shadow);
       transition: all 0.3s ease;
-    }
-
-    .meta-item:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+      min-width: fit-content;
+      text-align: center;
     }
 
     .anime-header .rating {
@@ -202,6 +196,7 @@
         align-items: center;
         justify-content: center;
         backdrop-filter: blur(15px);
+        touch-action: manipulation;
     }
     
     #favoriteBtn.is-fav {
@@ -211,16 +206,6 @@
         animation: pulse 2s infinite;
     }
     
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(139, 92, 246, 0.6); }
-      50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(139, 92, 246, 0.8); }
-    }
-    
-    #favoriteBtn:hover {
-        transform: scale(1.15);
-        box-shadow: 0 0 25px var(--accent-light);
-    }
-
     /* 📝 الوصف - تصميم محسن */
     .anime-desc {
       padding: 30px;
@@ -233,52 +218,41 @@
       margin: 0 auto;
       backdrop-filter: blur(15px);
       box-shadow: var(--glass-shadow);
-      border-radius: 0 0 20px 20px;
+      border-radius: 20px; /* 🟢 جعل كل الزوايا مستديرة */
       margin-top: 25px;
       border: 1px solid var(--glass-border);
+      white-space: pre-wrap; /* 🟢 لضمان ظهور الـ line breaks */
     }
-
+    
+    /* 🟢 تغيير تصميم الشريط الجانبي للوصف ليناسب جميع الزوايا */
     .anime-desc::before {
       content: '';
       position: absolute;
       top: 0;
-      left: 0;
-      width: 6px;
-      height: 100%;
-      background: linear-gradient(to bottom, var(--accent-color), var(--accent-light));
-      border-radius: 0 0 0 20px;
+      right: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(to right, var(--accent-color), var(--accent-light));
+      border-radius: 20px 20px 0 0;
     }
 
     /* 💎 العناوين الجانبية - تصميم محسن */
     .section-title {
       font-size: 1.8rem;
       padding: 22px 30px;
-      border-right: 6px solid var(--accent-color);
+      /* 🟢 تغيير الشريط الجانبي ليصبح أيمن */
+      border-right: 0;
+      border-left: 6px solid var(--accent-color); 
       margin: 50px auto 25px;
       background: var(--glass-bg);
       max-width: 1200px;
       position: relative;
       overflow: hidden;
       backdrop-filter: blur(15px);
-      border-radius: 0 20px 20px 0;
+      border-radius: 20px 0 0 20px; /* 🟢 تعديل استدارة الزوايا */
       box-shadow: var(--glass-shadow);
       border: 1px solid var(--glass-border);
-    }
-
-    .section-title::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
-      transform: translateX(-100%);
-      transition: transform 0.6s ease;
-    }
-
-    .section-title:hover::after {
-      transform: translateX(100%);
+      text-align: right;
     }
 
     /* 🎬 الحلقات - تصميم محسن */
@@ -309,18 +283,12 @@
       overflow: hidden;
       backdrop-filter: blur(15px);
       font-size: 1.05rem;
+      touch-action: manipulation;
     }
-
-    .episode::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
+    
+    .episode:hover {
+        transform: translateY(-3px);
+        background: var(--bg-medium);
     }
 
     .episode.watched {
@@ -333,7 +301,7 @@
         content: '✓';
         position: absolute;
         top: 8px;
-        left: 8px;
+        right: 8px; /* 🟢 تعديل مكان علامة الصح */
         background: rgba(16, 185, 129, 0.3);
         width: 24px;
         height: 24px;
@@ -346,56 +314,13 @@
         font-weight: bold;
     }
     
-    .episode:hover {
-      background: var(--accent-color);
-      color: #fff;
-      transform: translateY(-5px) scale(1.03);
-      border-color: var(--accent-light);
-      box-shadow: 0 12px 25px rgba(139, 92, 246, 0.4);
-    }
-    
-    .episode:hover::before {
-      opacity: 1;
-    }
-
     /* 🌟 نظام التقييم - تصميم محسن */
     .rating-container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 25px;
     }
-
-    .rating-stars {
-      text-align: center;
-      margin: 25px 0;
-      padding: 25px;
-      background: var(--glass-bg);
-      border-radius: 20px;
-      backdrop-filter: blur(15px);
-      box-shadow: var(--glass-shadow);
-      border: 1px solid var(--glass-border);
-    }
-
-    .rating-stars i {
-      font-size: 2.8rem;
-      color: #4b5563;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      margin: 0 8px;
-      text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-    }
-
-    .rating-stars i.active {
-      color: var(--gold-owner);
-      text-shadow: 0 0 20px gold;
-      transform: scale(1.2);
-    }
     
-    .rating-stars i:hover {
-      transform: scale(1.25);
-      color: #fbbf24;
-    }
-
     /* 💬 التعليقات - تصميم محسن */
     .comments-container {
       max-width: 800px;
@@ -414,7 +339,8 @@
       box-shadow: var(--glass-shadow);
       border: 1px solid var(--glass-border);
     }
-
+    
+    /* 🟢 تحسين لون input التعليقات */
     .comment-box input {
       flex: 1;
       padding: 18px 20px;
@@ -427,38 +353,32 @@
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
       font-size: 1.05rem;
+      -webkit-appearance: none; /* 🟢 تحسين ظهور الحقول في iOS */
     }
     
-    .comment-box input:focus {
-        border-color: var(--accent-color);
-        box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
-        background: rgba(255, 255, 255, 0.18);
-    }
-
     .comment-box button {
-      background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
-      border: none;
-      padding: 18px 28px;
-      border-radius: 30px;
-      color: white;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
-      font-size: 1.05rem;
-    }
-
-    .comment-box button:hover {
-      background: linear-gradient(135deg, var(--accent-light), var(--accent-color));
-      transform: translateY(-3px);
-      box-shadow: 0 12px 25px rgba(139, 92, 246, 0.5);
+        /* 🟢 تنسيق زر الإرسال */
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
     
-    .comment-box button:active {
-      transform: translateY(0);
+    .comment-box button:hover {
+        background: var(--accent-light);
+        transform: translateY(-2px);
+    }
+    
+    .comment-box.disabled {
+        opacity: 0.5;
+        pointer-events: none;
     }
 
     .comment {
@@ -468,219 +388,235 @@
       margin-bottom: 18px;
       box-shadow: var(--glass-shadow);
       backdrop-filter: blur(15px);
-      border-left: 5px solid var(--accent-color);
+      border-right: 5px solid var(--accent-color); /* 🟢 تعديل الشريط لجهة اليمين */
+      border-left: none;
       transition: all 0.3s ease;
       border: 1px solid var(--glass-border);
-    }
-    
-    .comment:hover {
-      transform: translateX(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    .comment span {
-      color: var(--accent-color);
-      font-weight: bold;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-left: 5px;
-      margin-bottom: 10px;
-      font-size: 1.1rem;
     }
     
     .comment.owner-comment {
-        border-left-color: var(--gold-owner);
-        background: linear-gradient(90deg, rgba(251, 191, 36, 0.15), transparent);
-    }
-
-    .comment.owner-comment span {
-        color: var(--gold-owner);
-    }
-
-    .back-btn {
-      display: block;
-      margin: 40px auto;
-      background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
-      color: white;
-      border: none;
-      border-radius: 15px;
-      padding: 15px 35px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      width: fit-content;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
-      font-weight: 700;
-    }
-
-    .back-btn:hover {
-      background: linear-gradient(135deg, var(--accent-light), var(--accent-color));
-      transform: translateY(-3px);
-      box-shadow: 0 12px 25px rgba(139, 92, 246, 0.5);
+        border-right-color: var(--gold-owner); /* 🟢 تعديل الشريط لجهة اليمين */
+        border-left: none;
+        background: linear-gradient(270deg, rgba(251, 191, 36, 0.15), transparent); /* 🟢 تعديل اتجاه التدرج */
     }
     
-    .back-btn:active {
-      transform: translateY(0);
-    }
-
-    /* 🔔 الإشعارات - تصميم محسن */
-    .toast {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      color: #fff;
-      padding: 18px 28px;
-      border-radius: 15px;
-      box-shadow: var(--glass-shadow);
-      border-left: 5px solid var(--accent-color);
-      opacity: 0;
-      transform: translateX(100%);
-      transition: all 0.3s ease;
-      z-index: 1000;
-      max-width: 380px;
-      border: 1px solid var(--glass-border);
-      font-size: 1.05rem;
-    }
-    
-    .toast.show {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    
-    .toast.success {
-      border-left-color: var(--success-color);
-    }
-    
-    .toast.error {
-      border-left-color: var(--danger-color);
-    }
-    
-    .toast.warning {
-      border-left-color: var(--warning-color);
-    }
-
-    /* 🏷️ علامة الأنمي الجديد */
-    .new-badge {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
-      color: white;
-      padding: 6px 12px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      z-index: 15;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      animation: bounce 2s infinite;
-    }
-    
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-
     /* 📊 شريط التقدم */
     .progress-container {
       max-width: 1200px;
       margin: 25px auto;
       padding: 0 25px;
+      /* 🟢 تأثير الزجاج */
+      background: var(--glass-bg);
+      border-radius: 15px;
+      padding: 20px 25px;
+      box-shadow: var(--glass-shadow);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
     }
     
     .progress-bar {
-      background: var(--glass-bg);
-      border-radius: 12px;
-      height: 24px;
-      margin: 12px 0;
-      overflow: hidden;
-      box-shadow: var(--glass-shadow);
-      border: 1px solid var(--glass-border);
+        height: 12px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-top: 10px;
     }
     
     .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent-color), var(--accent-light));
-      border-radius: 12px;
-      transition: width 0.5s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .progress-fill::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-      animation: shimmer 2s infinite;
-    }
-    
-    @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+        height: 100%;
+        background: linear-gradient(to right, var(--accent-light), var(--accent-color));
+        transition: width 0.5s ease-in-out;
+        border-radius: 6px;
     }
     
     .progress-text {
-      text-align: center;
-      font-size: 1rem;
-      opacity: 0.9;
-      font-weight: 600;
+        text-align: center;
+        font-size: 1rem;
+        font-weight: 600;
+        opacity: 0.8;
     }
-
-    /* 🎭 تأثيرات إضافية */
-    .floating-elements {
-      position: absolute;
-      width: 100%;
-      height: 100%;
+    
+    /* 🆘 شاشة التحميل المحسنة - لتبدو أفضل عند الرفرش */
+    .loading-screen {
+      position: fixed;
       top: 0;
       left: 0;
-      pointer-events: none;
-      z-index: 1;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.3s ease; /* 🟢 تقليل زمن الانتقال */
     }
     
-    .floating-element {
-      position: absolute;
+    .loading-spinner {
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-top: 5px solid var(--accent-color);
+      border-radius: 50%;
       width: 50px;
       height: 50px;
-      background: var(--glass-bg);
-      border-radius: 50%;
-      animation: float 18s infinite linear;
-      opacity: 0.4;
+      animation: spin 1s linear infinite;
     }
     
-    @keyframes float {
-      0% { transform: translate(0, 0) rotate(0deg); }
-      25% { transform: translate(60px, 60px) rotate(90deg); }
-      50% { transform: translate(120px, 0) rotate(180deg); }
-      75% { transform: translate(60px, -60px) rotate(270deg); }
-      100% { transform: translate(0, 0) rotate(360deg); }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      margin-top: 15px;
+      font-size: 1.1rem;
+      color: var(--accent-light);
+    }
+    
+    /* 🌟 نجوم التقييم */
+    .rating-stars {
+        display: flex;
+        justify-content: center;
+        font-size: 2.2rem;
+        gap: 10px;
+        margin-bottom: 20px;
     }
 
-    /* تحسينات للشاشات الصغيرة */
+    .rating-stars i {
+        color: rgba(255, 255, 255, 0.3); /* لون رمادي خافت */
+        cursor: pointer;
+        transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .rating-stars i.active {
+        color: var(--gold-owner); /* لون ذهبي للنشط */
+        text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+    }
+    
+    .rating-stars i:not(.disabled):hover {
+        color: var(--gold-owner);
+        transform: scale(1.1);
+    }
+    
+    .rating-stars i.disabled {
+        cursor: not-allowed;
+    }
+    
+    /* 🍞 الـ Toast للإشعارات */
+    .toast {
+      position: fixed;
+      bottom: -100px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      z-index: 10000;
+      transition: all 0.4s ease-in-out;
+      opacity: 0;
+    }
+
+    .toast.show {
+      bottom: 20px;
+      opacity: 1;
+    }
+    
+    .toast.success {
+        background: var(--success-color);
+    }
+    
+    .toast.error {
+        background: var(--danger-color);
+    }
+    
+    .toast.warning {
+        background: var(--warning-color);
+    }
+    
+    /* 🟢 تحسينات للشاشات الصغيرة */
     @media (max-width: 768px) {
+      
+      .anime-header {
+        min-height: 50vh; /* 🟢 تقليل ارتفاع الهيدر */
+      }
+      
       .anime-header h1 {
         font-size: 2rem;
       }
       
       .anime-header img {
-        width: 220px;
-        height: 300px;
+        width: 200px; /* 🟢 تصغير حجم البوستر */
+        height: 280px;
       }
       
       .episodes {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); /* 🟢 تصغير حجم الحلقات */
       }
       
-      .rating-stars i {
-        font-size: 2.2rem;
+      /* 🟢 تصميم أزرار الهيدر ليناسب الموبايل بشكل أكبر */
+      .header-buttons {
+        top: 15px;
+        left: 15px;
+        gap: 8px;
+        width: 50%; /* 🟢 تخصيص العرض */
+      }
+      
+      .header-back-btn {
+        width: 40px; 
+        height: 40px;
+        padding: 0;
+        justify-content: center;
+        font-size: 1rem;
+        border-radius: 10px;
+      }
+      
+      .header-back-btn span {
+        display: none; /* 🟢 إخفاء النص للتركيز على الأيقونة */
+      }
+      
+      #favoriteBtn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+        right: 15px;
+        top: 15px;
+      }
+      
+      .anime-desc {
+        padding: 20px;
+        line-height: 1.7;
+        font-size: 1rem;
+      }
+      
+      .section-title {
+        font-size: 1.5rem;
+        padding: 18px 22px;
+        margin: 40px auto 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .anime-meta {
+        gap: 8px 10px;
+        /* 🟢 ترتيب العناصر Meta في سطرين */
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        max-width: 90%;
+      }
+      
+      .anime-meta .meta-item:first-child,
+      .anime-meta .meta-item:nth-child(2) {
+        grid-column: span 1;
+      }
+      
+      .anime-header h1 {
+        font-size: 1.5rem;
+        margin-top: 10px;
+      }
+      
+      .anime-header img {
+        width: 160px;
+        height: 220px;
       }
       
       .comment-box {
@@ -689,91 +625,20 @@
       
       .comment-box button {
         justify-content: center;
+        width: 100%;
       }
       
-      .anime-header {
-        min-height: 55vh;
-        padding: 35px 15px 25px;
+      .toast {
+          right: 50%;
+          transform: translateX(50%);
+          bottom: 15px;
+          max-width: 90%;
+          text-align: center;
       }
       
-      .header-buttons {
-        top: 15px;
-        left: 15px;
-        gap: 8px;
-      }
-      
-      .header-back-btn {
-        padding: 10px 14px;
-        font-size: 0.85rem;
-      }
-      
-      #favoriteBtn {
-        top: 15px;
-        right: 15px;
-        width: 48px;
-        height: 48px;
-      }
-      
-      .section-title {
-        font-size: 1.5rem;
-        padding: 18px 22px;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .anime-header {
-        padding: 25px 12px 20px;
-      }
-      
-      .anime-header h1 {
-        font-size: 1.7rem;
-      }
-      
-      .anime-header img {
-        width: 190px;
-        height: 260px;
-      }
-      
-      .episodes {
-        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-        gap: 12px;
-      }
-      
-      .section-title {
-        font-size: 1.3rem;
-        padding: 15px 18px;
-      }
-      
-      .anime-meta {
-        gap: 8px;
-      }
-      
-      .meta-item {
-        padding: 8px 14px;
-        font-size: 0.85rem;
-      }
-      
-      .anime-header {
-        min-height: 45vh;
-      }
-      
-      .header-buttons {
-        flex-direction: column;
-        gap: 6px;
-      }
-      
-      .header-back-btn {
-        padding: 8px 12px;
-        font-size: 0.8rem;
-      }
-      
-      .header-back-btn span {
-        display: none;
-      }
-      
-      .back-btn {
-        padding: 12px 25px;
-        font-size: 1.1rem;
+      .toast.show {
+          bottom: 15px;
+          opacity: 1;
       }
     }
   </style>
@@ -781,16 +646,12 @@
 
 <body>
 
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">جاري تحميل تفاصيل الأنمي...</div>
+  </div>
+
   <div class="anime-header">
-    <!-- عناصر عائمة للخلفية -->
-    <div class="floating-elements">
-      <div class="floating-element" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
-      <div class="floating-element" style="top: 60%; left: 80%; animation-delay: 2s;"></div>
-      <div class="floating-element" style="top: 80%; left: 30%; animation-delay: 4s;"></div>
-      <div class="floating-element" style="top: 30%; left: 70%; animation-delay: 6s;"></div>
-    </div>
-    
-    <!-- أزرار الرجوع في الأعلى -->
     <div class="header-buttons">
       <button class="header-back-btn smart-back" onclick="goBackSmart()" title="العودة للصفحة السابقة">
         <i class="fa-solid fa-rotate-left"></i>
@@ -822,7 +683,6 @@
     </div>
   </div>
 
-  <!-- شريط تقدم المشاهدة -->
   <div class="progress-container">
     <div class="progress-text" id="progressText">لم تبدأ المشاهدة بعد</div>
     <div class="progress-bar">
@@ -831,11 +691,11 @@
   </div>
 
   <div class="anime-desc" id="animeDesc">
-    📝 لا يوجد وصف بعد لهذا الأنمي.
   </div>
 
   <h2 class="section-title">⭐ تقييم الأنمي</h2>
   <div class="rating-container">
+    <p id="ratingAuthMessage" style="text-align:center; color: var(--warning-color); margin-bottom: 15px;"></p>
     <div class="rating-stars" id="ratingStars">
       <i class="fa-solid fa-star" data-rate="1"></i>
       <i class="fa-solid fa-star" data-rate="2"></i>
@@ -852,7 +712,7 @@
 
   <h2 class="section-title">💬 التعليقات</h2>
   <div class="comments-container">
-    <div class="comment-box">
+    <div class="comment-box" id="commentBox">
       <input type="text" id="commentInput" placeholder="أضف تعليقك هنا...">
       <button id="sendComment">
         <i class="fa-solid fa-paper-plane"></i>
@@ -862,72 +722,119 @@
     <div id="commentsContainer"></div>
   </div>
 
-  <button class="back-btn" onclick="goBackOrHome()">
+  <button class="back-btn header-back-btn" onclick="goBackOrHome()">
     <i class="fa-solid fa-arrow-right"></i>
     رجوع
   </button>
 
   <div class="toast" id="toast"></div>
 
-  <script>
+  <script type="module">
     // 💡 الثوابت والمتغيرات العامة
     const OWNER_EMAIL = "itwix907@gmail.com";
-    const LOGGED_IN_EMAIL = localStorage.getItem("loggedInUser");
-    const IS_LOGGED_IN = !!LOGGED_IN_EMAIL;
-    const USER_NAME = localStorage.getItem("profileName") || "مجهول";
-    const USERS_STORAGE_KEY = 'oraaAnimeUsers';
+    const ANILIST_API = 'https://graphql.anilist.co'; 
+
+    // متغيرات Firebase
+    let currentUser = null;
+    let auth = null;
+    let firestore = null;
     
     // 💽 بيانات الأنمي
-    let anime;
-    try {
-      anime = JSON.parse(localStorage.getItem("selectedAnime"));
-      if (anime) {
-          document.getElementById('pageTitle').textContent = anime.title;
-      }
-    } catch (e) {
-      console.error("خطأ في تحليل بيانات الأنمي:", e);
-      showToast("❌ حدث خطأ في تحميل بيانات الأنمي", "error");
-      anime = { title: "غير معروف", img: "", desc: "لا توجد بيانات متاحة" };
-    }
+    let anime = null; 
+    let ANIME_KEY = ''; 
+    let WATCH_STATUS_KEY = ''; 
     
-    const WATCH_STATUS_KEY = `watch_status_${anime?.title?.replace(/\s+/g, '_')}`;
+    // عناصر DOM
+    const favoriteBtn = document.getElementById("favoriteBtn");
+    const stars = document.querySelectorAll(".rating-stars i");
+    const commentBox = document.getElementById("commentBox");
+    const commentInput = document.getElementById("commentInput");
+    const sendComment = document.getElementById("sendComment");
+    const commentsContainer = document.getElementById("commentsContainer");
+    const ratingAuthMessage = document.getElementById("ratingAuthMessage");
+    const loadingScreen = document.getElementById("loadingScreen");
+    const loadingText = document.getElementById("loadingText");
 
     // ------------------------------------------------------------------
-    // 1. وظائف المساعدة المحسنة
+    // 1. استيراد وتهيئة Firebase - محسنة للأداء
     // ------------------------------------------------------------------
     
-    // معالجة أخطاء الصور
-    function handleImageError(img) {
-      console.log('خطأ في تحميل الصورة، استخدام الصورة البديلة');
+    // استيراد Firebase بطريقة متقدمة للأداء
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, onSnapshot, collection, query, orderBy } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
+  
+    // تهيئة Firebase - محسنة للأداء
+    const firebaseConfig = {
+        apiKey: "AIzaSyBDMFcCvthKNkHUrEbgYY1Uc80KTPpS01M",
+        authDomain: "oraa-slayer-anime.firebaseapp.com",
+        projectId: "oraa-slayer-anime",
+        storageBucket: "oraa-slayer-anime.firebasestorage.app",
+        messagingSenderId: "426607460785",
+        appId: "1:426607460785:web:c8d9844253c9111ad3bd90",
+        measurementId: "G-VNHP64HXD5"
+    };
+    
+    // تهيئة Firebase بشكل غير متزامن لتحسين الأداء
+    let firebaseInitialized = false;
+    
+    async function initializeFirebase() {
+        if (firebaseInitialized) return;
+        try {
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            firestore = getFirestore(app);
+            getAnalytics(app);
+            firebaseInitialized = true;
+            console.log('✅ Firebase initialized successfully');
+        } catch (error) {
+            console.error('❌ Firebase initialization error:', error);
+            // الاستمرار حتى لو فشل Firebase
+            firebaseInitialized = false;
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // 2. وظائف المساعدة والتحقق المحسنة - أسرع
+    // ------------------------------------------------------------------
+
+    window.handleImageError = function(img) { 
+      console.log('🚨 خطأ في تحميل الصورة، استخدام الصورة البديلة');
       img.src = "https://placehold.co/300x400/1A1A2E/8B5CF6?text=صورة+الأنمي&font=cairo";
-      img.onerror = null; // منع التكرار اللانهائي
+      img.onerror = null;
     }
     
-    // عرض الإشعارات
     function showToast(msg, type = "info") {
       const toast = document.getElementById('toast');
       toast.textContent = msg;
-      toast.className = 'toast';
+      toast.className = 'toast'; 
       toast.classList.add(type);
-      
-      // إظهار الإشعار
-      setTimeout(() => {
-        toast.classList.add('show');
-      }, 10);
-      
-      // إخفاء الإشعار بعد 4 ثواني
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 4000);
+      setTimeout(() => { toast.classList.add('show'); }, 10);
+      setTimeout(() => { 
+        toast.classList.remove('show'); 
+        // 🟢 تحسين حركة الـ Toast على الموبايل
+        if (window.innerWidth <= 480) {
+            toast.style.transform = 'translateX(50%)'; // Reset transform for next show
+        }
+      }, 3000); // تقليل الوقت إلى 3 ثواني
     }
     
-    // تحديث شريط التقدم
+    function cleanHTML(rawText) {
+        if (!rawText) return 'لا يوجد وصف بعد لهذا الأنمي.';
+        // 🟢 الإصلاح: استخدام طريقة آمنة لتنظيف الـ HTML
+        let tempElement = document.createElement('div');
+        tempElement.innerHTML = rawText;
+        let cleanText = tempElement.textContent || tempElement.innerText || '';
+        return cleanText.trim().replace(/<br>/g, '\n'); // 🟢 إضافة معالجة لـ <br>
+    }
+
     function updateProgressBar() {
-      if (!anime) return;
-      
+      if (!anime || !anime.id) return;
       const watchedStatus = JSON.parse(localStorage.getItem(WATCH_STATUS_KEY)) || {};
-      const totalEpisodes = anime.totalEpisodes || anime.episodes || 12;
-      const watchedEpisodes = Object.keys(watchedStatus).filter(ep => watchedStatus[ep]).length;
+      const totalEpisodes = anime.totalEpisodes || anime.episodes || 12; 
+      // 🟢 الإصلاح: التأكد من أن المفاتيح التي يتم احتسابها هي مفاتيح حقيقية وقيمها صحيحة
+      const watchedEpisodes = Object.keys(watchedStatus).filter(ep => watchedStatus[ep] === true).length; 
       const progressPercentage = totalEpisodes > 0 ? (watchedEpisodes / totalEpisodes) * 100 : 0;
       
       const progressFill = document.getElementById('progressFill');
@@ -937,124 +844,170 @@
       
       if (watchedEpisodes === 0) {
         progressText.textContent = 'لم تبدأ المشاهدة بعد';
-      } else if (watchedEpisodes === totalEpisodes) {
-        progressText.textContent = `مكتمل! (${watchedEpisodes}/${totalEpisodes})`;
+      } else if (watchedEpisodes >= totalEpisodes) {
+        progressText.textContent = `مكتمل! 🎉 (${watchedEpisodes}/${totalEpisodes})`; // 🟢 إضافة إيموجي
       } else {
         progressText.textContent = `شاهدت ${watchedEpisodes} من ${totalEpisodes} حلقة (${Math.round(progressPercentage)}%)`;
       }
     }
     
     // ------------------------------------------------------------------
-    // 2. نظام الرجوع الذكي والثابت
+    // 3. نظام الرجوع الذكي والثابت المحسن - أسرع
     // ------------------------------------------------------------------
 
-    // الرجوع الذكي للصفحة السابقة
-    function goBackSmart() {
+    window.goBackSmart = function() { 
       const previousPageData = JSON.parse(localStorage.getItem('previousPage')) || {};
-      
-      // إذا كانت هناك صفحة سابقة محفوظة ونريد العودة إليها
       if (previousPageData.url && previousPageData.url.includes(window.location.origin)) {
-        // التحقق من أن الصفحة السابقة ليست الصفحة الحالية
         if (!previousPageData.url.includes('anime.html')) {
-          window.location.href = previousPageData.url;
+          window.location.replace(previousPageData.url); 
           return;
         }
       }
-      
-      // إذا كان هناك تاريخ تصفح، نرجع للخلف صفحة واحدة
       if (window.history.length > 1) {
         window.history.back();
       } else {
-        // إذا لم يكن هناك تاريخ، نذهب للصفحة الرئيسية
         goToHome();
       }
     }
 
-    // الرجوع الثابت للصفحة الرئيسية
-    function goToHome() {
-      window.location.href = 'index.html';
+    window.goToHome = function() { 
+      window.location.replace('index.html'); 
     }
 
-    // حفظ الصفحة السابقة عند الدخول لـ anime.html
     function savePreviousPageForAnime() {
       const previousPage = document.referrer;
-      
-      // نحفظ فقط إذا كانت الصفحة السابقة من موقعنا وليست anime.html نفسها
       if (previousPage && 
           previousPage.includes(window.location.origin) &&
           !previousPage.includes('anime.html')) {
-        
         const pageData = {
           url: previousPage,
           timestamp: new Date().toISOString(),
           type: 'previous'
         };
-        
         localStorage.setItem('previousPage', JSON.stringify(pageData));
       }
     }
 
-    // تحديث دالة الرجوع القديمة
-    window.goBackOrHome = function() {
+    window.goBackOrHome = function() { 
       goBackSmart();
     }
 
     // ------------------------------------------------------------------
-    // 3. تفعيل زر المفضلة المحسن
+    // 4. دالة تحديث واجهة المستخدم حسب حالة المصادقة المحسنة - أسرع
     // ------------------------------------------------------------------
-    const favoriteBtn = document.getElementById("favoriteBtn");
-
-    function checkFavoriteStatus() {
-        if (!IS_LOGGED_IN || !anime) return false;
+    
+    function updateAuthDependentUI(isLoggedIn) {
+        stars.forEach(star => star.classList.toggle('disabled', !isLoggedIn));
+        ratingAuthMessage.textContent = isLoggedIn ? 
+            '' : '🔒 يجب تسجيل الدخول للتقييم والمفضلة والتعليق.';
+            
+        favoriteBtn.classList.toggle('disabled', !isLoggedIn);
         
-        const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY)) || [];
-        const currentUser = users.find(u => u.email === LOGGED_IN_EMAIL);
+        commentBox.classList.toggle('disabled', !isLoggedIn);
+        commentInput.placeholder = isLoggedIn ? 'أضف تعليقك هنا...' : 'سجّل الدخول للتعليق';
+    }
+    
+    // مراقب حالة المصادقة الذكي - محسن للأداء
+    function setupAuthListener() {
+        if (!auth) return;
         
-        if (currentUser && currentUser.favorites) {
-            return currentUser.favorites.some(fav => fav.title === anime.title);
-        }
-        return false;
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const isLoggedIn = !!user;
+            
+            updateAuthDependentUI(isLoggedIn);
+            
+            if (isLoggedIn) {
+                localStorage.setItem("loggedInUser", user.email);
+                if (anime && ANIME_KEY) {
+                    // تحميل البيانات بشكل غير متزامن
+                    setTimeout(() => {
+                        fetchUserFavoritesFromFirebase(); 
+                        loadComments(); 
+                    }, 100);
+                }
+            } else {
+                localStorage.removeItem("loggedInUser");
+                localStorage.removeItem("profileName");
+                updateFavoriteButtonUI(false); 
+            }
+            
+            if (anime && ANIME_KEY) {
+                fetchInitialRating();
+            }
+        }, (error) => {
+            console.error('Auth state change error:', error);
+        });
     }
 
-    function toggleFavorite() {
-        if (!IS_LOGGED_IN) {
+    // ------------------------------------------------------------------
+    // 5. نظام المفضلة المدمج المحسن - أسرع
+    // ------------------------------------------------------------------
+
+    async function fetchUserFavoritesFromFirebase() {
+        if (!currentUser || !firestore || !ANIME_KEY) return;
+        try {
+            const userDocRef = doc(firestore, "users", currentUser.uid);
+            const userDoc = await getDoc(userDocRef);
+            if (userDoc.exists()) {
+                const favorites = userDoc.data().favorites || [];
+                
+                const isFav = favorites.some(fav => fav.animeId === ANIME_KEY);
+                updateFavoriteButtonUI(isFav);
+                
+            } else {
+                updateFavoriteButtonUI(false); 
+            }
+        } catch (e) {
+            console.error("🚨 خطأ في جلب المفضلة من Firebase:", e);
+            updateFavoriteButtonUI(false); 
+        }
+    }
+    
+    async function toggleFavorite() {
+        if (!currentUser) {
             showToast("🔒 يجب تسجيل الدخول إلى حسابك لاستخدام المفضلة!", "warning");
             return;
         }
 
-        if (!anime) {
+        if (!anime || !ANIME_KEY) {
             showToast("❌ لا توجد بيانات الأنمي", "error");
             return;
         }
 
-        let isCurrentlyFav = checkFavoriteStatus();
-        const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY)) || [];
-        const userIndex = users.findIndex(u => u.email === LOGGED_IN_EMAIL);
-        
-        if (userIndex === -1) {
-            showToast("❌ لم يتم العثور على بيانات المستخدم", "error");
-            return;
-        }
-
-        users[userIndex].favorites = users[userIndex].favorites || [];
-
-        if (isCurrentlyFav) {
-            // إزالة من المفضلة
-            users[userIndex].favorites = users[userIndex].favorites.filter(fav => fav.title !== anime.title);
-            showToast(`💔 تم إزالة "${anime.title}" من المفضلة`, "info");
-        } else {
-            // إضافة للمفضلة
-            users[userIndex].favorites.push({ 
+        try {
+            const userDocRef = doc(firestore, "users", currentUser.uid);
+            const animeData = { 
+                animeId: ANIME_KEY, 
                 title: anime.title, 
-                img: anime.img || "https://placehold.co/300x400/1A1A2E/8B5CF6?text=صورة+الأنمي",
+                img: anime.img || "Default Image",
                 year: anime.year || "غير معروف",
                 addedAt: new Date().toISOString()
-            });
-            showToast(`💖 تم إضافة "${anime.title}" إلى المفضلة!`, "success");
+            };
+            
+            const userDoc = await getDoc(userDocRef);
+            const currentFavorites = userDoc.exists() ? (userDoc.data().favorites || []) : [];
+            const isCurrentlyFav = currentFavorites.some(fav => fav.animeId === ANIME_KEY);
+
+            if (isCurrentlyFav) {
+                const newFavorites = currentFavorites.filter(fav => fav.animeId !== ANIME_KEY);
+                // 🟢 استخدام updateDoc بدلاً من setDoc مع merge: true لإجراء تحديث جزئي
+                await updateDoc(userDocRef, { favorites: newFavorites });
+                showToast(`💔 تم إزالة "${anime.title}" من المفضلة.`, "info");
+            } else {
+                // 🟢 استخدام arrayUnion لإضافة الأنمي بشكل آمن ومضمون
+                await updateDoc(userDocRef, { 
+                    favorites: arrayUnion(animeData) 
+                });
+                showToast(`💖 تم إضافة "${anime.title}" إلى المفضلة!`, "success");
+            }
+            
+            updateFavoriteButtonUI(!isCurrentlyFav);
+
+        } catch (e) {
+             console.error("🚨 خطأ في تحديث المفضلة Firebase:", e);
+             showToast("❌ حدث خطأ أثناء تحديث حالة المفضلة. جرب مرة أخرى.", "error");
         }
-        
-        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-        updateFavoriteButtonUI(!isCurrentlyFav);
     }
     
     function updateFavoriteButtonUI(isFav) {
@@ -1073,190 +1026,208 @@
     favoriteBtn.addEventListener('click', toggleFavorite);
     
     // ------------------------------------------------------------------
-    // 4. عرض تفاصيل الأنمي والحلقات وتتبع المشاهدة المحسن
+    // 6. نظام التقييم المدمج المحسن - أسرع
     // ------------------------------------------------------------------
-    function loadAnimeDetails() {
-      if (!anime) {
-        document.getElementById("animeTitle").textContent = "الأنمي غير موجود";
-        showToast("❌ لم يتم العثور على بيانات الأنمي", "error");
-        return;
-      }
-
-      // تحميل صورة الأنمي مع معالجة الأخطاء
-      const animeImg = document.getElementById("animeImg");
-      if (anime.img) {
-        animeImg.src = anime.img;
+    
+    function updateStarsUI(userRate, averageRate = null) {
+      stars.forEach(star => {
+        star.classList.toggle("active", star.dataset.rate <= userRate);
+      });
+      
+      const animeRatingElement = document.getElementById("animeRating");
+      if (averageRate !== null) {
+          // 🟢 تحديث التقييم المعروض بمتوسط تقييم المستخدمين
+          animeRatingElement.textContent = `⭐ ${averageRate.toFixed(1)} / 5.0`; 
       } else {
-        animeImg.src = "https://placehold.co/300x400/1A1A2E/8B5CF6?text=صورة+الأنمي";
+          // 🟢 إذا لم يتوفر تقييم المستخدمين، عرض تقييم AniList
+          const anilistScore = (parseFloat(anime.rating) / 10 * 5) || "غير متوفر";
+          // 🟢 الإصلاح: التأكد من عرض تقييم AniList بشكل مناسب
+          const displayScore = anilistScore !== "غير متوفر" ? anilistScore.toFixed(1) : anilistScore;
+          animeRatingElement.textContent = `⭐ ${displayScore} / 5.0 (Anilist)`;
       }
-      animeImg.alt = `صورة ${anime.title}`;
-
-      document.getElementById("animeTitle").textContent = anime.title;
-      document.getElementById("animeRating").textContent = "⭐ " + (anime.rating || "غير متوفر");
-      document.getElementById("animeEpisodes").textContent = `الحلقات: ${anime.totalEpisodes || anime.episodes || 12}`;
-      document.getElementById("animeStatus").textContent = anime.status || "مستمر";
-      document.getElementById("animeYear").textContent = `السنة: ${anime.year || "غير معروفة"}`;
-      document.getElementById("animeDesc").textContent =
-        anime.desc || "قصة هذا الأنمي مليئة بالإثارة والتشويق.";
-
-      // عرض علامة "جديد" إذا كان الأنمي حديث
-      if (anime.year && parseInt(anime.year) >= 2023) {
-        document.getElementById("newBadge").style.display = "block";
-      }
-
-      updateFavoriteButtonUI(checkFavoriteStatus()); 
-
-      // تتبع حالة المشاهدة
-      const watchedStatus = JSON.parse(localStorage.getItem(WATCH_STATUS_KEY)) || {};
-
-      const episodes = document.getElementById("episodesList");
-      const totalEpisodes = anime.totalEpisodes || anime.episodes || 12;
-      
-      // إضافة رسالة إذا لم توجد حلقات
-      if (totalEpisodes <= 0) {
-        episodes.innerHTML = `<p style="text-align:center; padding: 30px; opacity: 0.7; font-size: 1.1rem;">لا توجد حلقات متاحة بعد</p>`;
-        return;
-      }
-      
-      for (let i = 1; i <= totalEpisodes; i++) {
-        const ep = document.createElement("div");
-        ep.classList.add("episode");
-        ep.textContent = `الحلقة ${i}`;
+    }
+    
+    async function fetchInitialRating() {
+        if (!firestore || !ANIME_KEY) return;
+        const ratingDocRef = doc(firestore, "ratings", ANIME_KEY);
         
-        // تمييز الحلقة إذا كانت مشاهدة
-        if (watchedStatus[i]) {
-            ep.classList.add('watched');
+        try {
+            // 🟢 استخدام onSnapshot للاستماع للتغييرات في الوقت الفعلي
+            onSnapshot(ratingDocRef, (docSnap) => {
+                let average = null;
+                let userRate = 0;
+                
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const ratings = data.users || {};
+                    const totalRatings = Object.values(ratings);
+                    const sum = totalRatings.reduce((a, b) => a + b, 0);
+                    const count = totalRatings.length;
+                    
+                    // حساب المتوسط من 5 نجوم (حيث أن التقييمات في قاعدة البيانات هي من 1 إلى 5)
+                    average = count > 0 ? (sum / count) : null; 
+                    
+                    userRate = currentUser ? ratings[currentUser.uid] || 0 : 0;
+                } else {
+                    userRate = 0;
+                    average = null; // الاعتماد على تقييم AniList في دالة updateStarsUI
+                }
+                
+                updateStarsUI(userRate, average);
+                
+            }, (error) => {
+                console.error("🚨 خطأ في الاستماع لتقييم Firebase:", error);
+                updateStarsUI(0, null); // الاعتماد على تقييم AniList
+            });
+        } catch (e) {
+            console.error("🚨 خطأ عام في جلب التقييم من Firebase:", e);
         }
-
-        ep.addEventListener("click", () => {
-          // حفظ حالة الحلقة كمشاهدة عند النقر
-          watchedStatus[i] = true; 
-          localStorage.setItem(WATCH_STATUS_KEY, JSON.stringify(watchedStatus));
-          
-          localStorage.setItem("selectedEpisode", JSON.stringify({
-            animeTitle: anime.title,
-            episodeNumber: i
-          }));
-          
-          showToast(`▶️ تشغيل الحلقة ${i} من ${anime.title}`, "info");
-          
-          // تحديث شريط التقدم
-          updateProgressBar();
-          
-          // تأخير بسيط قبل الانتقال لرؤية الإشعار
-          setTimeout(() => {
-            window.location.href = "servers.html";
-          }, 1000);
-        });
-        episodes.appendChild(ep);
-      }
-      
-      // تحديث شريط التقدم بعد تحميل الحلقات
-      updateProgressBar();
     }
 
-    // ------------------------------------------------------------------
-    // 5. نظام التقييم المحسن
-    // ------------------------------------------------------------------
-    const stars = document.querySelectorAll(".rating-stars i");
-    stars.forEach(star => {
-      star.addEventListener("click", () => {
-        if (!anime) {
-          showToast("❌ لا توجد بيانات الأنمي", "error");
-          return;
+    async function sendRating(rate) {
+        if (!currentUser) {
+            showToast("🔒 يجب تسجيل الدخول للتقييم!", "warning");
+            return;
         }
         
+        try {
+            const ratingDocRef = doc(firestore, "ratings", ANIME_KEY);
+            
+            await setDoc(ratingDocRef, {
+                users: {
+                    [currentUser.uid]: parseInt(rate) 
+                },
+                lastUpdate: new Date().toISOString()
+            }, { merge: true }); 
+            
+            showToast(`⭐ تم تسجيل تقييمك بنجاح!`, "success");
+            
+        } catch (e) {
+            console.error("🚨 خطأ في إرسال التقييم إلى Firebase:", e);
+            showToast("❌ فشل في إرسال التقييم، حاول مرة أخرى.", "error");
+        }
+    }
+
+    stars.forEach(star => {
+      star.addEventListener("click", () => {
+        if (!currentUser) return; 
         const rate = star.dataset.rate;
-        localStorage.setItem(`rating_${anime.title.replace(/\s+/g, '_')}`, rate);
-        updateStars(rate);
-        showToast(`⭐ قيمت الأنمي بـ ${rate} نجوم`, "success");
+        sendRating(rate);
       });
     });
 
-    function updateStars(rate) {
-      stars.forEach(star => {
-        star.classList.toggle("active", star.dataset.rate <= rate);
-      });
-    }
-
     // ------------------------------------------------------------------
-    // 6. نظام التعليقات المحسن (مع تمييز المالك)
+    // 7. نظام التعليقات المدمج المحسن - أسرع
     // ------------------------------------------------------------------
-    const commentInput = document.getElementById("commentInput");
-    const sendComment = document.getElementById("sendComment");
-    const commentsContainer = document.getElementById("commentsContainer");
-    const IS_OWNER = LOGGED_IN_EMAIL === OWNER_EMAIL;
 
     function loadComments() {
-      if (!anime) return;
+      if (!anime || !ANIME_KEY || !firestore) {
+          commentsContainer.innerHTML = "<p style='opacity:0.6; text-align:center; padding: 30px; font-size: 1.1rem;'>لا توجد تعليقات متاحة.</p>";
+          return;
+      }
       
-      const key = `comments_${anime.title.replace(/\s+/g, '_')}`;
-      let comments = JSON.parse(localStorage.getItem(key)) || [];
-      
-      commentsContainer.innerHTML = "";
-      if (comments.length === 0) {
-        commentsContainer.innerHTML = "<p style='opacity:0.6; text-align:center; padding: 30px; font-size: 1.1rem;'>لا توجد تعليقات بعد. كن أول المعلقين! ✍️</p>";
-      } else {
-        comments.forEach(c => {
-          const div = document.createElement("div");
-          let userDisplay = c.user;
-          let isCommentOwner = c.email === OWNER_EMAIL;
-          
-          // تمييز تعليق المالك
-          if (isCommentOwner) {
-            div.classList.add("owner-comment");
-            userDisplay = `<i class="fa-solid fa-crown" style="color:var(--gold-owner);"></i> المالك الذهبي`;
-          }
+      try {
+          const commentsCollectionRef = collection(firestore, "animeComments", ANIME_KEY, "comments");
+          const q = query(commentsCollectionRef, orderBy("timestamp", "desc"));
 
-          div.classList.add("comment");
-          div.innerHTML = `
-            <span>${userDisplay}</span>
-            <div style="font-size: 1.05rem; line-height: 1.7;">${c.text}</div>
-            <div style="font-size:0.85rem; opacity:0.7; margin-top:10px; text-align:left;">
-              ${new Date(c.timestamp || Date.now()).toLocaleString('ar-SA')}
-            </div>
-          `;
-          commentsContainer.appendChild(div);
-        });
+          onSnapshot(q, (snapshot) => {
+              commentsContainer.innerHTML = "";
+              const comments = [];
+              snapshot.forEach(doc => {
+                  comments.push(doc.data());
+              });
+              
+              if (comments.length === 0) {
+                 commentsContainer.innerHTML = "<p style='opacity:0.6; text-align:center; padding: 30px; font-size: 1.1rem;'>لا توجد تعليقات بعد. كن أول المعلقين! ✍️</p>";
+              } else {
+                  comments.forEach(c => renderComment(c));
+              }
+          }, (error) => {
+              console.error("🚨 خطأ في الاستماع لتعليقات Firebase:", error);
+              showToast("⚠️ فشل الاتصال بخدمة التعليقات.", "warning");
+          });
+          
+      } catch (e) {
+          console.error("🚨 خطأ عام في تحميل تعليقات Firebase:", e);
       }
     }
 
-    function addComment() {
-      if (!anime) {
-        showToast("❌ لا توجد بيانات الأنمي", "error");
-        return;
-      }
-      
-      const text = commentInput.value.trim();
-      if (!text) {
-        showToast("🖊️ اكتب تعليقًا أولاً!", "warning");
-        return;
-      }
-      
-      if (!IS_LOGGED_IN) {
+    function renderComment(c) {
+        const div = document.createElement("div");
+        let userDisplay = cleanHTML(c.user || "مستخدم غير معروف"); 
+        const commentText = cleanHTML(c.text); 
+        let isCommentOwner = c.email === OWNER_EMAIL;
+        
+        if (isCommentOwner) {
+            div.classList.add("owner-comment");
+            userDisplay = `<i class="fa-solid fa-crown" style="color:var(--gold-owner);"></i> المالك الذهبي`;
+        }
+
+        div.classList.add("comment");
+        div.innerHTML = `
+            <span>${userDisplay}</span>
+            <div style="font-size: 1.05rem; line-height: 1.7; word-break: break-word;">${commentText}</div>
+            <div style="font-size:0.85rem; opacity:0.7; margin-top:10px; text-align:left;">
+                ${new Date(c.timestamp || Date.now()).toLocaleString('ar-SA')}
+            </div>
+        `;
+        commentsContainer.appendChild(div);
+    }
+
+    async function addComment() {
+      if (!currentUser) {
         showToast("🔒 يجب تسجيل الدخول لإضافة تعليق!", "warning");
         return;
       }
       
-      const key = `comments_${anime.title.replace(/\s+/g, '_')}`;
-      let comments = JSON.parse(localStorage.getItem(key)) || [];
+      if (!anime || !ANIME_KEY) {
+        showToast("❌ لا توجد بيانات الأنمي لإضافة تعليق", "error");
+        return;
+      }
       
-      // حفظ التعليق مع اسم المستخدم وإيميله لتمييز المالك
-      comments.unshift({ 
-        user: USER_NAME, 
-        text, 
-        email: LOGGED_IN_EMAIL,
-        timestamp: new Date().toISOString()
-      });
-      localStorage.setItem(key, JSON.stringify(comments));
-      commentInput.value = "";
-      loadComments();
-      showToast("💬 تم إضافة تعليقك بنجاح!", "success");
+      const text = commentInput.value.trim();
+      if (!text || text.length < 5 || text.length > 300) {
+        showToast("📝 يجب أن يكون التعليق بين 5 و 300 حرف!", "warning");
+        return;
+      }
+      
+      // 🟢 تعطيل الزر أثناء الإرسال لمنع الإرسال المتعدد
+      sendComment.disabled = true;
+      sendComment.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> إرسال...';
+
+      try {
+          const safeText = cleanHTML(text); 
+          const userDocRef = doc(firestore, "users", currentUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          
+          const userName = userDoc.exists() ? userDoc.data().name || currentUser.displayName || "مستخدم" : "مستخدم";
+          
+          const newComment = { 
+            user: userName, 
+            text: safeText, 
+            email: currentUser.email,
+            uid: currentUser.uid,
+            timestamp: new Date().toISOString()
+          };
+          
+          const commentsCollectionRef = collection(firestore, "animeComments", ANIME_KEY, "comments");
+          await setDoc(doc(commentsCollectionRef), newComment); 
+          
+          commentInput.value = "";
+          showToast("💬 تم إضافة تعليقك بنجاح!", "success");
+
+      } catch (e) {
+          console.error("🚨 خطأ في إضافة التعليق إلى Firebase:", e);
+          showToast("❌ فشل في إرسال التعليق، حاول مرة أخرى.", "error");
+      } finally {
+        // 🟢 إعادة تفعيل الزر بعد الانتهاء
+        sendComment.disabled = false;
+        sendComment.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال';
+      }
     }
 
     sendComment.addEventListener("click", addComment);
     
-    // السماح بإرسال التعليق بالضغط على Enter
     commentInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
         addComment();
@@ -1264,66 +1235,400 @@
     });
     
     // ------------------------------------------------------------------
-    // 7. تحميل الصفحة مع تأثيرات ظهور
+    // 8. نظام جلب البيانات المحسن مع معالجة الأخطاء - أسرع بكثير
     // ------------------------------------------------------------------
-    document.addEventListener('DOMContentLoaded', function() {
-      // حفظ الصفحة السابقة أولاً
-      savePreviousPageForAnime();
-      
-      // ثم تحميل باقي البيانات
-      loadAnimeDetails();
-      
-      // تحميل التقييم المحفوظ
-      if (anime) {
-        const savedRating = localStorage.getItem(`rating_${anime.title.replace(/\s+/g, '_')}`);
-        if (savedRating) updateStars(savedRating);
+    
+    const ANIME_QUERY_DETAILS = `
+        query ($id: Int) {
+            Media(id: $id, type: ANIME) {
+                id
+                title { userPreferred romaji english native }
+                description(asHtml: false) 
+                episodes
+                status
+                seasonYear
+                averageScore
+                coverImage { large extraLarge color }
+                status
+                genres
+                studios(isMain: true) {
+                    nodes {
+                        name
+                    }
+                }
+            }
+        }
+    `;
+
+    function getAnimeIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        return id ? parseInt(id) : null;
+    }
+
+    async function fetchAnimeDetailsFromId(id) {
+        if (!id) return null;
+        
+        try {
+            loadingText.textContent = "جاري الاتصال بخوادم AniList...";
+            
+            // استخدام fetch مع timeout لمنع التحميل الطويل
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 ثواني timeout
+            
+            const response = await fetch(ANILIST_API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query: ANIME_QUERY_DETAILS,
+                    variables: { id: id }
+                }),
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (!response.ok) throw new Error(`خطأ في API: ${response.status}`);
+            
+            const result = await response.json();
+            const media = result.data.Media;
+            
+            if (!media) throw new Error("لم يتم العثور على الأنمي في AniList");
+
+            loadingText.textContent = "جاري معالجة البيانات...";
+
+            return {
+                id: media.id,
+                title: media.title.userPreferred || media.title.romaji || 'غير متوفر',
+                img: media.coverImage.large || media.coverImage.extraLarge,
+                desc: media.description,
+                totalEpisodes: media.episodes,
+                status: media.status,
+                year: media.seasonYear,
+                rating: media.averageScore ? media.averageScore : "غير متوفر", 
+                genres: media.genres || [],
+                studio: media.studios?.nodes?.[0]?.name || "غير معروف"
+            };
+
+        } catch (e) {
+            if (e.name === 'AbortError') {
+                console.error("🚨 انتهت مهلة طلب AniList");
+                showToast("⏰ انتهت مهلة الاتصال بالخادم. جاري التحميل من الذاكرة المؤقتة...", "warning");
+            } else {
+                console.error("🚨 خطأ في جلب بيانات الأنمي من AniList:", e);
+                showToast(`❌ فشل تحميل البيانات: ${e.message}`, "error");
+            }
+            return null;
+        }
+    }
+
+    function loadAnimeDetails() {
+      if (!anime || !anime.title) {
+        document.getElementById("animeTitle").textContent = "الأنمي غير موجود";
+        document.getElementById("animeDesc").textContent = "❌ لم يتم العثور على بيانات الأنمي الأساسية أو حدث خطأ في التحميل.";
+        return;
       }
-      
-      // تحميل التعليقات
-      loadComments();
-      
-      // إضافة تأثيرات ظهور للحقول
-      const elements = document.querySelectorAll('.anime-header, .anime-desc, .section-title, .episode, .comment, .header-buttons, .progress-container, .rating-container, .comments-container');
-      elements.forEach((el, index) => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(25px)';
+        
+      try {
+          const animeImg = document.getElementById("animeImg");
+          if (anime.img) {
+            animeImg.src = anime.img;
+            // إضافة تحميل ذكي للصورة
+            animeImg.onload = () => {
+                console.log('✅ تم تحميل صورة الأنمي بنجاح');
+            };
+          } else {
+            animeImg.src = "https://placehold.co/300x400/1A1A2E/8B5CF6?text=صورة+الأنمي";
+          }
+          animeImg.alt = `صورة ${anime.title}`;
+
+          document.getElementById("animeTitle").textContent = anime.title;
+          document.title = `${anime.title} - تفاصيل الأنمي`;
+
+          // 🟢 تم نقل تحديث التقييم إلى دالة fetchInitialRating
+          
+          const totalEpisodes = anime.totalEpisodes || anime.episodes || "؟";
+          document.getElementById("animeEpisodes").textContent = `الحلقات: ${totalEpisodes}`;
+          
+          // تحسين عرض الحالة
+          const statusMap = {
+              'RELEASING': '🟢 يعرض حالياً',
+              'FINISHED': '🔵 منتهي',
+              'NOT_YET_RELEASED': '🟣 قريباً',
+              'CANCELLED': '🔴 ملغي'
+          };
+          document.getElementById("animeStatus").textContent = statusMap[anime.status] || anime.status;
+          
+          document.getElementById("animeYear").textContent = `السنة: ${anime.year || "غير معروفة"}`;
+          
+          const cleanDescription = cleanHTML(anime.desc);
+          document.getElementById("animeDesc").textContent = cleanDescription;
+
+          if (anime.year && parseInt(anime.year) >= 2023) {
+            document.getElementById("newBadge").style.display = "block";
+          } else {
+            document.getElementById("newBadge").style.display = "none";
+          }
+
+          loadEpisodes();
+          updateProgressBar();
+          
+      } catch (e) {
+          console.error("🚨 خطأ حرج في عرض تفاصيل الأنمي:", e);
+          document.getElementById("animeTitle").textContent = "خطأ في العرض";
+          document.getElementById("animeDesc").textContent = "❌ حدث خطأ غير متوقع أثناء عرض تفاصيل الأنمي.";
+          showToast("❌ خطأ حرج في تحميل التفاصيل", "error");
+      }
+    }
+
+    function loadEpisodes() {
+        const episodes = document.getElementById("episodesList");
+        const totalEpisodesNum = parseInt(anime.totalEpisodes || anime.episodes) || 0;
+        episodes.innerHTML = "";
+        
+        const watchedStatus = JSON.parse(localStorage.getItem(WATCH_STATUS_KEY)) || {}; // 🟢 جلب الحالة مرة واحدة
+
+        if (totalEpisodesNum <= 0) {
+            episodes.innerHTML = `<p style="text-align:center; padding: 30px; opacity: 0.7; font-size: 1.1rem;">لا توجد حلقات متاحة بعد</p>`;
+        } else {
+            // تحسين الأداء: إنشاء الحلقات دفعة واحدة بدلاً من حلقة for
+            const episodesHTML = Array.from({length: totalEpisodesNum}, (_, i) => {
+                const episodeNumber = i + 1;
+                const isWatched = watchedStatus[episodeNumber];
+                
+                return `
+                    <div class="episode ${isWatched ? 'watched' : ''}" data-episode="${episodeNumber}">
+                        الحلقة ${episodeNumber}
+                    </div>
+                `;
+            }).join('');
+            
+            episodes.innerHTML = episodesHTML;
+            
+            // إضافة event listeners بشكل جماعي
+            episodes.addEventListener('click', (e) => {
+                const episodeElement = e.target.closest('.episode');
+                if (episodeElement) {
+                    const episodeNumber = parseInt(episodeElement.dataset.episode);
+                    handleEpisodeClick(episodeNumber, episodeElement);
+                }
+            });
+        }
+    }
+
+    function handleEpisodeClick(episodeNumber, episodeElement) {
+        // 🟢 تحديث حالة المشاهدة قبل التوجيه لضمان حفظ الحالة
+        const watchedStatus = JSON.parse(localStorage.getItem(WATCH_STATUS_KEY)) || {};
+        watchedStatus[episodeNumber] = true; 
+        localStorage.setItem(WATCH_STATUS_KEY, JSON.stringify(watchedStatus));
+        
+        // 🟢 حفظ معلومات الحلقة للوصول إليها في servers.html
+        localStorage.setItem("selectedEpisode", JSON.stringify({
+            animeTitle: anime.title,
+            episodeNumber: episodeNumber,
+            animeId: anime.id,
+            totalEpisodes: anime.totalEpisodes || anime.episodes
+        }));
+        
+        showToast(`▶️ تشغيل الحلقة ${episodeNumber} من ${anime.title}`, "info");
+        updateProgressBar();
+        
+        episodeElement.classList.add('watched');
         
         setTimeout(() => {
-          el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-          el.style.opacity = '1';
-          el.style.transform = 'translateY(0)';
-        }, index * 120);
-      });
+            window.location.href = "servers.html"; // 🟢 هذا هو السطر الحاسم للانتقال لصفحة الخوادم
+        }, 800);
+    }
+
+    // ------------------------------------------------------------------
+    // 9. وظيفة تهيئة الصفحة الرئيسية المحسنة - أسرع بكثير
+    // ------------------------------------------------------------------
+    async function initAnimePage() {
+        console.log('🚀 بدء تهيئة صفحة الأنمي...');
+        
+        const animeId = getAnimeIdFromUrl();
+        if (!animeId) {
+            showToast("❌ لم يتم تحديد معرف الأنمي في الرابط.", "error");
+            document.getElementById("animeTitle").textContent = "خطأ في الرابط";
+            document.getElementById("animeDesc").textContent = "يرجى العودة للصفحة الرئيسية واختيار أنمي.";
+            hideLoadingScreen();
+            return;
+        }
+
+        try {
+            loadingText.textContent = "جاري تحميل بيانات الأنمي...";
+            
+            // 🟢 جلب بيانات الأنمي من الذاكرة المؤقتة (Cache)
+            const cacheKey = `anime_${animeId}`;
+            const cachedAnime = localStorage.getItem(cacheKey);
+            
+            if (cachedAnime) {
+                anime = JSON.parse(cachedAnime);
+                console.log('✅ تم تحميل بيانات الأنمي من الذاكرة المؤقتة');
+                
+                ANIME_KEY = `anilist_${anime.id}`; 
+                WATCH_STATUS_KEY = `watch_status_${ANIME_KEY}`;
+                
+                // 🟢 عرض التفاصيل فوراً من الذاكرة المؤقتة
+                loadAnimeDetails();
+                hideLoadingScreen();
+                animatePageElements();
+            }
+            
+            // 🟢 تحميل Firebase و جلب البيانات الحديثة بشكل متوازي
+            const [firebaseInit, fetchedAnimeResult] = await Promise.allSettled([
+                initializeFirebase(),
+                fetchAnimeDetailsFromId(animeId)
+            ]);
+            
+            let shouldUpdateUI = false;
+            
+            if (fetchedAnimeResult.status === 'fulfilled' && fetchedAnimeResult.value) {
+                const fetchedAnime = fetchedAnimeResult.value;
+                if (!anime || JSON.stringify(anime) !== JSON.stringify(fetchedAnime)) {
+                    anime = fetchedAnime;
+                    // 🟢 حفظ البيانات الجديدة في الذاكرة المؤقتة
+                    localStorage.setItem(cacheKey, JSON.stringify(anime));
+                    shouldUpdateUI = true;
+                }
+            } else if (!anime) {
+                // إذا لم يتم العثور على أي بيانات (لا كاش ولا جلب)
+                throw new Error("فشل في جلب بيانات الأنمي");
+            }
+
+            // 🟢 التأكد من تعريف المفاتيح بعد الحصول على الـ ID
+            ANIME_KEY = `anilist_${anime.id}`; 
+            WATCH_STATUS_KEY = `watch_status_${ANIME_KEY}`;
+
+            loadingText.textContent = "جاري تحميل الواجهة...";
+            
+            if (shouldUpdateUI || !cachedAnime) {
+                 // 🟢 إعادة تحميل الواجهة إذا كانت هناك بيانات أحدث أو لم يكن هناك كاش أصلاً
+                loadAnimeDetails();
+                animatePageElements(); 
+            }
+            
+            // إعداد Firebase listener بعد تحميل الواجهة
+            if (firebaseInit.status === 'fulfilled') {
+                setupAuthListener();
+            }
+            
+            // 🟢 إخفاء شاشة التحميل بعد التأكد من وجود بيانات وعرضها
+            if (cachedAnime) {
+                 // إذا كان هناك كاش، الإخفاء قد تم بالفعل
+            } else {
+                 setTimeout(() => {
+                    hideLoadingScreen();
+                }, 800);
+            }
+            
+            savePreviousPageForAnime();
+            
+            console.log('✅ تم تحميل صفحة الأنمي بنجاح');
+
+        } catch (error) {
+            console.error('🚨 خطأ في تهيئة الصفحة:', error);
+            showToast("❌ حدث خطأ في تحميل الصفحة", "error");
+            hideLoadingScreen();
+        }
+    }
+
+    function animatePageElements() {
+        const elements = document.querySelectorAll('.anime-header, .anime-desc, .section-title, .episode, .comment, .header-buttons, .progress-container, .rating-container, .comments-container, .back-btn');
+        elements.forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(25px)';
+            
+            setTimeout(() => {
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, index * 80); // تقليل الوقت بين العناصر
+        });
+    }
+
+    function hideLoadingScreen() {
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 300); // 🟢 تقليل زمن الإخفاء
+    }
+
+    // بدء التطبيق بشكل محسن
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('📄 تم تحميل DOM، بدء التطبيق...');
+        
+        // بدء التحميل فوراً بدون تأخير
+        initAnimePage();
     });
+
+    // 🟢 الإضافة الجديدة (لحل المشكلة): نظام حفظ واستعادة الحالة عند العودة
+    window.addEventListener('pageshow', function(event) {
+        // يتم تفعيل هذا الحدث عند العودة من صفحة أخرى (مثل servers.html) باستخدام زر "الرجوع" في المتصفح
+        if (event.persisted) {
+            console.log('🔄 الصفحة تم استعادتها من ذاكرة التخزين المؤقت');
+            const animeId = getAnimeIdFromUrl();
+            if (animeId) {
+                const cacheKey = `anime_${animeId}`;
+                const cachedAnime = localStorage.getItem(cacheKey);
+                if (cachedAnime) {
+                    anime = JSON.parse(cachedAnime);
+                    // 🟢 يجب إعادة تعيين المفاتيح
+                    ANIME_KEY = `anilist_${anime.id}`; 
+                    WATCH_STATUS_KEY = `watch_status_${ANIME_KEY}`; 
+                    
+                    loadAnimeDetails(); // إعادة تحميل تفاصيل الأنمي
+                    updateProgressBar(); // تحديث شريط التقدم
+                    // setupAuthListener() // لا داعي لإعادة تفعيلها، onAuthStateChanged هو Listener مستمر
+                }
+            }
+        }
+    });
+
+    // 🟢 الإضافة الجديدة: حفظ الحالة قبل مغادرة الصفحة
+    window.addEventListener('beforeunload', function() {
+        if (anime && anime.id) {
+            console.log('💾 حفظ بيانات الأنمي قبل مغادرة الصفحة');
+            localStorage.setItem(`anime_${anime.id}`, JSON.stringify(anime));
+        }
+    });
+
+    // إضافة خدمة العمل لتحسين الأداء
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                console.log('✅ ServiceWorker مسجل بنجاح:', registration.scope);
+            }, function(err) {
+                console.log('❌ فشل تسجيل ServiceWorker:', err);
+            });
+        });
+    }
+
+    // 🟢 إضافة تصحيحية: التأكد من أن الدوال العامة (window functions) معرفة قبل استدعائها في الـ HTML
+    // إذا كانت غير معرفة في النطاق العالمي (window) فستظهر خطأ (ReferenceError) عند النقر.
+    if (typeof window.goBackSmart !== 'function') {
+        window.goBackSmart = function() {
+             console.warn('goBackSmart لم يتم تعريفها بعد، استخدام back()');
+             if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.replace('index.html');
+            }
+        };
+    }
+
+    if (typeof window.goToHome !== 'function') {
+        window.goToHome = function() {
+            console.warn('goToHome لم يتم تعريفها بعد، استخدام index.html');
+            window.location.replace('index.html');
+        };
+    }
+
+    if (typeof window.goBackOrHome !== 'function') {
+         window.goBackOrHome = function() {
+             window.goBackSmart(); // اعتماداً على الدالة الذكية
+        };
+    }
   </script>
-  <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-  
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyAW2SN4-a_8SBCbCHelc2sBkvPAXywYDy0",
-    authDomain: "oraaslayer.firebaseapp.com",
-    projectId: "oraaslayer",
-    storageBucket: "oraaslayer.firebasestorage.app",
-    messagingSenderId: "349117618057",
-    appId: "1:349117618057:web:dba5e21031d409a1143358",
-    measurementId: "G-3LKYCN0YK2"
-  };
-  
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
-<script type="module">
-  import { app, auth, db } from './firebase-init.js';
-  
-  // مثال: اختبار الاتصال بـ Firebase
-  console.log("Firebase loaded:", app, auth, db);
-</script>
 </body>
 </html>
