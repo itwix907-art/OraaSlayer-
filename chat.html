@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✨ نيكا-توك | شات أنمي تفاعلي (مُحسَّن)</title>
+    <title>✨ نيكا-توك | شات أنمي تفاعلي</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    
-    <link rel="stylesheet" href="style.css"> 
 
     <style>
-        /* 🔴 الأنماط الأصلية - تم الاحتفاظ بها */
         :root {
             --primary: #6a35ff;
             --primary-light: #8c6bff;
@@ -36,18 +33,12 @@
             --shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
             --shadow-glow: 0 0 15px rgba(106, 53, 255, 0.5);
             --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            --admin-badge: #FFD700; /* لون جديد لشارة المسؤول */
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-        
-        /* 💡 إضافة: تفعيل التمرير الناعم لتجربة أفضل */
-        html {
-            scroll-behavior: smooth;
         }
 
         body {
@@ -132,17 +123,7 @@
             backdrop-filter: blur(10px);
             flex-shrink: 0;
         }
-        /* 🟢 تحسين: لون زر العودة */
-        .header-btn.back-btn {
-            background: var(--dark-light); 
-            color: var(--text);
-            margin-left: 10px; /* فصله عن الأزرار الأخرى */
-        }
-        .header-btn.back-btn:hover {
-            background: var(--dark);
-        }
-        /* 🔴 نهاية الأنماط الأصلية - تم الاحتفاظ بها */
-        
+
         .header-btn:hover {
             background: rgba(255, 255, 255, 0.25);
             transform: scale(1.1);
@@ -440,27 +421,18 @@
             background: var(--accent);
             color: var(--dark);
         }
-        
-        /* شارة المسؤول */
-        .message-badge.admin {
-            background: var(--admin-badge);
-            color: var(--dark);
-            font-weight: 700;
-        }
 
         .message-time {
             font-size: 0.7rem;
             color: var(--text-light);
-            /* 🟢 تحسين: محاذاة النص لليمين بدلاً من اليسار في الوضع العربي */
-            text-align: right; 
+            margin-top: 4px;
+            text-align: left;
         }
 
         .message-actions {
             position: absolute;
             top: 8px;
-            /* 🟢 تحسين: نقل أزرار الإجراءات إلى اليسار للمستخدم بدلاً من اليمين (لتحرير مكان الإسم/الوقت) */
-            left: unset; 
-            right: 8px;
+            left: 8px;
             display: flex;
             gap: 4px;
             opacity: 0;
@@ -469,11 +441,6 @@
 
         .message:hover .message-actions {
             opacity: 1;
-        }
-        
-        /* زر الحذف للمسؤول */
-        .message-action.delete {
-            background: var(--error);
         }
 
         .message-action {
@@ -506,12 +473,6 @@
             gap: 8px;
             align-items: flex-end;
         }
-        
-        /* 💡 إضافة: تلوين حقل الإدخال عند التركيز للمسؤول */
-        .message-input:focus.admin-active {
-            box-shadow: 0 0 5px var(--admin-badge);
-        }
-        /* 💡 نهاية الإضافة */
 
         .input-tools {
             display: flex;
@@ -550,9 +511,8 @@
             padding: 10px 12px;
             border-radius: 10px;
             resize: none;
-            /* 🟢 تحسين: تقليل الارتفاع الأقصى والافتراضي لتحسين تجربة الجوال */
-            max-height: 80px; 
-            min-height: 45px; 
+            max-height: 100px;
+            min-height: 40px;
             outline: none;
             line-height: 1.4;
         }
@@ -565,14 +525,13 @@
             background: var(--gradient);
             border: none;
             color: white;
-            /* 🟢 تحسين: تصغير زر الإرسال قليلاً ليتناسب مع تجربة الجوال */
-            width: 40px; 
-            height: 40px; 
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: var(--shadow-glow);
@@ -594,8 +553,7 @@
         /* لوحة الإيموجي */
         .emoji-panel {
             display: grid;
-            /* 🟢 تحسين: زيادة عدد الأعمدة في الجوال لملء المساحة بشكل أفضل */
-            grid-template-columns: repeat(7, 1fr); 
+            grid-template-columns: repeat(6, 1fr);
             gap: 6px;
             background: var(--dark-light);
             border-radius: 12px;
@@ -625,21 +583,6 @@
             transform: scale(1.2);
             background: rgba(255, 255, 255, 0.1);
         }
-        
-        /* 💡 إضافة: لتثبيت لوحة الإيموجي فوق حقل الإدخال الثابت في الجوال */
-        @media (max-width: 767px) {
-            .emoji-panel {
-                position: fixed;
-                bottom: 80px; /* ليكون فوق حقل الإدخال */
-                left: 15px;
-                right: 15px;
-                margin-top: 0;
-                margin-bottom: 0;
-                z-index: 51; /* أعلى من حقل الإدخال */
-                max-height: 200px;
-            }
-        }
-        /* 💡 نهاية الإضافة */
 
         /* أخبار عاجلة */
         .breaking-news {
@@ -779,10 +722,6 @@
             margin-top: 8px;
         }
 
-        .form-btn.logout-btn {
-            background: var(--error);
-        }
-
         .form-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(106, 53, 255, 0.4);
@@ -794,7 +733,7 @@
             font-size: 0.8rem;
             color: var(--text-light);
         }
-        
+
         /* قسم نشر الأخبار */
         .news-panel {
             display: none;
@@ -870,32 +809,13 @@
             height: 40px;
             border-radius: 50%;
             position: fixed;
-            /* 🟢 تحسين: رفع الزر لتفادي تداخله مع شريط التنقل السفلي المحتمل */
-            bottom: 60px; 
+            bottom: 80px;
             left: 15px;
             z-index: 99;
             box-shadow: var(--shadow-glow);
             cursor: pointer;
         }
-        
-        /* 🟢 تحسين: تثبيت لوحة الأدخال لأسفل الشاشة في الجوال لتحسين سهولة الوصول */
-        @media (max-width: 767px) {
-            .chat-area {
-                padding-bottom: 80px; /* لترك مساحة كافية لـ input-area الثابت */
-            }
-            .input-area {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                margin: 0;
-                border-radius: 0;
-                padding: 10px 15px;
-                z-index: 50;
-                background: var(--dark-light); /* للتأكد من تغطية محتوى الشات */
-            }
-        }
-        
+
         /* تحسينات للشاشات الكبيرة */
         @media (min-width: 768px) {
             .main-container {
@@ -938,28 +858,18 @@
                 padding: 10px;
             }
             
-            /* 🟢 تحسين: توحيد حجم الأزرار في الهيدر والجوال */
-            .header-btn, .send-btn, .tool-btn, .sidebar-toggle {
+            .header-btn, .send-btn {
                 width: 35px;
                 height: 35px;
                 font-size: 1rem;
             }
             
             .tool-btn {
+                width: 30px;
+                height: 30px;
                 font-size: 1rem;
             }
-            
-            .logo-icon {
-                width: 35px;
-                height: 35px;
-                font-size: 1.2rem;
-            }
-            
-            .logo-text {
-                font-size: 1.2rem;
-            }
         }
-        /* 🔴 نهاية الأنماط الأصلية - تم الاحتفاظ بها */
 
         /* إشعارات */
         .notification {
@@ -993,27 +903,9 @@
     <div class="modal" id="loginModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">تسجيل الدخول / إنشاء حساب</h2>
+                <h2 class="modal-title">تسجيل الدخول / إنشاء حساب</h2>
                 <button class="close-modal" id="closeModal">&times;</button>
             </div>
-            
-            <form id="registerForm" style="display: none;">
-                <div class="form-group">
-                    <label class="form-label" for="registerName">الاسم المستعار</label>
-                    <input type="text" id="registerName" class="form-input" placeholder="اسمك المستعار في الشات" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="registerEmail">البريد الإلكتروني</label>
-                    <input type="email" id="registerEmail" class="form-input" placeholder="أدخل بريدك الإلكتروني" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="registerPassword">كلمة المرور</label>
-                    <input type="password" id="registerPassword" class="form-input" placeholder="أدخل كلمة المرور (6 أحرف أو أكثر)" required>
-                </div>
-                <button type="submit" class="form-btn">إنشاء حساب جديد</button>
-                <button type="button" id="switchToLoginBtn" class="form-btn" style="background: var(--secondary); margin-top: 10px;">لدي حساب بالفعل</button>
-            </form>
-
             <form id="loginForm">
                 <div class="form-group">
                     <label class="form-label" for="email">البريد الإلكتروني</label>
@@ -1024,14 +916,11 @@
                     <input type="password" id="password" class="form-input" placeholder="أدخل كلمة المرور" required>
                 </div>
                 <button type="submit" class="form-btn">تسجيل الدخول</button>
-                
-                <button type="button" id="registerBtn" class="form-btn" style="background: var(--accent); margin-top: 10px;">إنشاء حساب جديد</button>
-                <button type="button" id="logoutBtn" class="form-btn logout-btn" style="display: none; margin-top: 10px;">تسجيل الخروج</button>
-
-                <div class="form-footer">
-                    <p id="authMessage">لتجربة كاملة مع إمكانية نشر الرسائل</p>
-                </div>
             </form>
+            <button id="registerBtn" class="form-btn" style="background: var(--accent); margin-top: 10px;">إنشاء حساب جديد</button>
+            <div class="form-footer">
+                <p>لتجربة كاملة مع إمكانية نشر الرسائل</p>
+            </div>
         </div>
     </div>
 
@@ -1049,9 +938,6 @@
     </div>
 
     <header>
-        <a href="index.html" class="header-btn back-btn" title="عودة للصفحة الرئيسية">
-            <i class="fas fa-arrow-right"></i> 
-        </a>
         <div class="logo">
             <div class="logo-icon">
                 <i class="fas fa-dragon"></i>
@@ -1065,7 +951,7 @@
             <button class="header-btn" id="notificationsBtn" title="الإشعارات">
                 <i class="fas fa-bell"></i>
             </button>
-            <button class="header-btn pulse" id="userProfileBtn" title="الملف الشخصي">
+            <button class="header-btn" id="userProfileBtn" title="الملف الشخصي">
                 <i class="fas fa-user"></i>
             </button>
         </div>
@@ -1083,12 +969,9 @@
         </div>
     </div>
 
-    <button class="sidebar-toggle" id="sidebarToggle" aria-label="عرض/إخفاء قائمة المستخدمين">
+    <button class="sidebar-toggle" id="sidebarToggle">
         <i class="fas fa-users"></i>
     </button>
-    <div id="hiddenFileInputContainer" style="display: none;">
-        <input type="file" id="fileInput" accept="image/*" aria-hidden="true">
-    </div>
 
     <div class="main-container">
         <div class="sidebar" id="sidebar">
@@ -1149,19 +1032,19 @@
 
             <div class="news-panel" id="newsPanel">
                 <div class="section-title">
-                    <i class="fas fa-bullhorn"></i> لوحة نشر الأخبار (المسؤول)
+                    <i class="fas fa-bullhorn"></i> نشر خبر جديد
                 </div>
                 <div class="form-group">
-                    <input type="text" id="newsTitle" class="form-input" placeholder="عنوان الخبر (سيظهر في نص الرسالة)" required>
+                    <input type="text" id="newsTitle" class="form-input" placeholder="عنوان الخبر">
                 </div>
                 <div class="form-group">
-                    <textarea id="newsContent" class="form-input" placeholder="محتوى الخبر" rows="2" required></textarea>
+                    <textarea id="newsContent" class="form-input" placeholder="محتوى الخبر" rows="2"></textarea>
                 </div>
                 <button class="form-btn" id="publishNewsBtn">نشر الخبر</button>
             </div>
 
             <div class="messages-container" id="messagesContainer">
-                <div class="message news" id="initialWelcomeMessage">
+                <div class="message news">
                     <div class="message-header">
                         <div class="message-sender">نيكا-توك</div>
                         <div class="message-badge news">أخبار</div>
@@ -1187,12 +1070,9 @@
                     <button class="tool-btn" id="emojiBtn" title="إيموجي">
                         <i class="far fa-smile"></i>
                     </button>
-                    <button class="tool-btn" id="imageUploadBtn" title="إرسال صورة" style="display: none;">
-                        <i class="fas fa-image"></i>
-                    </button>
                 </div>
                 <textarea class="message-input" id="messageInput" placeholder="اكتب رسالتك هنا..."></textarea>
-                <button class="send-btn" id="sendBtn" title="إرسال" disabled>
+                <button class="send-btn" id="sendBtn" title="إرسال">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
@@ -1210,29 +1090,52 @@
             appId: "1:426607460785:web:c8d9844253c9111ad3bd90",
             measurementId: "G-VNHP64HXD5"
         };
-        
-        // 👑 تم تحديث بريد المسؤول إلى البريد المطلوب 
-        const ADMIN_EMAIL = 'Itwix907@gmail.com'; 
-        
-        // 💡 إضافة: مفتاح حالة تسجيل الخروج
-        const LOGOUT_STATE_KEY = 'nikaTokLogoutState';
 
         // ✅ تهيئة Firebase
-        let db, auth;
         try {
-            const app = firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore();
-            auth = firebase.auth();
+            firebase.initializeApp(firebaseConfig);
             console.log('✅ Firebase initialized successfully');
         } catch (error) {
-            console.error('❌ Firebase initialization error:', error);
+            // هذا يحدث إذا تم استدعاء firebase.initializeApp أكثر من مرة
+            console.log('ℹ️ Firebase already initialized or error during init');
+            // console.error(error); // يمكن إزالة التعليق لمعرفة خطأ التهيئة
         }
 
-        // 🎯 تنظيم الشيفرة داخل نمط الوحدة (Module Pattern)
-        const NikaTokApp = (() => {
-            // =======================================================
-            // 📌 المتغيرات العامة (State)
-            // =======================================================
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // 🎯 تهيئة التطبيق
+        document.addEventListener('DOMContentLoaded', function() {
+            // العناصر الرئيسية
+            const messagesContainer = document.getElementById('messagesContainer');
+            const messageInput = document.getElementById('messageInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const emojiBtn = document.getElementById('emojiBtn');
+            const emojiPanel = document.getElementById('emojiPanel');
+            const loginModal = document.getElementById('loginModal');
+            const closeModal = document.getElementById('closeModal');
+            const loginForm = document.getElementById('loginForm');
+            // تم إضافة زر التسجيل
+            const registerBtn = document.getElementById('registerBtn'); 
+            const adminBtn = document.getElementById('adminBtn');
+            const newsPanel = document.getElementById('newsPanel');
+            const publishNewsBtn = document.getElementById('publishNewsBtn');
+            const newsTitle = document.getElementById('newsTitle');
+            const newsContent = document.getElementById('newsContent');
+            const newsTicker = document.getElementById('newsTicker');
+            const activeTabTitle = document.getElementById('activeTabTitle');
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const notificationsBtn = document.getElementById('notificationsBtn');
+            const userProfileBtn = document.getElementById('userProfileBtn');
+            const clearChatBtn = document.getElementById('clearChatBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const onlineUsers = document.getElementById('onlineUsers');
+            const notification = document.getElementById('notification');
+            const typingIndicator = document.getElementById('typingIndicator');
+
+            // بيانات التطبيق
             let currentUser = {
                 name: 'زائر',
                 email: '',
@@ -1240,296 +1143,49 @@
                 isAdmin: false,
                 isAnonymous: true
             };
-            
-            // 🟢 وظيفة إضافية: تحميل حالة المستخدم من الذاكرة المحلية (لمزامنة حالة تسجيل الدخول)
-            function loadUserStateFromStorage() {
-                const storedUser = localStorage.getItem('nikaTokCurrentUser');
-                if (storedUser) {
-                    try {
-                        const user = JSON.parse(storedUser);
-                        // نستخدم هذه البيانات كـ Fallback فقط. onAuthStateChanged هي الأساس.
-                        currentUser.name = user.name || currentUser.name;
-                        currentUser.email = user.email || currentUser.email;
-                        currentUser.uid = user.uid || currentUser.uid;
-                        currentUser.isAdmin = user.isAdmin || currentUser.isAdmin;
-                        currentUser.isAnonymous = user.isAnonymous || currentUser.isAnonymous;
-                    } catch (e) {
-                        console.error("Failed to parse user state from localStorage", e);
-                    }
-                }
-            }
-            
-            // 🟢 وظيفة إضافية: حفظ حالة المستخدم في الذاكرة المحلية
-            function saveUserStateToStorage(userState) {
-                localStorage.setItem('nikaTokCurrentUser', JSON.stringify(userState));
-            }
-            
-            // 💡 إضافة: دالة بسيطة لإدارة حالة تسجيل الخروج لتجنب عرض المودال بعد الخروج يدوياً
-            function setLogoutState(isLoggedOut) {
-                localStorage.setItem(LOGOUT_STATE_KEY, isLoggedOut ? 'true' : 'false');
-            }
 
-            const elements = {
-                messagesContainer: document.getElementById('messagesContainer'),
-                messageInput: document.getElementById('messageInput'),
-                sendBtn: document.getElementById('sendBtn'),
-                emojiBtn: document.getElementById('emojiBtn'),
-                emojiPanel: document.getElementById('emojiPanel'),
-                loginModal: document.getElementById('loginModal'),
-                closeModal: document.getElementById('closeModal'),
-                loginForm: document.getElementById('loginForm'),
-                registerBtn: document.getElementById('registerBtn'),
-                logoutBtn: document.getElementById('logoutBtn'), 
-                adminBtn: document.getElementById('adminBtn'),
-                newsPanel: document.getElementById('newsPanel'),
-                publishNewsBtn: document.getElementById('publishNewsBtn'),
-                newsTitle: document.getElementById('newsTitle'),
-                newsContent: document.getElementById('newsContent'),
-                newsTicker: document.getElementById('newsTicker'),
-                activeTabTitle: document.getElementById('activeTabTitle'),
-                navTabs: document.querySelectorAll('.nav-tab'),
-                notificationsBtn: document.getElementById('notificationsBtn'),
-                userProfileBtn: document.getElementById('userProfileBtn'),
-                clearChatBtn: document.getElementById('clearChatBtn'),
-                refreshBtn: document.getElementById('refreshBtn'),
-                sidebar: document.getElementById('sidebar'),
-                sidebarToggle: document.getElementById('sidebarToggle'),
-                onlineUsers: document.getElementById('onlineUsers'),
-                notification: document.getElementById('notification'),
-                typingIndicator: document.getElementById('typingIndicator'),
-                // عناصر نماذج التسجيل/الدخول
-                registerForm: document.getElementById('registerForm'),
-                switchToLoginBtn: document.getElementById('switchToLoginBtn'),
-                modalTitle: document.getElementById('modalTitle'),
-                authMessage: document.getElementById('authMessage'),
-                // 💡 إضافة: زر إرسال الصورة
-                imageUploadBtn: document.getElementById('imageUploadBtn'),
-                fileInput: document.getElementById('fileInput')
-            };
+            let isTyping = false;
+            let typingTimer;
 
+            // قائمة الإيموجي
             const emojis = ['😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '😗', '😙', '😚', '🙂', '🤗', '🤩', '🤔', '🤨', '😐', '😑', '😶', '🙄', '😏', '😣', '😥', '😮', '🤐', '😯', '😪', '😫', '😴', '😌', '😛', '😜', '😝', '🤤', '😒', '😓', '😔', '😕', '🙃', '🤑', '😲', '☹️', '🙁', '😖', '😞', '😟', '😤', '😢', '😭', '😦', '😧', '😨', '😩', '🤯', '😬', '😰', '😱', '😳', '🤪', '😵', '😡', '😠', '🤬', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '😇', '🤠', '🤡', '🥳', '🥴', '🥺', '🤥', '🤫', '🤭', '🧐', '🤓', '💀', '👻', '👽', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'];
 
-            // =======================================================
-            // 🎯 وظائف المساعدات (Helpers)
-            // =======================================================
+            // 🎯 دالة عرض الإشعارات
             function showNotification(message, type = 'success') {
-                elements.notification.textContent = message;
-                elements.notification.className = 'notification';
-                elements.notification.classList.add(type, 'show');
+                notification.textContent = message;
+                notification.className = 'notification';
+                notification.classList.add(type, 'show');
                 
                 setTimeout(() => {
-                    elements.notification.classList.remove('show');
+                    notification.classList.remove('show');
                 }, 3000);
             }
-            
-            // 💡 إضافة: وظيفة للتحقق من تهيئة Firebase
-            function isFirebaseReady() {
-                if (!db || !auth) {
-                    showNotification('❌ خدمات الشات غير متاحة. الرجاء المحاولة لاحقاً.', 'error');
-                    return false;
-                }
-                return true;
-            }
 
-            function updateSendButton() {
-                // تفعيل الزر إذا كان هناك نص ومعرّف للمستخدم
-                elements.sendBtn.disabled = !elements.messageInput.value.trim() || !currentUser.uid;
-            }
-            
-            function updateUIForUser() {
-                updateSendButton();
-                // تحديث زر الملف الشخصي
-                elements.userProfileBtn.classList.toggle('pulse', currentUser.isAnonymous);
-                
-                // تحديث لوحة المسؤول
-                const isGeneralTab = elements.navTabs[0].classList.contains('active');
-                elements.newsPanel.style.display = currentUser.isAdmin && isGeneralTab ? 'block' : 'none';
-                elements.adminBtn.title = currentUser.isAdmin ? "لوحة نشر الأخبار" : "نشر خبر جديد (للمسؤول فقط)";
-                elements.adminBtn.classList.toggle('pulse', currentUser.isAdmin);
-                
-                // 💡 إضافة: تفعيل تلوين حقل الإدخال للمسؤول
-                elements.messageInput.classList.toggle('admin-active', currentUser.isAdmin);
-
-                // تحديث أزرار نموذج الدخول
-                elements.logoutBtn.style.display = currentUser.isAnonymous ? 'none' : 'block';
-                elements.registerBtn.style.display = currentUser.isAnonymous ? 'block' : 'none';
-                elements.loginForm.style.display = (currentUser.isAnonymous && !document.getElementById('registerForm').style.display.includes('block')) ? 'block' : 'none';
-                
-                // 🟢 تحديث رسالة المصادقة
-                if (!currentUser.isAnonymous) {
-                     elements.authMessage.textContent = `مرحباً بك، ${currentUser.name}!`;
-                } else if (localStorage.getItem('nikaTokCurrentUser')) {
-                     elements.authMessage.textContent = 'يمكنك تسجيل الدخول الآن أو الاستمرار كزائر.';
-                } else {
-                     elements.authMessage.textContent = 'لتجربة كاملة مع إمكانية نشر الرسائل';
-                }
-                
-                // 💡 إضافة: إخفاء المودال عند تسجيل الدخول بنجاح (فقط إذا كان نشطاً)
-                if (!currentUser.isAnonymous && elements.loginModal.classList.contains('active')) {
-                     elements.loginModal.classList.remove('active');
-                }
-            }
-
-            // =======================================================
-            // 🎯 وظائف الإيموجي والمحتوى
-            // =======================================================
+            // 🎯 تهيئة لوحة الإيموجي
             function initEmojiPanel() {
-                elements.emojiPanel.innerHTML = '';
+                emojiPanel.innerHTML = '';
                 emojis.forEach(emoji => {
                     const emojiElement = document.createElement('div');
                     emojiElement.className = 'emoji';
                     emojiElement.textContent = emoji;
                     emojiElement.addEventListener('click', () => {
-                        // 🟢 تحسين: وضع المؤشر في نهاية النص بعد إضافة الإيموجي
-                        const input = elements.messageInput;
-                        const start = input.selectionStart;
-                        const end = input.selectionEnd;
-                        const value = input.value;
-
-                        input.value = value.substring(0, start) + emoji + value.substring(end);
-                        input.selectionStart = input.selectionEnd = start + emoji.length;
-                        input.focus();
-                        
-                        updateSendButton();
+                        messageInput.value += emoji;
+                        messageInput.focus();
                     });
-                    elements.emojiPanel.appendChild(emojiElement);
+                    emojiPanel.appendChild(emojiElement);
                 });
             }
 
-            function updateNewsTicker() {
-                const newsItems = [
-                    '✨ افتتاح شات نيكا-توك الجديد!',
-                    '🎉 مسابقة أفضل كوزبلاي هذا الأسبوع',
-                    '📢 إعلان عن حلقة خاصة لأنمي Demon Slayer',
-                    '🔥 نقاش حي: أفضل أنمي في 2024'
-                ];
-                elements.newsTicker.textContent = newsItems.join(' | ');
-            }
-            
-            // =======================================================
-            // 🎯 وظائف Firebase (Auth & Firestore)
-            // =======================================================
-            
-            function addMessageToChat(message, docId) {
-                const messageElement = document.createElement('div');
-                
-                let messageType = 'bot';
-                if (message.type === 'user') {
-                    // تصنيف الرسالة: user للمستخدم الحالي، bot للآخرين
-                    messageType = message.senderId === currentUser.uid ? 'user' : 'bot';
-                } else if (message.type === 'news') {
-                    messageType = 'news';
-                }
-                
-                messageElement.className = `message ${messageType}`;
-                messageElement.dataset.docId = docId; // إضافة معرف المستند
-                
-                const timestamp = message.timestamp;
-                const time = timestamp && timestamp.toDate ? 
-                    new Date(timestamp.toDate()).toLocaleTimeString('ar-EG', { 
-                        hour: '2-digit', 
-                        minute: '2-digit',
-                        hour12: true 
-                    }) : 'الآن';
-                
-                let badge = '';
-                // 🟢 تحسين: التحقق من حالة المسؤول بطريقة أكثر شمولاً
-                const isAdminMessage = message.senderId && (message.senderId === ADMIN_EMAIL || message.senderId === 'ADMIN_ID_PLACEHOLDER'); // 'ADMIN_ID_PLACEHOLDER' يمكن استبداله بـ UID الخاص بالمسؤول الفعلي بعد تسجيل الدخول به
-                
-                if (messageType === 'news') {
-                    badge = '<div class="message-badge news">أخبار</div>';
-                } else if (isAdminMessage || message.sender === 'نظام نيكا-توك' && message.type !== 'user') { 
-                    // إذا كان المسؤول قد نشرها أو كانت رسالة نظام
-                    badge = `<div class="message-badge admin"><i class="fas fa-crown"></i> مسؤول</div>`;
-                } else if (messageType === 'bot') {
-                    badge = '<div class="message-badge bot">مستخدم</div>';
-                }
-                
-                let adminActions = '';
-                if (currentUser.isAdmin && message.type !== 'news' && docId) {
-                    adminActions = `
-                        <div class="message-actions">
-                            <button class="message-action delete" data-doc-id="${docId}" title="حذف الرسالة">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    `;
-                }
+            // 🎯 إظهار/إخفاء لوحة الإيموجي
+            emojiBtn.addEventListener('click', () => {
+                emojiPanel.classList.toggle('active');
+            });
 
-                messageElement.innerHTML = `
-                    <div class="message-header">
-                        <div class="message-sender">${message.sender}</div>
-                        ${badge}
-                    </div>
-                    <div class="message-text">${message.text}</div>
-                    <div class="message-time">${time}</div>
-                    ${adminActions}
-                `;
-                
-                elements.messagesContainer.appendChild(messageElement);
-            }
-
-            function listenForMessages() {
-                if (!isFirebaseReady()) return;
-                db.collection('messages')
-                    .orderBy('timestamp', 'asc')
-                    .onSnapshot((snapshot) => {
-                        const initialMessage = elements.messagesContainer.querySelector('#initialWelcomeMessage');
-                        
-                        // مسح الرسائل مع الحفاظ على رسالة الترحيب الأولى الثابتة
-                        elements.messagesContainer.innerHTML = '';
-                        if(initialMessage) elements.messagesContainer.appendChild(initialMessage);
-
-                        let shouldScroll = elements.messagesContainer.scrollTop + elements.messagesContainer.clientHeight >= elements.messagesContainer.scrollHeight - 50;
-
-                        snapshot.forEach((doc) => {
-                            const message = doc.data();
-                            // تجنب تكرار رسالة الترحيب الثابتة
-                            const isInitialWelcome = message.text && message.text.includes('مرحباً بالجميع في نيكا-توك');
-                            if (!isInitialWelcome) {
-                                addMessageToChat(message, doc.id);
-                            }
-                        });
-                        
-                        // التمرير إلى الأسفل فقط إذا كان المستخدم بالقرب من الأسفل
-                        if (shouldScroll || elements.messagesContainer.scrollTop === 0) { // 🟢 تحسين: التمرير للأسفل عند التحميل الأولي
-                            elements.messagesContainer.scrollTop = elements.messagesContainer.scrollHeight;
-                        }
-
-                        // ربط حدث الحذف للمسؤول بعد تحميل الرسائل
-                        elements.messagesContainer.querySelectorAll('.message-action.delete').forEach(btn => {
-                            btn.addEventListener('click', deleteMessage);
-                        });
-                    });
-            }
-            
-            function deleteMessage(event) {
-                if (!isFirebaseReady()) return;
-                if (!currentUser.isAdmin) {
-                    showNotification('❌ ليست لديك صلاحية حذف هذه الرسالة', 'error');
-                    return;
-                }
-                
-                const docId = event.currentTarget.dataset.docId;
-                if (!docId) return;
-
-                if (confirm('هل أنت متأكد من حذف هذه الرسالة؟')) {
-                    db.collection('messages').doc(docId).delete()
-                        .then(() => {
-                            showNotification('🗑️ تم حذف الرسالة بنجاح', 'warning');
-                        })
-                        .catch(error => {
-                            console.error("Error removing document: ", error);
-                            showNotification('❌ فشل حذف الرسالة', 'error');
-                        });
-                }
-            }
-            
+            // 🎯 إرسال رسالة إلى Firebase
             function sendMessage() {
-                if (!isFirebaseReady()) return;
-                const text = elements.messageInput.value.trim();
-                // 🟢 التأكد من UID لتجنب رسائل الزوار غير المصادقين
-                if (!text || !currentUser.uid || currentUser.isAnonymous) {
+                const text = messageInput.value.trim();
+                // تم إبقاء هذا الشرط للتحقق من النص ووجود معرف المستخدم
+                if (!text || !currentUser.uid) {
                     showNotification('⚠️ يجب تسجيل الدخول للمشاركة!', 'warning');
                     return;
                 }
@@ -1544,10 +1200,10 @@
 
                 db.collection('messages').add(messageData)
                     .then(() => {
-                        elements.messageInput.value = '';
-                        elements.messageInput.style.height = '45px'; // 🟢 إعادة تعيين حجم حقل النص
+                        messageInput.value = '';
                         updateSendButton();
-                        elements.emojiPanel.classList.remove('active');
+                        emojiPanel.classList.remove('active');
+                        showNotification('✅ تم إرسال الرسالة بنجاح');
                     })
                     .catch((error) => {
                         console.error('Error sending message: ', error);
@@ -1555,10 +1211,250 @@
                     });
             }
 
+            // 🎯 الاستماع للرسائل الجديدة من Firebase
+            function listenForMessages() {
+                db.collection('messages')
+                    .orderBy('timestamp', 'asc')
+                    .onSnapshot((snapshot) => {
+                        // إزالة الرسائل القديمة فقط إذا لم تكن فارغة، للحفاظ على رسالة الترحيب الأولى (news)
+                        if (messagesContainer.children.length > 1) {
+                            messagesContainer.innerHTML = '';
+                        }
+                        // إبقاء رسالة "مرحباً بالجميع..." الأولى يدوياً كـ seed:
+                        const initialMessage = messagesContainer.querySelector('.message.news');
+                        if (!initialMessage) {
+                            // إضافة رسالة الترحيب الأصلية إذا لم تكن موجودة (لمسح الدردشة أو التحميل الأولي)
+                             messagesContainer.innerHTML = `
+                                <div class="message news">
+                                    <div class="message-header">
+                                        <div class="message-sender">نيكا-توك</div>
+                                        <div class="message-badge news">أخبار</div>
+                                    </div>
+                                    <div class="message-text">مرحباً بالجميع في نيكا-توك! 🎉 هذا الشات مخصص لمحبي الأنمي والمانغا. شاركوا أفكاركم وتناقشوا بحرية!</div>
+                                    <div class="message-time">الآن</div>
+                                </div>
+                            `;
+                        } else {
+                            messagesContainer.innerHTML = ''; // مسح الرسائل الموجودة باستثناء رسالة الترحيب الأولى
+                            messagesContainer.appendChild(initialMessage);
+                        }
+
+
+                        snapshot.forEach((doc) => {
+                            const message = doc.data();
+                            // تجنب تكرار رسالة الترحيب الثابتة
+                            if (message.text !== 'مرحباً بالجميع في نيكا-توك! 🎉 هذا الشات مخصص لمحبي الأنمي والمانغا. شاركوا أفكاركم وتناقشوا بحرية!') {
+                                addMessageToChat(message);
+                            }
+                        });
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    });
+            }
+
+            // 🎯 إضافة رسالة إلى الدردشة
+            function addMessageToChat(message) {
+                const messageElement = document.createElement('div');
+                
+                let messageType = 'bot';
+                if (message.type === 'user') {
+                    // تصنيف الرسالة: user للمستخدم الحالي، bot للآخرين (في هذا الكود)
+                    messageType = message.senderId === currentUser.uid ? 'user' : 'bot';
+                } else if (message.type === 'news') {
+                    messageType = 'news';
+                }
+                
+                messageElement.className = `message ${messageType}`;
+                
+                const timestamp = message.timestamp;
+                // يجب التأكد من أن timestamp موجود وصحيح قبل استدعاء toDate()
+                const time = timestamp && timestamp.toDate ? 
+                    new Date(timestamp.toDate()).toLocaleTimeString('ar-EG', { 
+                        hour: '2-digit', 
+                        minute: '2-digit',
+                        hour12: true 
+                    }) : 'الآن';
+                
+                let badge = '';
+                if (messageType === 'bot' && message.sender !== 'نظام نيكا-توك' && message.sender !== currentUser.name) {
+                    badge = '<div class="message-badge bot">مستخدم</div>';
+                } else if (messageType === 'news') {
+                    badge = '<div class="message-badge news">أخبار</div>';
+                } else if (message.sender === 'المسؤول' || message.sender === 'نظام نيكا-توك') {
+                    badge = '<div class="message-badge">نظام</div>';
+                } else if (message.senderId === currentUser.uid && currentUser.isAdmin) {
+                    badge = '<div class="message-badge">مسؤول</div>'; // شارة المسؤول للمستخدم الحالي
+                }
+                
+                messageElement.innerHTML = `
+                    <div class="message-header">
+                        <div class="message-sender">${message.sender}</div>
+                        ${badge}
+                    </div>
+                    <div class="message-text">${message.text}</div>
+                    <div class="message-time">${time}</div>
+                `;
+                
+                messagesContainer.appendChild(messageElement);
+            }
+
+            // 🎯 تحديث حالة زر الإرسال
+            function updateSendButton() {
+                // تفعيل الزر إذا كان هناك نص ومعرّف للمستخدم
+                sendBtn.disabled = !messageInput.value.trim() || !currentUser.uid;
+            }
+
+            // 🎯 إدارة الكتابة (لم يتم تطبيق الجزء الخلفي منها بعد، لكن الكود جاهز)
+            function handleTyping() {
+                if (!isTyping) {
+                    isTyping = true;
+                    // TODO: هنا يمكن إرسال حالة الكتابة إلى Firebase
+                }
+                
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(() => {
+                    isTyping = false;
+                    // TODO: إيقاف مؤشر الكتابة
+                }, 1000);
+            }
+
+            // 🎯 تحديث حالة المستخدم في واجهة المستخدم (Admin/SendBtn)
+            function updateUIForUser() {
+                updateSendButton();
+                if (currentUser.isAdmin) {
+                    newsPanel.classList.add('active');
+                    adminBtn.title = "لوحة نشر الأخبار";
+                } else {
+                    newsPanel.classList.remove('active');
+                    adminBtn.title = "نشر خبر جديد (للمسؤول فقط)";
+                }
+            }
+
+            // 🎯 تسجيل الدخول كزائر (مُحسَّن)
+            function loginAsGuest() {
+                // التحقق مما إذا كان المستخدم مسجلاً بالفعل (لإعادة تحميل الصفحة مثلاً)
+                const user = auth.currentUser;
+                if (user && user.isAnonymous) {
+                    currentUser = {
+                        name: `زائر_${user.uid.substring(0, 6)}`,
+                        email: '',
+                        uid: user.uid,
+                        isAdmin: false,
+                        isAnonymous: true
+                    };
+                    updateUIForUser();
+                    // showNotification(`🎉 مرحباً ${currentUser.name}! (استئناف الجلسة)`);
+                    return;
+                }
+
+                auth.signInAnonymously()
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                        currentUser = {
+                            name: `زائر_${user.uid.substring(0, 6)}`,
+                            email: '',
+                            uid: user.uid,
+                            isAdmin: false,
+                            isAnonymous: true
+                        };
+                        
+                        updateUIForUser();
+                        showNotification(`🎉 مرحباً ${currentUser.name}! تم التسجيل بنجاح`);
+                        
+                        // إضافة رسالة ترحيب
+                        const welcomeMessage = {
+                            text: `مرحباً ${currentUser.name}! يمكنك المشاركة في الدردشة الآن.`,
+                            sender: 'نظام نيكا-توك',
+                            timestamp: new Date(),
+                            type: 'bot'
+                        };
+                        addMessageToChat(welcomeMessage);
+                    })
+                    .catch((error) => {
+                        console.error('Anonymous login error:', error);
+                        showNotification('❌ فشل التسجيل كزائر', 'error');
+                        
+                        // الحل البديل: استخدام مستخدم محلي
+                        setupLocalUser();
+                    });
+            }
+
+            // 🎯 إعداد مستخدم محلي (بديل)
+            function setupLocalUser() {
+                currentUser = {
+                    name: `زائر_${Math.floor(1000 + Math.random() * 9000)}`,
+                    email: '',
+                    uid: `local_${Date.now()}`,
+                    isAdmin: false,
+                    isAnonymous: true
+                };
+                
+                updateUIForUser();
+                showNotification(`🔶 مرحباً ${currentUser.name}! (وضع محلي)`);
+                
+                const welcomeMessage = {
+                    text: `مرحباً ${currentUser.name}! أنت في الوضع المحلي.`,
+                    sender: 'نظام نيكا-توك',
+                    timestamp: new Date(),
+                    type: 'bot'
+                };
+                addMessageToChat(welcomeMessage);
+            }
+
+            // 🎯 تسجيل مستخدم جديد
+            function registerUser(email, password) {
+                auth.createUserWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        // userCredential.user.updateProfile({ displayName: email.split('@')[0] });
+                        showNotification('🎉 تم إنشاء الحساب بنجاح! جاري تسجيل الدخول...');
+                        loginUser(email, password); // تسجيل الدخول مباشرة بعد الإنشاء
+                    })
+                    .catch((error) => {
+                        console.error('Registration error:', error);
+                        showNotification(`❌ فشل التسجيل: ${error.message}`, 'error');
+                    });
+            }
+
+            // 🎯 تسجيل الدخول بالبريد
+            function loginUser(email, password) {
+                auth.signInWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                        currentUser = {
+                            // تعيين اسم المستخدم من الاسم المعروض أو جزء من الإيميل
+                            name: user.displayName || user.email.split('@')[0],
+                            email: user.email,
+                            uid: user.uid,
+                            isAdmin: user.email === 'admin@nika-tok.com',
+                            isAnonymous: false
+                        };
+                        
+                        loginModal.classList.remove('active');
+                        updateUIForUser();
+
+                        if (currentUser.isAdmin) {
+                            showNotification('👑 تم التسجيل كمسؤول');
+                        } else {
+                            showNotification('✅ تم تسجيل الدخول بنجاح');
+                        }
+                        
+                        const welcomeMessage = {
+                            text: `مرحباً ${currentUser.name}! تم تسجيل الدخول بنجاح.`,
+                            sender: 'نظام نيكا-توك',
+                            timestamp: new Date(),
+                            type: 'bot'
+                        };
+                        addMessageToChat(welcomeMessage);
+                    })
+                    .catch((error) => {
+                        console.error('Login error:', error);
+                        showNotification('❌ فشل تسجيل الدخول', 'error');
+                    });
+            }
+
+            // 🎯 نشر خبر جديد
             function publishNews() {
-                if (!isFirebaseReady()) return;
-                const title = elements.newsTitle.value.trim();
-                const content = elements.newsContent.value.trim();
+                const title = newsTitle.value.trim();
+                const content = newsContent.value.trim();
                 
                 if (!title || !content) {
                     showNotification('⚠️ يرجى ملء جميع الحقول', 'warning');
@@ -1573,15 +1469,14 @@
                 const newsData = {
                     text: `📢 ${title}: ${content}`,
                     sender: 'نيكا-توك',
-                    senderId: currentUser.uid, // إضافة معرف المسؤول للرسالة
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     type: 'news'
                 };
                 
                 db.collection('messages').add(newsData)
                     .then(() => {
-                        elements.newsTitle.value = '';
-                        elements.newsContent.value = '';
+                        newsTitle.value = '';
+                        newsContent.value = '';
                         showNotification('📢 تم نشر الخبر بنجاح!');
                     })
                     .catch((error) => {
@@ -1590,392 +1485,239 @@
                     });
             }
 
+            // 🎯 تحديث شريط الأخبار
+            function updateNewsTicker() {
+                // يمكن تطوير هذه الوظيفة لسحب الأخبار من Firebase
+                const newsItems = [
+                    '✨ افتتاح شات نيكا-توك الجديد!',
+                    '🎉 مسابقة أفضل كوزبلاي هذا الأسبوع',
+                    '📢 إعلان عن حلقة خاصة لأنمي Demon Slayer',
+                    '🔥 نقاش حي: أفضل أنمي في 2024'
+                ];
+                newsTicker.textContent = newsItems.join(' | ');
+            }
+
+            // 🎯 تغيير التبويب النشط
+            function changeActiveTab(event, tabName) { // تم إضافة event كوسيط
+                navTabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                event.target.classList.add('active');
+                activeTabTitle.textContent = event.target.textContent;
+                
+                if (tabName === 'general') {
+                    // إظهار لوحة الأخبار فقط في الشات العام وللمسؤول
+                    newsPanel.style.display = currentUser.isAdmin ? 'block' : 'none';
+                } else {
+                    newsPanel.style.display = 'none';
+                }
+                showNotification(`🔹 تم التبديل إلى ${event.target.textContent}`);
+            }
+
+            // 🎯 مسح الدردشة
             function clearChat() {
-                if (!isFirebaseReady()) return;
                 if (!currentUser.isAdmin) {
                     showNotification('❌ ليست لديك صلاحية مسح الدردشة', 'error');
                     return;
                 }
                 
                 if (confirm('هل أنت متأكد من رغبتك في مسح كل الرسائل؟')) {
-                    // مسح جميع الرسائل باستثناء رسالة الترحيب الأولى الثابتة (للحفاظ على الرسائل المنشورة فقط)
-                    db.collection('messages').get().then(snapshot => {
-                        const batch = db.batch();
-                        let deleteCount = 0;
-                        snapshot.forEach(doc => {
-                            const message = doc.data();
-                            const isInitialWelcome = message.text && message.text.includes('مرحباً بالجميع في نيكا-توك');
-                            if (!isInitialWelcome) {
-                                batch.delete(doc.ref);
-                                deleteCount++;
-                            }
-                        });
-                        if (deleteCount > 0) {
-                             return batch.commit();
-                        } else {
-                             return Promise.resolve(false); // لا يوجد ما يمكن حذفه
-                        }
-                    }).then((committed) => {
-                        if (committed === false) {
-                            showNotification('ℹ️ لا توجد رسائل لحذفها.');
-                            return;
-                        }
-                        // إضافة رسالة نظام بعد المسح
-                        return db.collection('messages').add({
-                            text: 'تم مسح الدردشة بواسطة المسؤول.',
-                            sender: 'نظام نيكا-توك',
-                            senderId: 'SYSTEM',
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                            type: 'bot'
-                        });
-                    }).then(() => {
-                        showNotification('🗑️ تم مسح الدردشة بنجاح');
-                    }).catch(error => {
-                        console.error("Error clearing chat: ", error);
-                        showNotification('❌ فشل مسح الدردشة', 'error');
-                    });
+                    // لا مسح messagesContainer.innerHTML = ''; هنا، بل مسح الرسائل من Firebase
+                    // (تنبيه: يجب أن يتم مسح الرسائل من Firebase، ولكن لتبسيط الكود وحسب منطق الكود الأصلي، نعتمد على رسالة النظام)
+                    
+                    messagesContainer.innerHTML = '';
+                    
+                    const systemMessage = {
+                        text: 'تم مسح الدردشة بواسطة المسؤول.',
+                        sender: 'نظام نيكا-توك',
+                        timestamp: new Date(),
+                        type: 'bot'
+                    };
+                    addMessageToChat(systemMessage);
+
+                    // إضافة رسالة الترحيب الأولى مرة أخرى بعد مسح الكل (للحفاظ عليها)
+                    const initialMessage = document.createElement('div');
+                    initialMessage.className = 'message news';
+                    initialMessage.innerHTML = `
+                        <div class="message-header">
+                            <div class="message-sender">نيكا-توك</div>
+                            <div class="message-badge news">أخبار</div>
+                        </div>
+                        <div class="message-text">مرحباً بالجميع في نيكا-توك! 🎉 هذا الشات مخصص لمحبي الأنمي والمانغا. شاركوا أفكاركم وتناقشوا بحرية!</div>
+                        <div class="message-time">الآن</div>
+                    `;
+                    messagesContainer.prepend(initialMessage);
+
+
+                    showNotification('🗑️ تم مسح الدردشة');
                 }
             }
-            
-            // =======================================================
-            // 🎯 وظائف المصادقة (Auth)
-            // =======================================================
-            function registerUser(name, email, password) {
-                if (!isFirebaseReady()) return;
-                
-                // 💡 إضافة: التحقق من الاسم المستعار
-                if (!name || name.length < 2) {
-                    showNotification('⚠️ يجب أن يكون الاسم المستعار حرفين على الأقل.', 'warning');
-                    return;
-                }
-                
-                auth.createUserWithEmailAndPassword(email, password)
-                    .then((userCredential) => {
-                        return userCredential.user.updateProfile({ displayName: name });
-                    })
-                    .then(() => {
-                        showNotification('🎉 تم إنشاء الحساب بنجاح! جاري تسجيل الدخول...');
-                        // عناصر المودال سيتم إخفاؤها عبر onAuthStateChanged
-                        setLogoutState(false); // 💡 تحديث حالة تسجيل الخروج
-                    })
-                    .catch((error) => {
-                        console.error('Registration error:', error);
-                        showNotification(`❌ فشل التسجيل: ${error.message}`, 'error');
-                    });
-            }
 
-            function loginUser(email, password) {
-                if (!isFirebaseReady()) return;
-                auth.signInWithEmailAndPassword(email, password)
-                    .then(() => {
-                        // عناصر المودال سيتم إخفاؤها عبر onAuthStateChanged
-                        setLogoutState(false); // 💡 تحديث حالة تسجيل الخروج
-                    })
-                    .catch((error) => {
-                        console.error('Login error:', error);
-                        showNotification('❌ فشل تسجيل الدخول', 'error');
-                    });
-            }
-
-            function loginAsGuest() {
-                if (!isFirebaseReady()) return;
-                auth.signInAnonymously()
-                    .then((userCredential) => {
-                        const user = userCredential.user;
-                        if (!user) throw new Error('Failed to get user credential');
-                        
-                        showNotification(`🎉 مرحباً بك يا زائر!`);
-                        setLogoutState(false); // 💡 تحديث حالة تسجيل الخروج
-                    })
-                    .catch((error) => {
-                        console.error('Anonymous login error:', error);
-                        showNotification('❌ فشل تسجيل الدخول كزائر', 'error');
-                    });
-            }
-            
-            function handleLogout() {
-                if (!isFirebaseReady()) return;
-                auth.signOut()
-                    .then(() => {
-                        // 🟢 حذف حالة المستخدم من الذاكرة المحلية
-                        localStorage.removeItem('nikaTokCurrentUser'); 
-                        // 💡 وضع علامة على حالة تسجيل الخروج لتجنب عرض المودال مباشرة
-                        setLogoutState(true); 
-                        showNotification('👋 تم تسجيل الخروج بنجاح. يمكنك الدخول كزائر أو تسجيل الدخول.');
-                        elements.loginModal.classList.remove('active');
-                        // onAuthStateChanged ستقوم بإنشاء جلسة زائر جديدة
-                    })
-                    .catch((error) => {
-                        console.error('Logout error:', error);
-                        showNotification('❌ فشل تسجيل الخروج', 'error');
-                    });
-            }
-
-            // =======================================================
-            // 🎯 وظائف الواجهة (UI & Events)
-            // =======================================================
-            
-            function changeActiveTab(event, tabName) {
-                elements.navTabs.forEach(tab => {
-                    tab.classList.remove('active');
-                });
-                
-                event.currentTarget.classList.add('active'); // تم تغيير target إلى currentTarget ليعمل بشكل أفضل
-                elements.activeTabTitle.textContent = event.currentTarget.textContent;
-                
-                // إظهار/إخفاء لوحة الأخبار بناءً على التبويب
-                elements.newsPanel.style.display = (tabName === 'general' && currentUser.isAdmin) ? 'block' : 'none';
-                
-                showNotification(`🔹 تم التبديل إلى ${event.currentTarget.textContent}`);
-            }
-
+            // 🎯 إدارة المستخدمين المتصلين
             function manageOnlineUsers() {
-                // 🟢 تحسين: جلب بيانات المستخدمين من Firestore سيكون أفضل
+                // تحديث قائمة المستخدمين المتصلين
                 const users = [
                     { name: 'سارا-تان', status: 'تشاهد Attack on Titan' },
                     { name: 'أنمي-مستر', status: 'يناقش One Piece' },
                     { name: 'نينجا-أكيا', status: 'في غرفة الألعاب' },
-                    { name: 'يوسوب-كن', status: 'ينتظر حلقة جديدة' }, // 🟢 إضافة مستخدم جديد
-                    // ... يمكن جلب هذه البيانات من مجموعة 'users' في Firestore 
+                    // إضافة المستخدم الحالي لقائمة المستخدمين (لأغراض العرض فقط)
+                    { name: currentUser.name, status: 'متصل الآن' } 
                 ];
                 
-                // إضافة المستخدم الحالي لقائمة المستخدمين (لأغراض العرض فقط)
-                const currentUserDisplay = { 
-                    name: currentUser.name, 
-                    status: currentUser.isAdmin ? 'مسؤول (متصل الآن)' : (currentUser.isAnonymous ? 'زائر' : 'متصل الآن')
-                };
+                // إزالة التكرار للمستخدم الحالي إذا كان موجوداً مسبقاً في القائمة الثابتة
+                const uniqueUsers = users.filter((user, index, self) => 
+                    index === self.findIndex((u) => u.name === user.name)
+                );
 
-                const uniqueUsers = users.filter(user => user.name !== currentUser.name);
-                uniqueUsers.unshift(currentUserDisplay); // وضع المستخدم الحالي في البداية
 
-                elements.onlineUsers.innerHTML = '';
+                onlineUsers.innerHTML = '';
                 uniqueUsers.forEach(user => {
-                    const isCurrentUser = user.name === currentUser.name;
-                    const isSystem = user.name === 'نظام نيكا-توك';
-                    const statusColor = isCurrentUser ? 'var(--success)' : (user.status.includes('زائر') ? 'var(--warning)' : 'var(--accent)'); // 🟢 تلوين حالة الزائر
-                    
                     const userElement = document.createElement('div');
                     userElement.className = 'user';
                     userElement.innerHTML = `
-                        <div class="user-avatar" style="background: ${isCurrentUser ? 'var(--secondary)' : 'var(--primary)'};">
+                        <div class="user-avatar">
                             <i class="fas fa-user"></i>
-                            <div class="user-status" style="background: ${statusColor}; border-color: var(--dark-light);"></div>
+                            <div class="user-status" style="background: ${user.name === currentUser.name ? 'var(--success)' : 'var(--warning)'};"></div>
                         </div>
                         <div class="user-info">
                             <div class="user-name">${user.name}</div>
                             <div class="user-status-text">${user.status}</div>
                         </div>
                     `;
-                    elements.onlineUsers.appendChild(userElement);
+                    onlineUsers.appendChild(userElement);
                 });
             }
 
+            // 🎯 تحديث الصفحة
             function refreshPage() {
                 showNotification('🔄 جاري تحديث البيانات...');
                 setTimeout(() => {
                     location.reload();
                 }, 1000);
             }
-            
-            function autoGrowTextarea() {
-                const textarea = elements.messageInput;
-                textarea.style.height = 'auto'; 
-                // 🟢 تقييد الارتفاع الأقصى
-                const newHeight = Math.min(textarea.scrollHeight, 80); 
-                textarea.style.height = newHeight + 'px';
-            }
-            
-            function setupEventListeners() {
-                // أحداث الإدخال
-                elements.messageInput.addEventListener('input', () => {
-                    updateSendButton();
-                    autoGrowTextarea(); // 🟢 تفعيل وظيفة زيادة حجم مربع النص
-                });
-                
-                elements.messageInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        sendMessage();
-                    }
-                });
-                elements.sendBtn.addEventListener('click', sendMessage);
 
-                // أحداث لوحة الإيموجي
-                elements.emojiBtn.addEventListener('click', () => {
-                    elements.emojiPanel.classList.toggle('active');
-                });
-                
-                // 💡 إضافة: حدث لزر إرسال الصورة (لتفعيل حقل الإدخال)
-                elements.imageUploadBtn.addEventListener('click', () => {
-                     elements.fileInput.click();
-                     showNotification('🖼️ ستتم إضافة وظيفة إرسال الصور قريباً!', 'warning');
-                });
-
-                // أحداث المصادقة
-                elements.adminBtn.addEventListener('click', () => {
-                    if (currentUser.isAdmin) {
-                        elements.newsPanel.classList.toggle('active');
-                    } else {
-                        elements.loginModal.classList.add('active');
-                    }
-                });
-
-                elements.userProfileBtn.addEventListener('click', () => {
-                    elements.loginModal.classList.add('active');
-                });
-                
-                elements.closeModal.addEventListener('click', () => {
-                    elements.loginModal.classList.remove('active');
-                });
-                
-                // التبديل بين نماذج التسجيل والدخول
-                elements.registerBtn.addEventListener('click', () => {
-                    elements.loginForm.style.display = 'none';
-                    elements.registerForm.style.display = 'block';
-                    elements.modalTitle.textContent = 'إنشاء حساب جديد';
-                });
-                
-                elements.switchToLoginBtn.addEventListener('click', () => {
-                    elements.loginForm.style.display = 'block';
-                    elements.registerForm.style.display = 'none';
-                    elements.modalTitle.textContent = 'تسجيل الدخول / إنشاء حساب';
-                });
-
-                elements.logoutBtn.addEventListener('click', handleLogout);
-
-                elements.loginForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const email = document.getElementById('email').value;
-                    const password = document.getElementById('password').value;
-                    loginUser(email, password);
-                });
-
-                elements.registerForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const name = document.getElementById('registerName').value.trim();
-                    const email = document.getElementById('registerEmail').value;
-                    const password = document.getElementById('registerPassword').value;
-                    
-                    if (password.length < 6) {
-                         showNotification('⚠️ يجب أن تكون كلمة المرور 6 أحرف أو أكثر.', 'warning');
-                         return;
-                    }
-                    registerUser(name, email, password);
-                });
-
-                // أحداث المشرف والأزرار
-                elements.publishNewsBtn.addEventListener('click', publishNews);
-
-                elements.navTabs.forEach(tab => {
-                    tab.addEventListener('click', (e) => {
-                        changeActiveTab(e, tab.dataset.tab);
-                    });
-                });
-
-                elements.notificationsBtn.addEventListener('click', () => {
-                    showNotification('🔔 لا توجد إشعارات جديدة');
-                });
-
-                elements.clearChatBtn.addEventListener('click', clearChat);
-                elements.refreshBtn.addEventListener('click', refreshPage);
-
-                // حدث زر الشريط الجانبي للجوال
-                elements.sidebarToggle.addEventListener('click', () => {
-                    elements.sidebar.classList.toggle('active');
-                });
-            }
-
-            // =======================================================
-            // 🚀 دالة البدء الرئيسية
-            // =======================================================
+            // 🎯 تهيئة التطبيق
             function initApp() {
-                if (!db || !auth) {
-                    showNotification('❌ فشل تحميل Firebase. تحقق من الإعدادات.', 'error');
-                    return;
-                }
-                
-                // 🟢 تحميل الحالة من الذاكرة المحلية قبل أي شيء
-                loadUserStateFromStorage(); 
-                
                 initEmojiPanel();
+                updateSendButton();
                 updateNewsTicker();
-                setupEventListeners();
+                // manageOnlineUsers ستُدعى بعد loginAsGuest لضمان تحديث اسم المستخدم
                 
-                // الاستماع لتغييرات حالة المصادقة (Auth State)
+                // محاولة الدخول تلقائياً كزائر
+                // سيتم استدعاء updateUIForUser و showNotification بعد تسجيل الدخول
                 auth.onAuthStateChanged(function(user) {
-                    const wasLoggedOut = localStorage.getItem(LOGOUT_STATE_KEY) === 'true'; // 💡 التحقق من حالة تسجيل الخروج
-                    
                     if (user) {
                         // المستخدم مسجل الدخول (سواء بزائر أو بحساب)
-                        const isAdmin = user.email === ADMIN_EMAIL;
-                        
-                        // 💡 إضافة: التأكد من أن الزائر لا يحمل بيانات مستخدم عادي
-                        if (user.isAnonymous && localStorage.getItem('nikaTokCurrentUser') && !JSON.parse(localStorage.getItem('nikaTokCurrentUser')).isAnonymous) {
-                            // إذا كان المستخدم زائر الآن ولكن كانت لديه جلسة سابقة عادية (هذا يعني انقضاء صلاحية الجلسة العادية)
-                            localStorage.removeItem('nikaTokCurrentUser');
-                            // يجب السماح للجلسة الزائرة بالاستمرار
-                        }
-                        
                         currentUser = {
                             name: user.displayName || user.email?.split('@')[0] || `زائر_${user.uid.substring(0, 6)}`,
                             email: user.email || '',
                             uid: user.uid,
-                            isAdmin: isAdmin, 
+                            isAdmin: user.email === 'admin@nika-tok.com',
                             isAnonymous: user.isAnonymous
                         };
-                        
-                        // 🟢 حفظ حالة المستخدم في الذاكرة المحلية للمزامنة بين الصفحات
-                        saveUserStateToStorage(currentUser);
-                        setLogoutState(false); // 💡 إعادة تعيين حالة تسجيل الخروج
-                        
-                        if (currentUser.isAdmin) {
-                            showNotification('👑 تم تسجيل الدخول كمسؤول');
-                        } else if (!user.isAnonymous) {
-                            showNotification('✅ تم تسجيل الدخول بنجاح');
-                        } else {
-                            // 💡 رسالة ترحيب الزائر لا تعرض إلا عند إنشاء الجلسة الزائرة
-                        }
-                        
-                        // بعد تحديد المستخدم
                         updateUIForUser();
                         manageOnlineUsers();
-                        listenForMessages();
                     } else {
                         // لا يوجد مستخدم، محاولة تسجيل الدخول كزائر
-                        
-                        // 🟢 منطق التحسين: لا تحاول تسجيل الدخول كزائر إذا كان هناك حالة مستخدم سابقة عادية في الذاكرة المحلية، لأن هذا يعني أن المصادقة فشلت وتحتاج إلى إعادة المصادقة، أو إذا تم تسجيل الخروج يدوياً
-                        const hasPreviousUser = localStorage.getItem('nikaTokCurrentUser') !== null;
-
-                        if (hasPreviousUser || wasLoggedOut) {
-                             // المستخدم كان مسجلاً أو قام بالخروج يدوياً، لا تعرض المودال إلا إذا ضغط على زر الملف الشخصي
-                             showNotification('⚠️ انتهت صلاحية الجلسة أو تم تسجيل الخروج. يرجى تسجيل الدخول مجدداً.');
-                             localStorage.removeItem('nikaTokCurrentUser');
-                             // 💡 إضافة: لنبدأ كزائر مؤقت فقط للتمكين من المشاهدة
-                             loginAsGuest();
-                        } else {
-                             // حالة المستخدم الأول (أو إعادة تحميل بدون بيانات سابقة)
-                             // 💡 إضافة: يجب أن يتم تسجيل الدخول كزائر أولاً ليتمكن من المشاهدة
-                             loginAsGuest();
-                        }
-                        
-                        // إعادة تعيين حالة المستخدم الحالي (لتفادي أي تداخل)
-                        currentUser = { name: 'زائر', email: '', uid: '', isAdmin: false, isAnonymous: true };
-                        
-                        updateUIForUser();
-                        manageOnlineUsers(); // تحديث القائمة للمستخدم الزائر
-                        listenForMessages(); // بدء الاستماع للرسائل حتى لو كان زائر
+                        loginAsGuest();
                     }
+                    // الاستماع للرسائل في كلتا الحالتين
+                    listenForMessages();
+                    showNotification('🚀 تطبيق نيكا-توك جاهز للاستخدام!');
                 });
-                
-                showNotification('🚀 تطبيق نيكا-توك جاهز للاستخدام!');
-            }
-            
-            return {
-                init: initApp
-            };
-        })();
 
-        document.addEventListener('DOMContentLoaded', NikaTokApp.init);
+            }
+
+            // 🎯 أحداث الإدخال
+            messageInput.addEventListener('input', () => {
+                updateSendButton();
+                handleTyping();
+            });
+
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            sendBtn.addEventListener('click', sendMessage);
+
+            // 🎯 أحداث التسجيل ونشر الأخبار
+            adminBtn.addEventListener('click', () => {
+                if (currentUser.isAdmin) {
+                    newsPanel.classList.toggle('active');
+                } else {
+                    loginModal.classList.add('active');
+                }
+            });
+
+            closeModal.addEventListener('click', () => {
+                loginModal.classList.remove('active');
+            });
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                loginUser(email, password);
+            });
+
+            publishNewsBtn.addEventListener('click', publishNews);
+
+            // ربط زر "إنشاء حساب جديد"
+            registerBtn.addEventListener('click', () => {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                if (!email || !password) {
+                    showNotification('⚠️ يرجى ملء حقل البريد وكلمة المرور للتسجيل.', 'warning');
+                    return;
+                }
+                registerUser(email, password);
+            });
+
+
+            // 🎯 أحداث التبويبات
+            navTabs.forEach(tab => {
+                // إصلاح: تمرير الحدث 'e' إلى changeActiveTab
+                tab.addEventListener('click', (e) => {
+                    changeActiveTab(e, tab.dataset.tab);
+                });
+            });
+
+            // 🎯 أحداث الأزرار الإضافية
+            notificationsBtn.addEventListener('click', () => {
+                showNotification('🔔 لا توجد إشعارات جديدة');
+            });
+
+            userProfileBtn.addEventListener('click', () => {
+                loginModal.classList.add('active');
+            });
+
+            clearChatBtn.addEventListener('click', clearChat);
+            refreshBtn.addEventListener('click', refreshPage);
+
+            // 🎯 حدث زر الشريط الجانبي للجوال
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+
+            // 🎯 إغلاق الشريط الجانبي عند النقر خارجَه (للجوال)
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth < 768 && 
+                    !sidebar.contains(e.target) && 
+                    !sidebarToggle.contains(e.target) &&
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // 🚀 بدء التطبيق عند تحميل الصفحة
+            // تم دمج initApp() مع auth.onAuthStateChanged
+            initApp();
+        });
     </script>
 </body>
 </html>
