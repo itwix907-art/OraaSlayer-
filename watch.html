@@ -552,7 +552,6 @@
 
   <div class="blur-bg" id="blurBg"></div>
   
-  <!-- عناصر عائمة للخلفية -->
   <div class="floating-elements">
     <div class="floating-element" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
     <div class="floating-element" style="top: 60%; left: 80%; animation-delay: 2s;"></div>
@@ -585,8 +584,7 @@
 
   <div class="video-wrapper">
     <div class="quality-badge" id="qualityBadge">HD</div>
-    <!-- سيتم إضافة المشغل هنا ديناميكياً -->
-  </div>
+    </div>
 
   <div class="episode-info">
     <h3 id="episodeTitle">معلومات الحلقة</h3>
@@ -623,8 +621,7 @@
             <i class="fas fa-chevron-down"></i>
         </button>
         <div class="dropdown-content" id="downloadOptions">
-            <!-- سيتم ملؤها بالجافاسكريبت -->
-        </div>
+            </div>
     </div>
     
     <div class="dropdown">
@@ -634,8 +631,7 @@
             <i class="fas fa-chevron-down"></i>
         </button>
         <div class="dropdown-content" id="qualityOptions">
-            <!-- سيتم ملؤها بالجافاسكريبت -->
-        </div>
+            </div>
     </div>
     
     <button id="favoriteBtn" class="btn alt">
@@ -668,7 +664,7 @@
     let currentPlayer;
     let watchStartTime;
     
-    // 🎬 مصادر الفيديو الآمنة
+    // 🎬 مصادر الفيديو الآمنة (كمحاكاة لمصادر التحميل المباشر)
     const VIDEO_SOURCES = {
         "attack_on_titan": {
             title: "هجوم العمالقة",
@@ -694,7 +690,8 @@
                             size: "40MB"
                         }
                     ],
-                    embed: "https://www.youtube.com/embed/XM7kBrp2Jj0"
+                    // يمكن استخدام هذا إذا أردنا استخدام Embed داخلي بدلاً من السيرفر الخارجي
+                    embed: "https://www.youtube.com/embed/XM7kBrp2Jj0" 
                 },
                 2: {
                     sources: [
@@ -751,7 +748,16 @@
             SERVER_DATA = JSON.parse(localStorage.getItem("selectedServer")) || {};
             
             if (!ANIME_DATA.title || !EPISODE_DATA.episodeNumber) {
-                throw new Error("بيانات غير مكتملة");
+                // قد يتم الوصول للصفحة بدون تحديد حلقة
+                throw new Error("بيانات الأنمي أو الحلقة غير مكتملة");
+            }
+            
+            // تحقق من وجود بيانات السيرفر
+            if (!SERVER_DATA.url) {
+                showToast("⚠️ لم يتم اختيار سيرفر مشاهدة. الرجوع لتحديد السيرفر.", "warning");
+                // يُفضل إعادة التوجيه إلى صفحة servers.html هنا
+                // setTimeout(goBackToServers, 2000); 
+                // نتركها تكمل لغرض العرض، ولكن في التطبيق الفعلي يجب العودة.
             }
             
             return true;
@@ -806,37 +812,38 @@
         }
 
         currentEpisodeNumber = EPISODE_DATA.episodeNumber || 1;
-        totalEpisodes = ANIME_DATA.totalEpisodes || ANIME_DATA.episodes || 12;
+        // افتراض عدد الحلقات من بيانات الأنمي المحملة في صفحة السيرفرات
+        totalEpisodes = ANIME_DATA.totalEpisodes || 12; 
         watchTimeKey = `watch_time_${ANIME_DATA.title.replace(/\s+/g, '_')}_${currentEpisodeNumber}`;
         watchStartTime = Date.now();
         
         // تحديث واجهة المستخدم
         updateUI();
         
-        // إعداد المشغل
+        // إعداد المشغل (المشكلة هنا)
         setupPlayer();
         
         // إعداد التنقل
         setupNavigation();
         
-        // تحميل الإحصائيات
+        // تحميل الإحصائيات (محاكاة)
         loadStatistics();
         
-        // إعداد المفضلة
+        // إعداد المفضلة (محاكاة)
         setupFavorite();
         
-        // إعداد خيارات الجودة والتحميل
+        // إعداد خيارات الجودة والتحميل (يعتمد على مصادر المحاكاة)
         setupQualityOptions();
         setupDownloadOptions();
         
-        // بدء تتبع المشاهدة
+        // بدء تتبع المشاهدة (محاكاة)
         startWatchTracking();
     }
 
     function updateUI() {
         document.getElementById("pageTitle").textContent = `🎬 ${ANIME_DATA.title} - الحلقة ${currentEpisodeNumber}`;
         document.getElementById("mainTitle").textContent = `${ANIME_DATA.title} - الحلقة ${currentEpisodeNumber}`;
-        document.getElementById("serverInfo").innerHTML = `<i class="fas fa-server"></i><span>السيرفر: ${SERVER_DATA.name} | جودة: ${SERVER_DATA.quality || 'HD'}</span>`;
+        document.getElementById("serverInfo").innerHTML = `<i class="fas fa-server"></i><span>السيرفر: ${SERVER_DATA.name || 'غير معروف'} | جودة: ${SERVER_DATA.quality || 'HD'}</span>`;
         document.getElementById("episodeTitle").textContent = `${ANIME_DATA.title} - الحلقة ${currentEpisodeNumber}`;
         
         if (ANIME_DATA.img) {
@@ -849,28 +856,38 @@
     }
 
     // ------------------------------------------------------------------
-    // 3. 🎥 إعداد المشغل المحسن مع فيديو حقيقي
+    // 3. 🎥 إعداد المشغل (التعديل الأساسي هنا)
     // ------------------------------------------------------------------
     function setupPlayer() {
         showLoading(true);
         
-        // الحصول على مصادر الفيديو للأنمي والحلقة الحالية
-        const animeKey = ANIME_DATA.title.toLowerCase().replace(/[^a-z0-9]/g, '_');
-        const episodeSources = VIDEO_SOURCES[animeKey]?.episodes?.[currentEpisodeNumber];
+        const serverUrl = SERVER_DATA.url; // رابط السيرفر الفعلي
+        let playerElement;
+
+        // إزالة أي مشغل موجود
+        const existingPlayer = document.getElementById("player");
+        if(existingPlayer) existingPlayer.remove(); 
         
-        setTimeout(() => {
-            let playerElement;
+        // 1. **التحقق من رابط السيرفر الخارجي (الأولوية)**
+        if (serverUrl) {
+            playerElement = createIframePlayer(serverUrl);
+            setupIframeFeatures();
+            showToast(`🚀 جاري تشغيل الحلقة على سيرفر ${SERVER_DATA.name}...`, "success");
             
-            if (episodeSources && episodeSources.embed) {
-                // استخدام embed إذا كان متوفراً
-                playerElement = createIframePlayer(episodeSources.embed);
-                setupIframeFeatures();
-            } else if (episodeSources && episodeSources.sources && episodeSources.sources.length > 0) {
-                // استخدام مشغل فيديو HTML5 مع مصادر متعددة
+            // إضافة الإطار بمجرد إنشائه
+            document.querySelector('.video-wrapper').appendChild(playerElement);
+
+        } else {
+            // 2. **الاحتياطي: استخدام مصادر فيديو HTML5 (لأغراض المحاكاة أو التحميل المباشر)**
+            
+            const animeKey = ANIME_DATA.title.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const episodeSources = VIDEO_SOURCES[animeKey]?.episodes?.[currentEpisodeNumber];
+            
+            if (episodeSources && episodeSources.sources && episodeSources.sources.length > 0) {
                 playerElement = createVideoPlayer(episodeSources.sources);
                 setupVideoFeatures(playerElement);
             } else {
-                // استخدام مصدر افتراضي آمن
+                // مشغل افتراضي آمن لعدم وجود بيانات
                 playerElement = createVideoPlayer([{
                     quality: "720p",
                     url: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
@@ -879,12 +896,11 @@
                 }]);
                 setupVideoFeatures(playerElement);
             }
-            
-            document.querySelector('.video-wrapper').appendChild(playerElement);
-            currentPlayer = playerElement;
-            showLoading(false);
-            
-        }, 1000);
+             document.querySelector('.video-wrapper').appendChild(playerElement);
+        }
+        
+        currentPlayer = playerElement;
+        showLoading(false);
     }
 
     function createIframePlayer(url) {
@@ -892,7 +908,8 @@
         iframe.setAttribute("id", "player");
         iframe.setAttribute("allowfullscreen", "true");
         iframe.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture");
-        iframe.setAttribute("src", url);
+        // هنا يتم وضع رابط السيرفر الخارجي
+        iframe.setAttribute("src", url); 
         iframe.setAttribute("loading", "eager");
         iframe.setAttribute("referrerpolicy", "no-referrer");
         return iframe;
@@ -924,12 +941,16 @@
     }
 
     function setupIframeFeatures() {
+        // إخفاء خيارات التحميل والجودة لأنها غير متوفرة عادةً في مشغلات Embed الخارجية
         document.getElementById("downloadBtn").style.display = 'none';
         document.getElementById("qualityBtn").style.display = 'none';
         document.getElementById("resumeMessage").style.display = 'none';
+        // تحديث إحصائية المدة إلى "غير معروف"
+        document.getElementById("episodeDuration").textContent = "غير معروف";
     }
 
     function setupVideoFeatures(videoElement) {
+        // ... (باقي وظائف مشغل HTML5 مثل حفظ التقدم والانتهاء)
         // استئناف المشاهدة
         const savedTime = localStorage.getItem(watchTimeKey);
         if (savedTime && parseFloat(savedTime) > 5) {
@@ -992,10 +1013,10 @@
                     navigateEpisode(currentEpisodeNumber + 1);
                 break;
             case ' ':
-                if (currentPlayer) {
-                    if (currentPlayer.pause && currentPlayer.paused) 
+                if (currentPlayer && currentPlayer.pause) {
+                    if (currentPlayer.paused) 
                         currentPlayer.play();
-                    else if (currentPlayer.pause) 
+                    else 
                         currentPlayer.pause();
                 }
                 e.preventDefault();
@@ -1012,8 +1033,8 @@
             return;
         }
 
-        // حفظ التقدم الحالي
-        if (currentPlayer && currentPlayer.currentTime) {
+        // حفظ التقدم الحالي قبل المغادرة
+        if (currentPlayer && currentPlayer.currentTime && currentPlayer.nodeName === 'VIDEO') {
             localStorage.setItem(watchTimeKey, currentPlayer.currentTime);
         }
 
@@ -1025,17 +1046,18 @@
 
         showToast(`🔄 جارٍ تحميل الحلقة ${newEpisodeNumber}...`, "info");
         
-        // إعادة التوجيه
+        // إعادة التوجيه إلى صفحة اختيار السيرفر للحلقة الجديدة
         setTimeout(() => {
             window.location.href = "servers.html";
         }, 800);
     }
 
     // ------------------------------------------------------------------
-    // 5. 🎛️ إعداد خيارات الجودة والتحميل
+    // 5. 🎛️ إعداد خيارات الجودة والتحميل (يعتمد على مصادر الفيديو المحاكية)
     // ------------------------------------------------------------------
     function setupQualityOptions() {
         const qualityOptions = document.getElementById("qualityOptions");
+        // ... (الكود يبقى كما هو لأنه يركز على مصادر التحميل/الجودة المحلية)
         const animeKey = ANIME_DATA.title.toLowerCase().replace(/[^a-z0-9]/g, '_');
         const episodeSources = VIDEO_SOURCES[animeKey]?.episodes?.[currentEpisodeNumber];
         
@@ -1062,10 +1084,15 @@
                 qualityOptions.appendChild(element);
             });
         }
+        
+        // إخفاء زر الجودة إذا كنا نستخدم Iframe
+        if(SERVER_DATA.url) document.getElementById("qualityBtn").style.display = 'none';
+
     }
 
     function setupDownloadOptions() {
         const downloadOptions = document.getElementById("downloadOptions");
+        // ... (الكود يبقى كما هو لأنه يركز على مصادر التحميل المحلية)
         const animeKey = ANIME_DATA.title.toLowerCase().replace(/[^a-z0-9]/g, '_');
         const episodeSources = VIDEO_SOURCES[animeKey]?.episodes?.[currentEpisodeNumber];
         
@@ -1092,6 +1119,9 @@
                 downloadOptions.appendChild(element);
             });
         }
+        
+        // إخفاء زر التحميل إذا كنا نستخدم Iframe
+        if(SERVER_DATA.url) document.getElementById("downloadBtn").style.display = 'none';
     }
 
     function changeQuality(source) {
@@ -1099,9 +1129,15 @@
             const sources = currentPlayer.getElementsByTagName('source');
             for (let src of sources) {
                 if (src.getAttribute('data-quality') === source.quality) {
+                    // حفظ الوقت الحالي قبل التغيير
+                    const currentTime = currentPlayer.currentTime;
                     currentPlayer.src = src.src;
                     currentPlayer.load();
-                    currentPlayer.play();
+                    // استعادة الوقت بعد التحميل
+                    currentPlayer.addEventListener('loadeddata', () => {
+                        currentPlayer.currentTime = currentTime;
+                        currentPlayer.play();
+                    }, { once: true });
                     break;
                 }
             }
@@ -1132,7 +1168,7 @@
     }
 
     // ------------------------------------------------------------------
-    // 6. 📊 الإحصائيات والميزات الإضافية
+    // 6. 📊 الإحصائيات والميزات الإضافية (باقي الوظائف تبقى كما هي)
     // ------------------------------------------------------------------
     function loadStatistics() {
         // محاكاة بيانات المشاهدات
@@ -1156,9 +1192,12 @@
 
     function updateProgressDisplay() {
         const savedTime = localStorage.getItem(watchTimeKey);
-        if (savedTime && currentPlayer && currentPlayer.duration) {
+        // تحديث فقط إذا كان المشغل هو HTML5 <video>
+        if (savedTime && currentPlayer && currentPlayer.duration && currentPlayer.nodeName === 'VIDEO') {
             const progress = (parseFloat(savedTime) / currentPlayer.duration) * 100;
             document.getElementById("progressStat").textContent = `${Math.round(progress)}% مكتمل`;
+        } else if (SERVER_DATA.url) {
+            document.getElementById("progressStat").textContent = `يعتمد على السيرفر الخارجي`;
         }
     }
 
@@ -1229,7 +1268,7 @@
     // 7. 📈 تتبع المشاهدة والإحصائيات
     // ------------------------------------------------------------------
     function startWatchTracking() {
-        // تسجيل بداية المشاهدة
+        // ... (باقي وظائف تتبع المشاهدة)
         const watchHistory = JSON.parse(localStorage.getItem(WATCH_HISTORY_KEY)) || {};
         const animeKey = ANIME_DATA.title.replace(/\s+/g, '_');
         

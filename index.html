@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="منصة Oraa Slayer: بوابة الأنمي العربية الشاملة لمشاهدة أحدث الأنميات بجودة عالية ومجتمع الأوتاكو المتكامل.">
-    <title>🌀 Oraa Slayer - أفضل منصة لمشاهدة الأنمي ومجتمع الأوتاكو 🔥</title> 
+    <title>🌀 Oraa Slayer - أفضل منصة لمشاهدة الأنمي ومجتمع الأوتاكو 🔥</title>
     <link rel="preload" href="https://fonts.gstatic.com/s/cairo/v24/SLXGc1lJgjpS8YdcWHNFyD9wDmfz_HlV.woff2" as="font" type="font/woff2" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Changa:wght@300;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -40,7 +40,6 @@
             --footer-height: 5rem;
             --card-min-width: 10rem;
             --card-max-width: 14rem;
-
             /* 🆕 متغيرات التحسين */
             --transition-speed: 0.3s;
             --hover-scale: 1.05;
@@ -240,6 +239,7 @@
             position: relative;
             box-shadow: 0 0.25rem 1.25rem rgba(255, 123, 169, 0.4);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            /* 🟢 الإصلاح رقم 2: لضمان عمل الحركة بشكل صحيح في RTL، نحتاج إلى إخفاء overflow-x فقط */
         }
         
         .ticker-content {
@@ -247,10 +247,12 @@
             white-space: nowrap;
             /* 🟢 تحسين: استخدام transform لـ ticker بدلاً من تغيير الـ left أو right */
             animation: ticker 35s linear infinite; 
-            padding-right: 100%;
+            /* 🟢 تم إزالة padding-right: 100% لضمان أن التكرار يعمل بسلاسة في RTL */
             font-weight: 700;
             font-size: 0.9rem;
             will-change: transform; /* 🟢 تحسين الأداء */
+            /* 🟢 إضافة مساحة كافية للتكرار السلس */
+            padding-left: 100%; 
         }
         
         .ticker-content span {
@@ -774,6 +776,14 @@
             border-radius: 1.5rem 1.5rem 0 0;
             will-change: transform; /* 🟢 تحسين الأداء */
         }
+        
+        /* 🟢 تحسين التجاوب للبار السفلي */
+        @media (max-width: 37.5rem) {
+            :root {
+                --footer-height: 5.5rem; /* 🟢 زيادة ارتفاع البار السفلي قليلاً لتحسين الرؤية على الموبايل */
+            }
+        }
+
 
         .nav-item {
             flex: 1;
@@ -828,6 +838,12 @@
             height: 1.5rem;
             fill: currentColor; 
             stroke: currentColor;
+            transition: inherit;
+        }
+        
+        /* 🟢 تحسين إضافي لأيقونات Font Awesome (I) لتوحيد الحجم مع الـ SVG */
+        .nav-icon i {
+            font-size: 1.3rem;
             transition: inherit;
         }
 
@@ -1089,6 +1105,12 @@
                 width: 1.3rem;
                 height: 1.3rem;
             }
+            
+            /* 🟢 تحسين إضافي لأيقونات Font Awesome (I) لتوحيد الحجم مع الـ SVG */
+            .nav-icon i {
+                font-size: 1.2rem;
+            }
+
 
             .nav-label {
                 font-size: 0.65rem;
@@ -1109,7 +1131,7 @@
             :root {
                 --card-min-width: 8rem;
                 --card-max-width: 10rem;
-                --footer-height: 5.5rem;
+                --footer-height: 5.5rem; /* 🟢 تم زيادة الارتفاع هنا */
             }
 
             .toast {
@@ -1117,6 +1139,19 @@
                 right: 0.75rem;
                 left: 0.75rem;
                 max-width: unset;
+            }
+            
+            /* 🟢 تصغير حجم زر توست البحث في البار العلوي ليناسب الموبايل بشكل أفضل */
+            .search-bar {
+                 padding: 0.9375rem 0.75rem;
+            }
+
+            .search-bar input {
+                padding: 0.75rem 0.9375rem 0.75rem 2.5rem; /* 🆕 تصحيح الـ padding لـ RTL مع مساحة أيقونة أصغر */
+            }
+
+            .search-bar .search-icon {
+                right: 1.5rem; /* 🆕 تعديل لتناسب الـ padding الجديد */
             }
         }
         
@@ -1137,13 +1172,14 @@
             }
             
             .search-bar input {
-                padding: 0.875rem 0.9375rem 0.875rem 2.8125rem; /* 🆕 تصحيح الـ padding لـ RTL */
+                padding: 0.75rem 0.9375rem 0.75rem 2.5rem; /* 🆕 تصحيح الـ padding لـ RTL */
                 font-size: 0.95rem;
             }
             
             :root {
                 --card-min-width: 6.8rem;
                 --card-max-width: 8rem;
+                --footer-height: 6rem; /* 🟢 زيادة طفيفة على الشاشات الأصغر للحجم المريح */
             }
         }
 
@@ -1155,8 +1191,8 @@
 
         @keyframes ticker {
             0% { transform: translateX(0); }
-            /* 🆕 تصحيح: تغيير اتجاه الحركة لـ RTL */
-            100% { transform: translateX(-100%); }
+            /* 🟢 الإصلاح رقم 2: تصحيح الحركة لـ RTL */
+            100% { transform: translateX(calc(-100% - 1.875rem)); } /* تحريك المحتوى بالكامل بالإضافة لمسافة فصل */
         }
 
         @keyframes menuFadeIn {
@@ -1465,7 +1501,7 @@
         </div>
         
         <div class="user-info" id="userInfo">
-            <img id="headerProfile" src="https://i.ibb.co/YRShYmn/avatar.png" alt="صورة المستخدم الافتراضية">
+            <img id="headerProfile" src="https://i.ibb.co/L5h92d1/user-avatar.png" alt="صورة المستخدم الافتراضية">
             <span class="user-name" id="headerName">زائر</span>
             <i id="headerVerify" class="fa-solid fa-crown verify-gold" title="توثيق ذهبي" style="display:none;"></i>
             <i id="headerArrow" class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-right: 0.3rem;"></i>
@@ -1486,6 +1522,11 @@
 
     <div class="news-ticker">
         <div class="ticker-content">
+            <span>✨ ترقبوا الموسم الجديد من أنمي Demon Slayer: Hashira Training Arc</span>
+            <span>🎉 أعلن عن أنمي Spy × Family الجزء الثاني قريبًا</span>
+            <span>🔥 One Piece يحطم الأرقام القياسية مع الحلقة 1079</span>
+            <span>🌟 تصويت لأفضل أنمي 2024 مفتوح الآن</span>
+            <span>🎬 أنمي جديد Blue Lock: Episode Nagi قادم في 2025</span>
             <span>✨ ترقبوا الموسم الجديد من أنمي Demon Slayer: Hashira Training Arc</span>
             <span>🎉 أعلن عن أنمي Spy × Family الجزء الثاني قريبًا</span>
             <span>🔥 One Piece يحطم الأرقام القياسية مع الحلقة 1079</span>
@@ -1712,7 +1753,7 @@
                     </label>
                 </div>
             </div>
-
+            
             <div class="sidebar-section">
                 <div class="sidebar-section-title">
                     <i class="fa-solid fa-user-gear"></i>
@@ -1766,9 +1807,7 @@
         
         <a href="searching.html" class="nav-item">
             <div class="nav-icon">
-                <svg viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} fill="none" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="أيقونة استكشاف">
-                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <i class="fa-solid fa-search"></i>
             </div>
             <span class="nav-label">استكشاف</span>
         </a>
@@ -1778,7 +1817,7 @@
                 <i class="fa-solid fa-heart"></i> 
             </div>
             <span class="nav-label">المفضلة</span>
-            <span class="nav-badge pulse" id="favoritesCount">0</span>
+            <span class="nav-badge pulse" id="favoritesCount" style="display:none;">0</span> 
         </a>
         
         <a href="chat.html" class="nav-item">
@@ -1811,7 +1850,8 @@
         // 🟢 تحسين: استيراد Firebase الأساسي
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-analytics.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+        // 🟢 تحديث: استيراد getCurrentUser لجلب المستخدم الحالي فوراً في بعض الحالات
+        import { getAuth, onAuthStateChanged, signOut, updateProfile, onIdTokenChanged } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js"; 
         import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
         // إعدادات تطبيق الويب الخاص بـ Firebase
@@ -1830,6 +1870,9 @@
         const analytics = getAnalytics(app);
         const auth = getAuth(app); 
         const db = getFirestore(app); 
+
+        // 🟢 إضافة متغير currentUser ليكون متاحاً عالمياً في هذا النطاق
+        let currentUser = auth.currentUser; 
 
         // تصدير الكائنات للاستخدام في ملفات JS الخارجية (إذا لزم الأمر)
         window.firebaseApp = app;
@@ -1907,13 +1950,14 @@
         const headerProfile = document.getElementById('headerProfile');
         const headerName = document.getElementById('headerName');
         const headerVerify = document.getElementById('headerVerify');
-        const userInfo = document.getElementById('userInfo'); // 🆕 تم الحصول على العنصر للتحسين
+        const userInfo = document.getElementById('userInfo'); 
         const userMenu = document.getElementById('userMenu');
         const userLoggedInMenu = document.getElementById('userLoggedInMenu');
         const loginBtn = document.getElementById('loginBtn');
         const registerBtn = document.getElementById('registerBtn');
         const logoutBtn = document.getElementById('logoutBtn'); 
         const authStatusText = document.getElementById('authStatusText');
+        const defaultAvatar = 'https://i.ibb.co/L5h92d1/user-avatar.png'; // الصورة الافتراضية الموحدة
 
         // 🟢 التصحيح: ربط زر تسجيل الخروج هنا مباشرةً
         if (logoutBtn) {
@@ -1923,58 +1967,72 @@
                 userMenu.classList.remove('show'); // إغلاق القائمة بعد النقر
             });
         }
+        
+        // 🟢 دالة موحدة لتحديث واجهة الهيدر (لتقليل التكرار)
+        async function updateHeaderUI(user) {
+            
+            // 1. التحديث الأولي من Firebase Auth
+            headerName.textContent = user.displayName || user.email.split('@')[0] || 'Oraa User'; 
+            headerProfile.src = user.photoURL || defaultAvatar; 
+            authStatusText.textContent = 'مسجل: ' + (user.emailVerified ? 'موثق' : 'غير موثق');
+            
+            loginBtn.style.display = 'none';
+            registerBtn.style.display = 'none';
+            userLoggedInMenu.style.display = 'block';
+            headerVerify.style.display = 'none'; // إعادة تعيين التوثيق لحين التأكد من Firestore
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                // المستخدم مسجل الدخول
-                headerName.textContent = user.displayName || user.email.split('@')[0] || 'Oraa User'; 
-                headerProfile.src = user.photoURL || 'https://i.ibb.co/L5h92d1/user-avatar.png'; 
-                authStatusText.textContent = 'مسجل: ' + (user.emailVerified ? 'موثق' : 'غير موثق');
+            try {
+                // 2. جلب وتطبيق البيانات المخصصة من Firestore (مصدر الحقيقة النهائي)
+                const userDocRef = doc(db, "users", user.uid);
+                const userDoc = await getDoc(userDocRef); 
                 
-                loginBtn.style.display = 'none';
-                registerBtn.style.display = 'none';
-                userLoggedInMenu.style.display = 'block';
-
-                try {
-                    const userDocRef = doc(db, "users", user.uid);
-                    // 🟢 تحسين: استخدام getDoc لمرة واحدة
-                    const userDoc = await getDoc(userDocRef); 
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
-                        
-                        // 🟢 تحسين: التحقق من التوثيق
-                        headerVerify.style.display = userData.isPremium === true ? 'inline-block' : 'none';
-
-                        // 🟢 تحسين FirePASS: تحديث الـ UI بناءً على Firestore إذا كانت البيانات موجودة وأحدث
-                        headerName.textContent = userData.displayName || headerName.textContent;
-                        headerProfile.src = userData.photoURL || headerProfile.src;
-                    }
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
                     
-                    // 🟢 ميزة FirePASS: جلب عدد المفضلة من Firestore
-                    const favoritesCollectionRef = collection(db, "users", user.uid, "favorites");
-                    const snapshot = await getDocs(favoritesCollectionRef);
-                    updateFavoritesCountUI(snapshot.size);
+                    // 🟢 الإصلاح الحاسم 4: تحديث الصورة والاسم والتوثيق بناءً على Firestore
+                    headerName.textContent = userData.displayName || user.displayName || headerName.textContent;
+                    // 🟢 سحب photoURL المخصص من Firestore (الذي يتم تحديثه من Supabase)
+                    headerProfile.src = userData.photoURL || user.photoURL || defaultAvatar; 
 
-                } catch (error) {
-                    console.error("Error fetching Firestore user data or favorites:", error);
-                    showToast('خطأ في مزامنة بيانات FirePASS', 'error');
-                    // 🟢 تحسين: في حالة فشل الاتصال، عرض المفضلة المحلية كحل احتياطي
-                    updateFavoritesCountUI(getLocalFavoritesCount());
+                    // 🟢 الإصلاح الحاسم 5: التحقق من التوثيق (سواء توثيق ذهبي أو غيره)
+                    headerVerify.style.display = userData.isPremium === true || userData.isVerified === true ? 'inline-block' : 'none';
+                    authStatusText.textContent = 'مسجل: ' + (userData.isVerified ? 'موثق ذهبي' : (user.emailVerified ? 'موثق' : 'غير موثق'));
+
+                } else {
+                     // إذا لم يكن هناك مستند في Firestore، نعتمد على بيانات الـ Auth فقط
+                     headerVerify.style.display = 'none';
                 }
+                
+                // 3. جلب عدد المفضلة من Firestore
+                const favoritesCollectionRef = collection(db, "users", user.uid, "favorites");
+                const snapshot = await getDocs(favoritesCollectionRef);
+                updateFavoritesCountUI(snapshot.size);
 
+            } catch (error) {
+                console.error("Error fetching Firestore user data or favorites:", error);
+                showToast('خطأ في مزامنة بيانات FirePASS', 'error');
+                updateFavoritesCountUI(getLocalFavoritesCount());
+            }
+        }
+
+
+        // 🟢 تحسين: استخدام onIdTokenChanged للتعامل مع تحديثات الـ Auth بشكل أسرع (مثل تحديث الصورة والاسم)
+        onIdTokenChanged(auth, async (user) => {
+            currentUser = user; // تحديث متغير المستخدم العالمي
+            
+            if (user) {
+                 await updateHeaderUI(user);
             } else {
                 // المستخدم غير مسجل الدخول (زائر)
                 headerName.textContent = 'زائر';
-                headerProfile.src = 'https://i.ibb.co/YRShYmn/avatar.png';
+                headerProfile.src = defaultAvatar;
                 headerVerify.style.display = 'none';
                 authStatusText.textContent = 'غير مسجل (الوضع الآمن)';
 
-                // 🟢 تحسين: استخدام 'flex' بدلاً من 'block' لضمان التنسيق في القائمة
                 loginBtn.style.display = 'flex'; 
                 registerBtn.style.display = 'flex';
                 userLoggedInMenu.style.display = 'none';
                 
-                // 🟢 تحديث عداد المفضلة إلى القيمة المحلية للزائر
                 updateFavoritesCountUI(getLocalFavoritesCount());
             }
         });
@@ -2111,7 +2169,10 @@
                 // متصل
                 offlineIndicator.classList.remove('show');
                 body.classList.remove('offline-mode');
-                showToast('تم استعادة الاتصال بالإنترنت', 'success');
+                // 🟢 تحسين: عدم عرض التوست في حال كان المستخدم متصلاً عند تحميل الصفحة
+                if (document.readyState === 'complete') {
+                    showToast('تم استعادة الاتصال بالإنترنت', 'success');
+                }
             } else {
                 // غير متصل
                 offlineIndicator.classList.add('show');

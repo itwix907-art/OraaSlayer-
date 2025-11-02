@@ -1,0 +1,52 @@
+{
+  "id": "SPYFAMILY_Season_3",
+  "title": "SPY x FAMILY Season 3",
+  "totalEpisodes": 4,
+  "img": "assets/img/spyxfamily_s3.jpg",
+  "episodes": [
+    {
+      "epNum": 1,
+      "title": "الحلقة 1",
+      "servers": [
+        {
+          "name": "سيرفر Google Drive",
+          "quality": "HD",
+          "url": "https://drive.google.com/file/d/1TRSLpmg-WTnYH0eRWAIU8Yduu1RNAioV/preview"
+        }
+      ]
+    },
+    {
+      "epNum": 2,
+      "title": "الحلقة 2",
+      "servers": [
+        {
+          "name": "سيرفر Google Drive",
+          "quality": "HD",
+          "url": "https://drive.google.com/file/d/1R7XAvauo9z03l0DaOOeVwkgTARf4XnWN/preview"
+        }
+      ]
+    },
+    {
+      "epNum": 3,
+      "title": "الحلقة 3",
+      "servers": [
+        {
+          "name": "سيرفر Google Drive",
+          "quality": "HD",
+          "url": "https://drive.google.com/file/d/1dc8MaiLZCHV_0NYPmcEwEK7eyDNCzoQm/preview"
+        }
+      ]
+    },
+    {
+      "epNum": 4,
+      "title": "الحلقة 4",
+      "servers": [
+        {
+          "name": "سيرفر Google Drive",
+          "quality": "HD",
+          "url": "https://drive.google.com/file/d/1t9Hli_gtrfaNOjepJlGt394pIv3A45VK/preview"
+        }
+      ]
+    }
+  ]
+}

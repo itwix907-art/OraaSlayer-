@@ -1,0 +1,19 @@
+{
+  "id": "Gachiakuta",
+  "title": "Gachiakuta",
+  "totalEpisodes": 1,
+  "img": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178025-Q25v7Xh9Xv9t.jpg",
+  "episodes": [
+    {
+      "epNum": 1,
+      "title": "الحلقة 1",
+      "servers": [
+        {
+          "name": "سيرفر Vimeo",
+          "quality": "HD",
+          "url": "https://player.vimeo.com/video/1130679983"
+        }
+      ]
+    }
+  ]
+}
