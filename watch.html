@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pageTitle">🎬 مشاهدة الحلقة</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" defer>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" defer>
@@ -17,7 +17,8 @@
       --bg-dark: #0F0F1A;
       --bg-card: #1A1A2E;
       --text-light: #F0F0F0;
-      --glass-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.3); /* استخدام rem */
+      /* استخدام rem للظلال */
+      --glass-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.3); 
     }
     
     * {
@@ -28,7 +29,8 @@
     }
     
     html {
-        font-size: var(--base-font-size); /* تعيين حجم الخط الأساسي للـ rem */
+        /* تعيين حجم الخط الأساسي للـ rem */
+        font-size: var(--base-font-size); 
     }
     
     body {
@@ -39,8 +41,76 @@
       overflow-x: hidden;
       line-height: 1.6;
       min-height: 100vh;
-      /* استخدام نمط قياس متجاوب للتباعد بدلاً من px ثابت */
+      /* استخدام rem للتباعد السفلي */
       padding-bottom: 3rem; 
+    }
+    
+    /* 🎨 فئات عامة (مستخدمة بوحدات rem) */
+    .flex, .nav-buttons, .controls, .episode-stats, #playerControlsContainer, .server-switch-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .alt {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-light);
+        transition: background 0.3s ease;
+    }
+    
+    .btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* تم تحويلها إلى rem */
+        padding: 0.75rem 1.75rem; /* 12px 28px */
+        border-radius: 0.875rem; /* 14px */
+        font-size: 1rem;
+        gap: 0.5rem; /* 8px */
+        cursor: pointer;
+        border: none;
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        transition: transform 0.2s, opacity 0.2s;
+    }
+    
+    .btn:hover:not(:disabled) {
+        transform: translateY(-0.1rem);
+    }
+    
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .video-wrapper {
+      position: relative;
+      /* استخدام الـ % للعرض ليتكيف مع الشاشة */
+      width: 95%; 
+      max-width: 75rem; /* 1200px */
+      /* تم تحويلها إلى rem */
+      margin: 1.875rem auto 1.25rem; /* 30px auto 20px */
+      border-radius: 1.25rem; /* 20px */
+      overflow: hidden;
+      box-shadow: var(--glass-shadow);
+      background: var(--bg-card);
+      z-index: 10; 
+      transition: all 0.5s ease;
+    }
+    
+    /* 🌟 وضع ملء الشاشة المخصص */
+    .video-wrapper.fullscreen-active {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        max-width: none !important;
+        height: 100vh;
+        z-index: 9999;
+        margin: 0 !important;
+        border-radius: 0 !important;
     }
 
     /* 🎯 2. تكييف مقياس الهواتف الصغيرة (< 480px) */
@@ -58,122 +128,234 @@
         position: sticky;
         top: 0;
         z-index: 1000;
+        /* تم تحويلها إلى rem */
         padding: 1rem 1.25rem; /* 16px 20px */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(15, 15, 26, 0.9);
+        backdrop-filter: blur(5px);
         box-shadow: var(--glass-shadow);
     }
     
+    .top-bar .title-group {
+        text-align: right;
+    }
+
     .top-bar h1 {
+        /* تم تحويلها إلى rem */
         font-size: 1.4rem; 
         font-weight: 700;
+        margin: 0;
     }
     
     .top-bar .server-info {
+        /* تم تحويلها إلى rem */
         font-size: 0.8rem;
         margin-top: 0.25rem;
+        opacity: 0.7;
     }
     
     /* ⏪ التحكم في التنقل */
     .nav-buttons {
+        /* تم تحويلها إلى rem */
         gap: 0.625rem; /* 10px */
     }
     
     .nav-buttons .btn {
+        /* تم تحويلها إلى rem */
         padding: 0.625rem 1rem; /* 10px 16px */
         border-radius: 0.75rem; /* 12px */
         min-width: 7.5rem; /* 120px */
         font-size: 0.9rem;
     }
 
-    /* 🎥 إطار الفيديو */
-    .video-wrapper {
-      /* استخدام الـ % للعرض ليتكيف مع الشاشة */
-      width: 95%; 
-      max-width: 75rem; /* 1200px */
-      margin: 1.875rem auto 1.25rem; /* 30px auto 20px */
-      border-radius: 1.25rem; /* 20px */
-      z-index: 10; 
+    /* 🎥 حاوية الفيديو */
+    .video-container {
+        position: relative;
+        width: 100%;
+        /* نسبة عرض إلى ارتفاع 16:9 */
+        padding-bottom: 56.25%; 
+    }
+    
+    .video-container iframe, .video-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+        background: black;
     }
     
     /* 🆕 زر ملء الشاشة المخصص لـ IFRAME */
     .fullscreen-btn {
+        position: absolute;
+        /* تم تحويلها إلى rem */
         top: 0.9375rem; /* 15px */
         right: 0.9375rem; /* 15px */
+        z-index: 50;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        cursor: pointer;
+        /* تم تحويلها إلى rem */
         padding: 0.625rem 0.9375rem; /* 10px 15px */
         border-radius: 0.5rem; /* 8px */
         font-size: 1rem;
+        display: none; /* يتم التحكم بها بالـ JS */
+        transition: background 0.2s ease;
+    }
+    
+    .fullscreen-btn:hover {
+        background: rgba(0, 0, 0, 0.8);
+    }
+    
+    /* 🖼️ شاشة التحميل المخصصة */
+    .custom-loader {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: var(--bg-card);
+        color: var(--text-light);
+        z-index: 60;
+        opacity: 1;
+        transition: opacity 0.3s ease;
     }
 
-    /* 🖼️ شاشة التحميل المخصصة */
+    .custom-loader.hidden {
+        display: none;
+    }
+    
     .custom-loader .spinner {
+        border: 0.3125rem solid rgba(255, 255, 255, 0.3); /* 5px */
+        border-top: 0.3125rem solid var(--primary-color); /* 5px */
+        border-radius: 50%;
+        /* تم تحويلها إلى rem */
         width: 3.75rem; /* 60px */
         height: 3.75rem; /* 60px */
-        border-width: 0.3125rem; /* 5px */
+        animation: spin 1s linear infinite;
         margin-bottom: 0.9375rem; /* 15px */
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
     
     .custom-loader p {
+        /* تم تحويلها إلى rem */
         font-size: 1rem;
+        opacity: 0.8;
     }
     
     /* 💾 رسالة استئناف المشاهدة */
     #resumeMessage {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        z-index: 55;
+        /* تم تحويلها إلى rem */
         padding: 0.75rem 1.25rem; /* 12px 20px */
         border-radius: 0.75rem; /* 12px */
+        transition: opacity 0.3s ease;
+    }
+    
+    #resumeMessage.hidden {
+        opacity: 0;
     }
     
     #resumeMessage button {
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        cursor: pointer;
+        /* تم تحويلها إلى rem */
         padding: 0.5rem 0.9375rem; /* 8px 15px */
         border-radius: 0.5rem; /* 8px */
         margin-right: 0.9375rem; /* 15px */
+        font-weight: bold;
     }
 
     /* ⬇️ أزرار الإجراءات المحسنة */
     .controls {
+      /* تم تحويلها إلى rem */
       margin: 1.5625rem 0 2.5rem; /* 25px 0 40px */
       gap: 0.9375rem; /* 15px */
+      flex-wrap: wrap;
     }
     
     #playerControlsContainer {
+        /* تم تحويلها إلى rem */
         gap: 0.9375rem; /* 15px */
         margin-bottom: 1.25rem; /* 20px */
+        padding: 0 1rem;
+        /* السماح بالتمرير الأفقي للهواتف */
+        overflow-x: auto; 
     }
     
-    /* 💡 منطقة لمس كبيرة (Touch Target) كما في مفهوم الـ 48dp أو 56dp */
+    /* 💡 منطقة لمس كبيرة (Touch Target) */
     .player-control-btn {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        /* تم تحويلها إلى rem */
         padding: 0.625rem 1.25rem; /* 10px 20px */
         border-radius: 0.75rem; /* 12px */
         font-size: 1rem;
         min-height: 2.5rem; /* حوالي 40px */
         min-width: 2.5rem; /* حوالي 40px */
-    }
-    
-    .btn {
-      padding: 0.75rem 1.75rem; /* 12px 28px */
-      border-radius: 0.875rem; /* 14px */
-      font-size: 1rem;
-      gap: 0.5rem; /* 8px */
+        flex-shrink: 0;
     }
 
     /* 📊 معلومات إضافية */
     .episode-info {
+        background: var(--bg-card);
+        box-shadow: var(--glass-shadow);
+        /* تم تحويلها إلى rem */
         padding: 1.25rem; /* 20px */
         margin: 1.25rem auto; /* 20px auto */
         border-radius: 0.9375rem; /* 15px */
         max-width: 90%;
+        width: 100%;
+        text-align: right;
     }
     
     .episode-info h3 {
+        /* تم تحويلها إلى rem */
         margin-bottom: 0.9375rem; /* 15px */
         font-size: 1.2rem;
+        color: var(--primary-color);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.5rem;
     }
     
     .episode-stats {
+        /* تم تحويلها إلى rem */
         gap: 1.5625rem; /* 25px */
+        flex-wrap: wrap;
+        justify-content: flex-end;
     }
     
     .stat {
+        display: flex;
+        align-items: center;
+        /* تم تحويلها إلى rem */
         gap: 0.5rem; /* 8px */
         font-size: 0.9rem;
+        color: var(--accent-color);
+        background: rgba(54, 209, 220, 0.1);
+        /* تم تحويلها إلى rem */
         padding: 0.5rem 0.9375rem; /* 8px 15px */
         border-radius: 0.625rem; /* 10px */
     }
@@ -182,129 +364,344 @@
     #progress-bar-container {
         width: 90%;
         max-width: 50rem; /* 800px */
+        background: rgba(255, 255, 255, 0.1);
+        /* تم تحويلها إلى rem */
         height: 0.625rem; /* 10px */
         border-radius: 0.3125rem; /* 5px */
+        /* تم تحويلها إلى rem */
         margin: 0.9375rem auto; /* 15px auto */
+        overflow: hidden;
+        transition: opacity 0.3s;
+    }
+    
+    #progress-bar {
+        height: 100%;
+        width: 0%;
+        background-color: var(--secondary-color);
+        transition: width 0.4s ease;
     }
     
     footer {
+      background: var(--bg-card);
+      /* تم تحويلها إلى rem */
       margin-top: 3.125rem; /* 50px */
       padding: 1.875rem 1.25rem; /* 30px 20px */
       font-size: 0.9rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     /* 🔔 الإشعارات */
     .toast {
+      position: fixed;
+      z-index: 2000;
+      /* تم تحويلها إلى rem */
       bottom: 1.25rem; /* 20px */
       right: 1.25rem; /* 20px */
+      background-color: var(--bg-card);
+      color: var(--text-light);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(1rem);
+      transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+      /* تم تحويلها إلى rem */
       padding: 0.9375rem 1.5625rem; /* 15px 25px */
       border-radius: 0.75rem; /* 12px */
       max-width: 22rem; /* 350px */
-      border-left-width: 0.25rem; /* 4px */
+      border-left: 0.25rem solid; /* 4px */
+    }
+    
+    .toast.info { border-color: var(--accent-color); }
+    .toast.success { border-color: #4CAF50; }
+    .toast.error { border-color: var(--secondary-color); }
+    .toast.warning { border-color: #FFC107; }
+
+    .toast.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
 
-    /* 🎛️ قائمة الجودة والتحميل */
+    /* 🎛️ القوائم المنسدلة */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    
     .dropdown-content {
+        position: absolute;
+        bottom: 100%; /* تظهر فوق الزر */
+        right: 0;
+        background-color: var(--bg-card);
+        box-shadow: var(--glass-shadow);
+        z-index: 10;
+        display: none;
+        /* تم تحويلها إلى rem */
         min-width: 12.5rem; /* 200px */
         border-radius: 0.75rem; /* 12px */
         margin-bottom: 0.625rem; /* 10px */
+        overflow: hidden;
+        text-align: right;
+    }
+
+    .dropdown-content.active {
+        display: block;
     }
     
     .dropdown-item {
+        color: var(--text-light);
+        /* تم تحويلها إلى rem */
         padding: 0.75rem 1rem; /* 12px 16px */
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+    .dropdown-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
     }
     
     /* 🔄 قائمة تبديل السيرفرات السريعة */
     .server-switch-container {
+        /* تم تحويلها إلى rem */
         gap: 0.625rem; /* 10px */
         margin: 1.25rem auto; /* 20px auto */
         padding: 0.625rem; /* 10px */
         border-radius: 0.9375rem; /* 15px */
+        max-width: 90%;
+        overflow-x: auto;
     }
     
     .server-switch-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid transparent;
+        color: var(--text-light);
+        cursor: pointer;
+        /* تم تحويلها إلى rem */
         padding: 0.5rem 0.9375rem; /* 8px 15px */
         border-radius: 0.625rem; /* 10px */
         font-size: 0.9rem;
+        flex-shrink: 0;
+        transition: all 0.2s;
     }
     
+    .server-switch-btn.active {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        font-weight: bold;
+    }
+
     /* 🆕 شريط التحكم المتكامل */
     .player-controls-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        pointer-events: none; /* لا يتداخل مع الـ iframe */
+        /* تم تحويلها إلى rem */
         padding: 1.25rem; /* 20px */
         gap: 0.9375rem; /* 15px */
     }
     
+    .player-controls-overlay.active {
+        opacity: 1;
+        pointer-events: auto; /* عند التفعيل يتفاعل مع اللمس/الماوس */
+    }
+
+    .controls-top, .controls-bottom, .controls-center, .controls-right, .progress-container {
+        display: flex;
+        align-items: center;
+    }
+    
+    .controls-top {
+        justify-content: flex-end;
+    }
+    
     .video-title {
+        /* تم تحويلها إلى rem */
         font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-light);
     }
     
     .controls-center {
+        justify-content: center;
+        /* تم تحويلها إلى rem */
         gap: 1.875rem; /* 30px */
     }
     
     .control-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        border-radius: 50%;
+        cursor: pointer;
+        /* تم تحويلها إلى rem */
         width: 3.125rem; /* 50px */
         height: 3.125rem; /* 50px */
+        font-size: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background 0.2s, transform 0.1s;
     }
     
     .control-btn.large {
+        /* تم تحويلها إلى rem */
         width: 3.75rem; /* 60px */
         height: 3.75rem; /* 60px */
         font-size: 1.3rem;
     }
     
     .controls-bottom {
+        justify-content: space-between;
+        /* تم تحويلها إلى rem */
         gap: 0.9375rem; /* 15px */
+    }
+    
+    .progress-container {
+        flex-grow: 1;
+        gap: 0.5rem;
     }
     
     .time-current,
     .time-duration {
+        /* تم تحويلها إلى rem */
         font-size: 0.9rem;
         min-width: 2.8125rem; /* 45px */
+        text-align: center;
     }
     
     .progress-bar-full {
+        flex-grow: 1;
+        position: relative;
+        background: rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        /* تم تحويلها إلى rem */
         height: 0.375rem; /* 6px */
         border-radius: 0.1875rem; /* 3px */
     }
     
-    .progress-thumb {
-        width: 0.75rem; /* 12px */
-        height: 0.75rem; /* 12px */
+    .progress-track {
+        position: absolute;
+        height: 100%;
+        width: 0%;
+        background: var(--primary-color);
+        border-radius: inherit;
     }
     
+    .progress-thumb {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translate(50%, -50%);
+        background: white;
+        /* تم تحويلها إلى rem */
+        width: 0.75rem; /* 12px */
+        height: 0.75rem; /* 12px */
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    
+    .controls-right {
+        gap: 0.5rem;
+    }
+    
+    .settings-container {
+        position: relative;
+    }
+
     .settings-menu {
+        position: absolute;
+        left: 0;
+        /* تم تحويلها إلى rem */
         bottom: 3.75rem; /* 60px */
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        box-shadow: var(--glass-shadow);
+        display: none;
+        /* تم تحويلها إلى rem */
         border-radius: 0.75rem; /* 12px */
         padding: 0.625rem 0; /* 10px 0 */
+        /* تم تحويلها إلى rem */
         min-width: 9.375rem; /* 150px */
+        text-align: right;
+    }
+    
+    .settings-menu.active {
+        display: block;
     }
     
     .settings-item {
+        /* تم تحويلها إلى rem */
         padding: 0.625rem 0.9375rem; /* 10px 15px */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+    
+    .settings-item:hover {
+        background: rgba(255, 255, 255, 0.1);
     }
     
     .quality-badge {
+        position: absolute;
+        /* تم تحويلها إلى rem */
         top: 0.9375rem; /* 15px */
         left: 0.9375rem; /* 15px */
+        z-index: 50;
+        background: var(--secondary-color);
+        color: white;
+        /* تم تحويلها إلى rem */
         padding: 0.3125rem 0.625rem; /* 5px 10px */
         border-radius: 0.375rem; /* 6px */
         font-size: 0.8rem;
+        font-weight: bold;
     }
     
+    .blur-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        filter: blur(50px) brightness(0.4);
+        z-index: -1;
+    }
+
     /* 📱 التصميم المتجاوب المحسن (الآن يعمل على مقياس أصغر بفضل الـ rem) */
     @media (max-width: 768px) {
-      .top-bar { padding: 1rem 0.75rem; gap: 0.625rem; }
+      /* تصغير الأزرار والشريط العلوي قليلاً */
+      .top-bar { padding: 1rem 0.75rem; gap: 0.625rem; flex-wrap: wrap; }
       .top-bar h1 { font-size: 1.1rem; }
+      .nav-buttons { margin-top: 0.75rem; width: 100%; justify-content: space-around; }
       .nav-buttons .btn { min-width: 6.875rem; padding: 0.625rem 0.875rem; font-size: 0.8rem; }
       .btn { font-size: 0.9rem; padding: 0.625rem 1.25rem; }
       .video-wrapper { width: 98%; border-radius: 0.9375rem; margin: 1.25rem auto 0.9375rem; }
       .controls { gap: 0.625rem; }
       
-      .toast { bottom: 4.375rem; right: 50%; transform: translateX(50%); left: 0.75rem; max-width: 90%; }
-      .toast.show { transform: translateX(50%); }
+      /* إرسال الـ toast لأسفل الشاشة وتوسيطه */
+      .toast { 
+          bottom: 4.375rem; 
+          right: 50%; 
+          transform: translateX(50%) translateY(1rem); 
+          left: auto; 
+          max-width: 90%; 
+          margin-left: 0; 
+          margin-right: 0;
+      }
+      .toast.show { transform: translateX(50%) translateY(0); }
       
-      #playerControlsContainer { flex-wrap: nowrap; overflow-x: auto; padding: 0 0.625rem; }
+      /* تحسين عرض أزرار التحكم السفلية (التمرير الأفقي) */
+      #playerControlsContainer { flex-wrap: nowrap; overflow-x: auto; padding: 0 0.625rem; justify-content: flex-start; }
       .player-control-btn { min-width: 8.125rem; }
       
       /* تحسين شريط التحكم المتكامل للهواتف */
@@ -312,19 +709,23 @@
       .control-btn.large { width: 3.125rem; height: 3.125rem; font-size: 1.1rem; }
       .controls-center { gap: 1.25rem; }
       .controls-bottom { flex-direction: column; gap: 0.625rem; }
+      .progress-container { width: 100%; }
+      .controls-right { justify-content: space-between; width: 100%; }
     }
     
     @media (max-width: 480px) {
         /* تم بالفعل تصغير حجم الخط الأساسي في بداية الـ CSS */
-        .nav-buttons { flex-direction: column; width: 100%; }
+        .nav-buttons { flex-direction: column; width: 100%; margin-top: 1rem; }
         .nav-buttons .btn { width: 100%; max-width: none; }
         .controls { flex-direction: column; align-items: center; }
         .btn { width: 90%; max-width: 17.5rem; } /* 280px */
         
-        /* تحسين إضافي للهواتف الصغيرة جداً (لتناسب محتوى شاشة 320dp/480px) */
+        /* تحسين إضافي للهواتف الصغيرة جداً */
         .control-btn { width: 2.5rem; height: 2.5rem; }
         .control-btn.large { width: 2.8125rem; height: 2.8125rem; }
         .episode-info { padding: 1rem; }
+        .server-switch-container { flex-wrap: nowrap; justify-content: flex-start; }
+        .episode-stats { justify-content: center; }
     }
   </style>
 </head>
@@ -424,7 +825,7 @@
         </div>
     </div>
     
-    <div class="custom-loader" id="customLoader">
+    <div class="custom-loader hidden" id="customLoader">
         <div class="spinner"></div>
         <p id="loaderMessage">جاري تجهيز المشغل وتحميل السيرفر...</p>
     </div>
@@ -513,7 +914,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // 💡 الثوابت والمتغيرات العامة - تم الحفاظ على كل منطق JavaScript كما هو، لأنه لا يتأثر بوحدات الـ CSS
+    // 💡 الثوابت والمتغيرات العامة
     const LOGGED_IN_EMAIL = localStorage.getItem("loggedInUser");
     const IS_LOGGED_IN = !!LOGGED_IN_EMAIL;
     const USERS_STORAGE_KEY = 'oraaAnimeUsers';
@@ -629,8 +1030,11 @@
         
         document.getElementById("serverInfo").innerHTML = `<i class="fas fa-server"></i><span>السيرفر: ${SELECTED_SERVER.name || 'مباشر'} | جودة: ${SELECTED_SERVER.quality || 'HD'}</span>`;
 
+        const blurBg = document.getElementById("blurBg");
         if (ANIME_DATA.img) {
-            document.getElementById("blurBg").style.backgroundImage = `url('${ANIME_DATA.img}')`;
+            blurBg.style.backgroundImage = `url('${ANIME_DATA.img}')`;
+        } else {
+             blurBg.style.backgroundImage = 'none';
         }
         
         if (SELECTED_SERVER.quality) {
@@ -808,7 +1212,7 @@
     function createVideoPlayer(sources) {
         const video = document.createElement("video");
         video.setAttribute("id", "player");
-        video.setAttribute("controls", "true");
+        video.setAttribute("controls", "false"); // إزالة تحكمات المتصفح الافتراضية 
         video.setAttribute("autoplay", "true");
         video.setAttribute("preload", "auto");
         video.setAttribute("playsinline", "true"); 
@@ -1202,17 +1606,25 @@
             const currentTime = video.currentTime;
             const isPaused = video.paused;
             
-            const newSource = Array.from(video.querySelectorAll('source')).find(s => s.getAttribute('data-quality') === source.quality);
+            // البحث عن مصدر الفيديو الجديد داخل عناصر <source>
+            const newSourceElement = Array.from(video.querySelectorAll('source')).find(s => s.getAttribute('data-quality') === source.quality);
             
-            if (newSource) {
-                const currentSrc = video.currentSrc;
-                if (currentSrc.includes(newSource.src)) {
+            if (newSourceElement) {
+                const newSrc = newSourceElement.src;
+                
+                // التحقق من الجودة الحالية (مقارنة بالعنصر النشط)
+                const currentQuality = video.querySelector('source[src="'+video.currentSrc+'"]')?.getAttribute('data-quality');
+
+                if (currentQuality === source.quality) {
                      showToast(`✅ أنت بالفعل تشاهد بجودة ${source.quality}.`, "info");
                      return;
                 }
-
+                
                 video.pause();
-                video.src = newSource.src; 
+                
+                // إعادة تعيين الـ src للـ video عنصر نفسه إذا كان المتصفح لا يدعم التبديل التلقائي
+                // بعض المتصفحات (وخاصة على الموبايل) لا تتفاعل مع تغيير عنصر <source>، بل تحتاج تغيير الـ src لـ <video>
+                video.src = newSrc;
                 video.load();
                 
                 video.onloadeddata = () => {
@@ -1222,8 +1634,9 @@
                     document.getElementById("qualityBadge").textContent = source.quality;
                     video.onloadeddata = null; 
                 };
+                
             } else {
-                 showToast(`⚠️ لا يمكن التبديل لجودة ${source.quality} حالياً.`, "warning");
+                 showToast(`⚠️ لا يمكن العثور على مصدر لجودة ${source.quality} حالياً.`, "warning");
             }
         } else {
             showToast("⚠️ تغيير الجودة متاح فقط للمشغل الداخلي (HTML5).", "warning");
@@ -1273,12 +1686,15 @@
         const overlay = document.getElementById('playerControlsOverlay');
         const videoWrapper = document.querySelector('.video-wrapper');
         
+        // إزالة المستمعين القدامى
         videoWrapper.removeEventListener('mousemove', showControls);
         videoWrapper.removeEventListener('touchstart', showControls);
         videoWrapper.removeEventListener('mouseleave', hideControlsAfterDelay);
         
+        // إضافة المستمعين الجدد
         videoWrapper.addEventListener('mousemove', showControls);
-        videoWrapper.addEventListener('touchstart', showControls);
+        // استخدام touchstart لجعل التحكمات تظهر بلمسة واحدة
+        videoWrapper.addEventListener('touchstart', showControls); 
         videoWrapper.addEventListener('mouseleave', hideControlsAfterDelay);
         
         document.getElementById('overlayFullscreenBtn').onclick = () => {
@@ -1304,12 +1720,14 @@
             settingsMenu.classList.toggle('active');
         };
         
+        // التأكد من إزالة المستمع القديم قبل إضافة الجديد لتجنب التكرار
         document.removeEventListener('click', closeSettingsMenu); 
         document.addEventListener('click', closeSettingsMenu);
         
         document.querySelectorAll('.settings-item').forEach(item => {
+            // إزالة المستمع القديم (إذا كان موجوداً)
             const oldHandler = item.onclick;
-            if (oldHandler) item.removeEventListener('click', oldHandler);
+            if (oldHandler) item.onclick = null;
             
             const newHandler = (e) => {
                 e.stopPropagation();
@@ -1323,8 +1741,9 @@
         document.getElementById('overlayProgressBar').onclick = (e) => {
             if (currentPlayer && currentPlayer.nodeName === 'VIDEO') {
                 const progressBar = e.currentTarget;
-                const clickPosition = e.offsetX;
-                const progressBarWidth = progressBar.offsetWidth;
+                const rect = progressBar.getBoundingClientRect();
+                const clickPosition = e.clientX - rect.left;
+                const progressBarWidth = rect.width;
                 const percent = clickPosition / progressBarWidth;
                 currentPlayer.currentTime = percent * currentPlayer.duration;
             }
@@ -1375,16 +1794,27 @@
         }
     }
     
-    function checkFavoriteStatus() { }
+    function checkFavoriteStatus() { 
+        // منطق التحقق من حالة المفضلة
+    }
     function toggleFavorite() {
+        // منطق تبديل حالة المفضلة
         showToast("تم إضافة/إزالة الحلقة من المفضلة (محاكاة)", "info");
     }
     document.getElementById("favoriteBtn").addEventListener('click', toggleFavorite);
     
-    function updateFavoriteButton(isFav) { }
-    function startWatchTracking() { }
-    function markEpisodeAsCompleted() { }
-    function logDownloadActivity(quality) { }
+    function updateFavoriteButton(isFav) { 
+        // منطق تحديث شكل زر المفضلة
+    }
+    function startWatchTracking() { 
+        // منطق بدء تتبع المشاهدة
+    }
+    function markEpisodeAsCompleted() { 
+        // منطق وضع علامة "مكتمل"
+    }
+    function logDownloadActivity(quality) { 
+        // منطق تسجيل نشاط التحميل
+    }
     function showCompletionMessage() {
         showToast("🎉 انتهت المشاهدة! تم وضع علامة 'مكتمل'.", "success");
         setTimeout(() => {
@@ -1397,8 +1827,9 @@
     function showError(message, hidePlayer = false) {
         if (hidePlayer) {
             showLoading(false);
+            // استخدام div بدلاً من إطار الفيديو ليحل محله
             document.getElementById("videoContainer").innerHTML = `
-                <div style="position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; padding: 50px; text-align: center; color: var(--danger-color); background: var(--bg-dark);">
+                <div style="position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; padding: 50px; text-align: center; color: var(--secondary-color); background: var(--bg-card);">
                     <div style="max-width: 90%;">
                         <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 20px;"></i>
                         <p style="font-size: 1.2rem;">${message}</p>
@@ -1413,9 +1844,10 @@
 
             showToast(message, "error");
         } else {
+            // هذه الحالة تظهر عند فشل التحميل الأولي للبيانات
             document.body.innerHTML = `
                 <div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; gap: 20px; padding: 20px; text-align: center;">
-                    <div style="font-size: 4rem;">😥</div>
+                    <div style="font-size: 4rem; color: var(--secondary-color);">😥</div>
                     <h2 style="color: var(--primary-color);">${message}</h2>
                     <button class="btn" onclick="goBackToDetails()">العودة للتفاصيل</button>
                 </div>
