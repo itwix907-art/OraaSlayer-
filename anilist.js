@@ -104,17 +104,116 @@ const ANIME_URLS_LIST = [
     "https://anilist.co/anime/140499/BLUE-GIANT/"
 ];
 
+// ⚙️ دوال المساعد (Utilities) للأداء
+/**
+ * تطبق تقنية Debounce لتقييد عدد مرات استدعاء الدالة.
+ * @param {Function} func - الدالة المراد تقييدها.
+ * @param {number} delay - فترة التأخير بالمللي ثانية.
+ */
+const debounce = (func, delay) => {
+    let timeoutId;
+    return function(...args) {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(() => {
+            func.apply(this, args);
+            timeoutId = null;
+        }, delay);
+    };
+};
+
+/**
+ * تقنية Throttle لتقييد تنفيذ الدالة لمرة واحدة كل فترة زمنية محددة.
+ * @param {Function} func - الدالة المراد تقييدها.
+ * @param {number} limit - الفترة الزمنية بالمللي ثانية.
+ */
+const throttle = (func, limit) => {
+    let inThrottle;
+    return function(...args) {
+        if (!inThrottle) {
+            func.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+};
+
+// 🎯 إدارة حالة التطبيق (State Management)
+class StateService {
+    constructor(initialState) {
+        this.state = initialState;
+        this.listeners = new Map();
+        // 🌟 إضافة خاصية لضمان عدم تغيير الحالة مباشرة من الخارج
+        Object.freeze(this.state); 
+    }
+
+    // 🌟 جلب قيمة من الحالة
+    get(key) {
+        return this.state[key];
+    }
+
+    // 🌟 تحديث قيمة في الحالة وإخطار المستمعين
+    set(key, value) {
+        const oldValue = this.state[key];
+        if (oldValue !== value) {
+            // 🌟 إنشاء نسخة جديدة من الحالة لضمان عدم الطفرة (Immutability)
+            const newState = { ...this.state, [key]: value };
+            this.state = newState;
+            Object.freeze(this.state); // إعادة التجميد
+            this.notify(key, value);
+        }
+    }
+
+    // 🌟 التسجيل للاستماع لتغيير مفتاح معين
+    subscribe(key, callback) {
+        if (!this.listeners.has(key)) {
+            this.listeners.set(key, new Set());
+        }
+        this.listeners.get(key).add(callback);
+        // إرجاع دالة لإلغاء الاشتراك
+        return () => this.unsubscribe(key, callback);
+    }
+
+    // 🌟 إلغاء الاشتراك
+    unsubscribe(key, callback) {
+        if (this.listeners.has(key)) {
+            this.listeners.get(key).delete(callback);
+        }
+    }
+
+    // 🌟 إخطار المستمعين
+    notify(key, value) {
+        if (this.listeners.has(key)) {
+            // 🌟 استخدام نسخة من الـ Set لتجنب مشاكل التعديل أثناء المرور
+            Array.from(this.listeners.get(key)).forEach(callback => {
+                 try {
+                    callback(value);
+                } catch (e) {
+                    console.error(`خطأ في مستمع الحالة للمفتاح ${key}:`, e);
+                }
+            });
+        }
+    }
+}
+
+
 // 🚀 نظام التخزين المؤقت المتقدم (Enterprise Level)
 class AdvancedCache {
     constructor() {
         this.cacheName = 'anilist-enterprise-cache-v3';
         this.cacheDuration = 24 * 60 * 60 * 1000; // 24 ساعة
+        // 🌟 تحديد مدة التنبؤ بالتحديث (ساعة واحدة قبل الانتهاء)
+        this.predictiveRefreshThreshold = 1 * 60 * 60 * 1000; 
         this.performanceMetrics = new Map();
+        // 🌟 تعيين التنظيف الدوري كل ساعة ومراقبة التنبؤ
+        setInterval(() => this.cleanupAndMonitor(), 60 * 60 * 1000); 
     }
 
     // 🔧 حفظ البيانات مع الوقت والنسخة الاحتياطية
     set(key, data, metadata = {}) {
         try {
+            const expiryTime = Date.now() + this.cacheDuration; // 🌟 تحديد الوقت
             const cacheItem = {
                 data: data,
                 timestamp: Date.now(),
@@ -123,7 +222,7 @@ class AdvancedCache {
                     source: 'anilist-api',
                     ...metadata
                 },
-                expiry: Date.now() + this.cacheDuration
+                expiry: expiryTime // استخدام المتغير الجديد
             };
 
             // التخزين في localStorage
@@ -149,6 +248,8 @@ class AdvancedCache {
             const sessionData = sessionStorage.getItem(`session_${key}`);
             if (sessionData) {
                 this.updateMetrics('hit', key, 'session');
+                // 🌟 التحقق من الصلاحية الخلفي (في حال وجود نسخة في session)
+                this.checkAndRefresh(key); 
                 return JSON.parse(sessionData);
             }
 
@@ -160,7 +261,14 @@ class AdvancedCache {
                 // التحقق من انتهاء الصلاحية
                 if (Date.now() > cacheItem.expiry) {
                     this.delete(key);
+                    this.updateMetrics('miss', key, 'expired'); // 🌟 تسجيل الكاش المنتهي
                     return null;
+                }
+                
+                // 🌟 التحقق التنبؤي من الصلاحية
+                if (cacheItem.expiry - Date.now() < this.predictiveRefreshThreshold) {
+                    // تشغيل جلب خلفي غير حاصر (Non-Blocking)
+                    this.triggerBackgroundRefresh(key); 
                 }
                 
                 // تحديث sessionStorage للوصول المستقبلي
@@ -174,7 +282,75 @@ class AdvancedCache {
             return null;
         } catch (error) {
             console.warn('⚠️ تعذر تحميل التخزين المؤقت:', error);
+            // 🌟 حذف العنصر الفاسد
+            this.delete(key);
             return null;
+        }
+    }
+    
+    // 🌟 التحقق والتحديث للحالة
+    checkAndRefresh(key) {
+        const cached = localStorage.getItem(`cache_${key}`);
+        if (!cached) return false;
+
+        try {
+            const cacheItem = JSON.parse(cached);
+            
+            // 🚨 التحقق من انتهاء الصلاحية
+            if (Date.now() > cacheItem.expiry) {
+                this.delete(key);
+                return false;
+            }
+            
+            // 🧠 منطق التحديث التنبؤي: إذا كان الكاش صالحاً، ولكن انتهت صلاحيته قريباً (أقل من ساعة)
+            if (cacheItem.expiry - Date.now() < this.predictiveRefreshThreshold) {
+                // إذا لم يتم تحديد حالة التحديث الخلفي بعد، قم بتشغيله
+                if (!sessionStorage.getItem(`refreshing_${key}`)) {
+                    this.triggerBackgroundRefresh(key);
+                }
+            }
+            
+            // إذا كان صالحاً، قم بتحديث الـ sessionStorage لضمان أقصى سرعة
+            sessionStorage.setItem(`session_${key}`, JSON.stringify(cacheItem.data));
+            return true;
+
+        } catch (error) {
+            this.delete(key);
+            return false;
+        }
+    }
+
+    // 🧠 تشغيل التحديث الخلفي (Non-Blocking)
+    triggerBackgroundRefresh(key) {
+        // منع التشغيل المتعدد
+        if (sessionStorage.getItem(`refreshing_${key}`)) return;
+
+        console.log(`⏳ بدء التحديث الخلفي التنبؤي للكاش: ${key}`);
+        sessionStorage.setItem(`refreshing_${key}`, 'true');
+
+        const animeIdMatch = key.match(/^anime_(\d+)/);
+        if (animeIdMatch && window.aniListManager) {
+            const animeId = parseInt(animeIdMatch[1]);
+            // استخدام دالة الجلب المتقدمة ولكن بوضع "التحديث الخلفي"
+            // 🌟 استخدام الدالة المجمعة الجديدة للتحسين
+            window.aniListManager.fetchAnimeBatch([animeId], true) 
+                .then(data => {
+                    const anime = data[0]; // استخراج أول عنصر من نتائج التجميع
+                    if (anime) {
+                         console.log(`✅ اكتمل التحديث الخلفي بنجاح للكاش: ${key}`);
+                         // 🌟 تحديث الحالة في StateService إذا كان الأنمي في القائمة الحالية (تحسين تجربة المستخدم)
+                         window.aniListManager.updateSingleAnimeInState(anime);
+                         
+                    }
+                })
+                .catch(error => {
+                    console.warn(`❌ فشل التحديث الخلفي للكاش ${key}:`, error);
+                    window.aniListManager.logError('BackgroundRefresh', error, ErrorSeverity.MEDIUM);
+                })
+                .finally(() => {
+                    // إزالة علامة التحديث بعد الانتهاء
+                    sessionStorage.removeItem(`refreshing_${key}`);
+                });
         }
     }
 
@@ -183,32 +359,60 @@ class AdvancedCache {
         localStorage.removeItem(`cache_${key}`);
         sessionStorage.removeItem(`session_${key}`);
     }
+    
+    // 🌟 إضافة دالة لحذف جميع الكاش
+    clearAll() {
+        const keysToRemove = Object.keys(localStorage).filter(key => key.startsWith('cache_'));
+        keysToRemove.forEach(key => this.delete(key.replace('cache_', '')));
+        sessionStorage.clear();
+        this.performanceMetrics.clear();
+    }
 
-    // 🔧 تنظيف التخزين المؤقت المنتهي
-    cleanup() {
+    // 🔧 تنظيف التخزين المؤقت المنتهي ومراقبة التنبؤ
+    cleanupAndMonitor() {
+        // 1. التنظيف القياسي
         const keys = Object.keys(localStorage).filter(key => key.startsWith('cache_'));
         keys.forEach(key => {
+            const pureKey = key.replace('cache_', '');
             try {
                 const cached = localStorage.getItem(key);
-                const cacheItem = JSON.parse(cached);
-                if (Date.now() > cacheItem.expiry) {
-                    this.delete(key.replace('cache_', ''));
+                // 🌟 إضافة تحقق من القيمة قبل التحليل
+                if (!cached) {
+                    this.delete(pureKey);
+                    return;
                 }
+                const cacheItem = JSON.parse(cached);
+                
+                if (Date.now() > cacheItem.expiry) {
+                    this.delete(pureKey);
+                } 
+                
+                // 2. مراقبة التنبؤ
+                else if (cacheItem.expiry - Date.now() < this.predictiveRefreshThreshold) {
+                    this.triggerBackgroundRefresh(pureKey);
+                }
+                
             } catch (error) {
-                this.delete(key.replace('cache_', ''));
+                // حذف العناصر الفاسدة أيضاً
+                this.delete(pureKey);
             }
         });
     }
 
     // 📊 تحديث مؤشرات الأداء
     updateMetrics(type, key, data) {
-        const metricKey = `${type}_${key}`;
+        const metricKey = `${type}_${key}_${Date.now()}`; // استخدام تاريخ الكتابة للفرز
         this.performanceMetrics.set(metricKey, {
             type,
             key,
             timestamp: Date.now(),
             size: data ? JSON.stringify(data).length : 0
         });
+        // 🌟 الحفاظ على حجم الخريطة PerformanceMetrics محدوداً
+        if (this.performanceMetrics.size > 200) {
+            const oldestKey = Array.from(this.performanceMetrics.keys())[0];
+            this.performanceMetrics.delete(oldestKey);
+        }
     }
 
     // 📊 الحصول على إحصائيات الأداء
@@ -217,28 +421,84 @@ class AdvancedCache {
             totalHits: 0,
             totalMisses: 0,
             totalWrites: 0,
-            cacheSize: 0
+            cacheSize: 0 // بالبايت
         };
 
         this.performanceMetrics.forEach(metric => {
             if (metric.type === 'hit') stats.totalHits++;
             if (metric.type === 'miss') stats.totalMisses++;
             if (metric.type === 'write') stats.totalWrites++;
-            stats.cacheSize += metric.size || 0;
+            // 🌟 الجمع الذكي لحجم البيانات
+            if (metric.type !== 'miss') { 
+                 stats.cacheSize += metric.size || 0;
+            }
         });
+        
+        // 🌟 إضافة مقياس حجم التخزين الفعلي لـ localStorage
+        const totalStorageSize = Object.keys(localStorage).reduce((total, key) => {
+            // تقدير حجم التخزين: استخدام length * 2 للبايت (UTF-16)
+            return total + (localStorage.getItem(key).length * 2); 
+        }, 0);
+        stats.totalStorageSizeKB = (totalStorageSize / 1024).toFixed(2);
 
         return stats;
     }
 }
+
+// 🛡️ ثابتات شدة الأخطاء
+const ErrorSeverity = {
+    LOW: 'LOW',
+    MEDIUM: 'MEDIUM',
+    HIGH: 'HIGH',
+    CRITICAL: 'CRITICAL' // يتطلب إرسال للخادم
+};
 
 // 🎯 النظام الرئيسي المحسّن (Enterprise Level)
 class AniListManager {
     constructor() {
         this.ANILIST_API = 'https://graphql.anilist.co';
         this.advancedCache = new AdvancedCache();
-        this.currentAnimeList = [];
         this.animeUrls = ANIME_URLS_LIST;
         
+        // 🌟 إدارة الحالة التفاعلية
+        this.stateService = new StateService({
+            currentAnimeList: [], // القائمة المعروضة حالياً
+            loadingState: {
+                currentIndex: 0,
+                isLoading: false,
+                allLoaded: false,
+                progress: 0,
+                message: 'جاري الإعداد...'
+            },
+            uiSettings: {
+                theme: 'dark',
+                language: 'ar',
+                animations: true,
+                imageQuality: 'high'
+            },
+            // 🌟 إضافة حالة لمراقبة الذاكرة
+            memoryUsage: {
+                currentMB: 0,
+                limitMB: 100, // حد تحذيري
+                warning: false
+            },
+            // 🌟 إضافة حالة للتصفية والفرز
+            currentFilters: {
+                status: null,
+                genre: null,
+                year: null,
+                minScore: 0,
+                sortBy: 'popularity', // القيمة الافتراضية
+                sortDirection: 'desc' // القيمة الافتراضية
+            },
+            // 🌟 إضافة حالة لـ Pre-fetching
+            prefetchedAnime: new Map() // ID -> Promise
+        });
+        
+        // ربط القائمة المعروضة بالحالة
+        this.currentAnimeList = this.stateService.get('currentAnimeList');
+
+
         // 👇 القائمة الجديدة لربط معرف الأنمي بملف بياناته (لتحقيق فكرتك)
         this.ANIME_DATA_FILES = new Map([
             // [AniList ID, 'اسم_ملف_البيانات.js']
@@ -255,6 +515,12 @@ class AniListManager {
         this.DELAY_MS = 1200;
         this.MAX_RETRIES = 3;
         this.TIMEOUT_MS = 15000;
+        // 🌟 الحد الأعلى للموارد المطلوبة دفعة واحدة في GraphQL
+        this.MAX_BATCH_IDS = 15; 
+        
+        // 🌟 تثبيت المعالجات المقيدة (Throttle/Debounce)
+        this.throttledScrollAnimations = throttle(this.addScrollAnimations.bind(this), 300);
+        this.debouncedSearch = debounce(this.searchAnime.bind(this), 400);
 
         // 📊 تتبع الأداء
         this.performance = {
@@ -263,37 +529,77 @@ class AniListManager {
             successfulRequests: 0,
             failedRequests: 0
         };
+        
+        // 🌟 تعيين حالة الجلب المسبق (لضمان أن دالة fetchAnimeBatch تستخدم الـ Map)
+        this.prefetchedAnime = this.stateService.get('prefetchedAnime');
 
-        this.loadingState = {
-            currentIndex: 0,
-            isLoading: false,
-            allLoaded: false,
-            progress: 0
-        };
 
-        // 🎨 إعدادات الواجهة المتقدمة
-        this.uiSettings = {
-            theme: 'dark',
-            language: 'ar',
-            animations: true,
-            imageQuality: 'high'
-        };
-
+        // 🎨 إعدادات الواجهة المتقدمة (مدمجة الآن في StateService)
+        // this.uiSettings = { ...this.stateService.get('uiSettings') }; 
+        
         this.init();
     }
 
     // 🔧 التهيئة المتقدمة
     init() {
         this.loadUISettings();
+        this.setupStateSubscriptions(); // 🌟 اشتراكات الحالة
         this.setupPerformanceMonitoring();
-        this.advancedCache.cleanup();
+        this.advancedCache.cleanupAndMonitor(); // 🌟 استخدام الدالة الجديدة
         this.setupErrorHandling();
+        
+        // 🛡️ بدء مراقبة الذاكرة كل 30 ثانية
+        setInterval(() => this.monitorMemoryUsage(), 30000); 
     }
+    
+    // 🌟 إعداد اشتراكات الحالة
+    setupStateSubscriptions() {
+        // تحديث إعدادات الواجهة عندما تتغير في الخدمة
+        this.stateService.subscribe('uiSettings', (newSettings) => {
+            this.uiSettings = newSettings; // تحديث الإعداد المحلي
+            document.documentElement.setAttribute('data-theme', newSettings.theme);
+            document.documentElement.setAttribute('lang', newSettings.language);
+            document.documentElement.setAttribute('dir', newSettings.language === 'ar' ? 'rtl' : 'ltr');
+            
+            // 🌟 إعادة تطبيق تأثيرات التمرير عند تغيير الإعدادات
+            if (newSettings.animations) {
+                this.addScrollAnimations();
+            }
+        });
+        
+        // تحديث حالة التحميل على الواجهة
+        this.stateService.subscribe('loadingState', (newState) => {
+            this.updateProgress(newState.progress, newState.message);
+            // ... يمكنك إضافة تحديثات أخرى للـ UI هنا ...
+        });
+        
+        // تحديث قائمة الأنمي
+        this.stateService.subscribe('currentAnimeList', (newList) => {
+            this.currentAnimeList = newList;
+            // الملاحظة: دالة displayAnime ستقوم بهذا.
+        });
+        
+        // 🛡️ الاشتراك في مراقبة الذاكرة لإطلاق التنبيهات
+        this.stateService.subscribe('memoryUsage', (newState) => {
+            if (newState.warning && newState.currentMB > 0) {
+                this.showToast(`⚠️ استهلاك الذاكرة مرتفع (${newState.currentMB} MB). قد تحتاج لإعادة التحميل.`, 'warning', 10000);
+            }
+        });
+        
+        // 🌟 الاشتراك في تغيير الفلاتر/الفرز وإعادة العرض
+        this.stateService.subscribe('currentFilters', (newFilters) => {
+            // 🌟 إعادة تصفية وفرز القائمة المعروضة حاليًا
+            this.applyCurrentFiltersAndSorting();
+        });
+    }
+
 
     // ⚡ إعداد مراقبة الأداء
     setupPerformanceMonitoring() {
         // مراقبة أداء الشبكة
         if ('connection' in navigator) {
+            // 🌟 إضافة تحديث فوري عند بدء التشغيل
+            this.adjustSettingsBasedOnConnection(); 
             navigator.connection.addEventListener('change', () => {
                 this.adjustSettingsBasedOnConnection();
             });
@@ -302,46 +608,87 @@ class AniListManager {
         // تتبع وقت التحميل
         this.performance.startTime = performance.now();
     }
+    
+    // 🛡️ مراقبة استخدام الذاكرة وإطلاق التحذيرات
+    monitorMemoryUsage() {
+        if ('performance' in window && 'memory' in performance) {
+            const memory = performance.memory;
+            // تحويل البايت إلى ميغابايت (MB)
+            const usedMB = (memory.usedJSHeapSize / 1048576).toFixed(2); 
+            const totalMB = (memory.totalJSHeapSize / 1048576).toFixed(2);
+            
+            const memoryState = this.stateService.get('memoryUsage');
+            
+            // 🌟 تحديث الحالة
+            this.stateService.set('memoryUsage', {
+                currentMB: parseFloat(usedMB),
+                limitMB: memoryState.limitMB,
+                // التحذير إذا تجاوز 80% من الحد الأقصى أو حد التحذير الذي وضعناه
+                warning: parseFloat(usedMB) > memoryState.limitMB || 
+                         (memory.jsHeapSizeLimit > 0 && memory.usedJSHeapSize / memory.jsHeapSizeLimit > 0.8)
+            });
+            
+            if (this.stateService.get('memoryUsage').warning) {
+                this.logError('MemoryWarning', `Used: ${usedMB}MB, Total: ${totalMB}MB`, ErrorSeverity.MEDIUM);
+            }
+        }
+    }
+
 
     // 🌐 ضبط الإعدادات بناءً على سرعة الاتصال
     adjustSettingsBasedOnConnection() {
+        const currentSettings = this.stateService.get('uiSettings');
+        let newSettings = { ...currentSettings };
+        
         if ('connection' in navigator) {
             const connection = navigator.connection;
             
+            // 🌟 منطق "تحسين أولوية التحميل"
             if (connection.saveData || connection.effectiveType === 'slow-2g') {
-                this.BATCH_SIZE = 2;
-                this.uiSettings.imageQuality = 'low';
-                this.uiSettings.animations = false;
+                this.BATCH_SIZE = 2; // تقليل حجم الدفعة لتقليل الإجهاد على الشبكة
+                newSettings.imageQuality = 'low';
+                newSettings.animations = false;
             } else if (connection.effectiveType.includes('2g')) {
                 this.BATCH_SIZE = 3;
-                this.uiSettings.imageQuality = 'medium';
+                newSettings.imageQuality = 'medium';
             } else {
                 this.BATCH_SIZE = 4;
-                this.uiSettings.imageQuality = 'high';
+                newSettings.imageQuality = 'high';
             }
         }
+        
+        // تحديث الحالة
+        this.stateService.set('uiSettings', newSettings);
     }
 
     // 🛡️ إعداد معالجة الأخطاء المتقدم
     setupErrorHandling() {
         window.addEventListener('error', (event) => {
-            this.logError('Global Error', event.error);
+            this.logError('Global Error', event.error, ErrorSeverity.CRITICAL);
         });
 
         window.addEventListener('unhandledrejection', (event) => {
-            this.logError('Unhandled Promise Rejection', event.reason);
+            this.logError('Unhandled Promise Rejection', event.reason, ErrorSeverity.HIGH);
         });
+        
+        // 🌟 إضافة معالجة للأخطاء المتعلقة بالموارد
+        document.addEventListener('error', (event) => {
+            if (event.target.tagName === 'IMG' || event.target.tagName === 'SCRIPT' || event.target.tagName === 'LINK') {
+                 this.logError('ResourceLoadFailure', `Failed to load resource: ${event.target.src || event.target.href}`, ErrorSeverity.LOW);
+            }
+        }, true); // استخدام capture phase لضمان التقاط جميع الأخطاء
     }
 
     // 📝 تسجيل الأخطاء
-    logError(type, error) {
+    logError(type, error, severity = ErrorSeverity.MEDIUM) {
         const errorLog = {
             type,
-            message: error?.message || 'Unknown error',
+            message: error?.message || (typeof error === 'string' ? error : 'Unknown error'), // 🌟 دعم الرسائل النصية المباشرة
             stack: error?.stack,
             timestamp: new Date().toISOString(),
             url: window.location.href,
-            userAgent: navigator.userAgent
+            userAgent: navigator.userAgent,
+            severity: severity // 🌟 إضافة شدة الخطأ
         };
 
         // حفظ في localStorage للتحليل لاحقاً
@@ -351,6 +698,17 @@ class AniListManager {
             localStorage.setItem('error_logs', JSON.stringify(existingLogs.slice(-100))); // حفظ آخر 100 خطأ فقط
         } catch (e) {
             console.warn('تعذر حفظ سجل الأخطاء:', e);
+        }
+        
+        // 🌟 إرسال الأخطاء الحرجة إلى الخادم (محاكاة)
+        if (severity === ErrorSeverity.CRITICAL || severity === ErrorSeverity.HIGH) {
+            // استخدام `navigator.sendBeacon` للإرسال غير الحاصر عند الإغلاق
+            if (navigator.sendBeacon) {
+                 // navigator.sendBeacon('/api/log-error', JSON.stringify(errorLog));
+            } else {
+                // fetch('/api/log-error', { method: 'POST', body: JSON.stringify(errorLog), keepalive: true });
+            }
+            console.error(`🚨 خطأ حرج تم الإبلاغ عنه: ${errorLog.message}`);
         }
     }
 
@@ -366,7 +724,7 @@ class AniListManager {
         });
     }
 
-    // 📊 عرض مؤشر التقدم
+    // 📊 عرض مؤشر التقدم (مؤشر التفاعل السريع)
     showProgressIndicator() {
         let indicator = document.getElementById('progress-indicator');
         if (!indicator) {
@@ -383,7 +741,10 @@ class AniListManager {
                 transform-origin: left;
                 animation: progressPulse 2s infinite;
             `;
-            document.body.appendChild(indicator);
+            // 🌟 إضافة إلى body بشكل آمن
+            if (document.body) {
+                 document.body.appendChild(indicator);
+            }
 
             // إضافة أنيميشن CSS
             const style = document.createElement('style');
@@ -394,7 +755,10 @@ class AniListManager {
                     100% { transform: scaleX(1); opacity: 0; }
                 }
             `;
-            document.head.appendChild(style);
+            // 🌟 إضافة إلى head بشكل آمن
+            if (document.head) {
+                document.head.appendChild(style);
+            }
         }
     }
 
@@ -402,7 +766,9 @@ class AniListManager {
     hideProgressIndicator() {
         const indicator = document.getElementById('progress-indicator');
         if (indicator) {
-            indicator.remove();
+            // 🌟 إخفاء سلس
+            indicator.style.opacity = '0';
+            setTimeout(() => indicator.remove(), 300);
         }
     }
 
@@ -410,12 +776,15 @@ class AniListManager {
     extractAnimeIds() {
         return this.animeUrls.map(url => {
             const match = url.match(/anime\/(\d+)|manga\/(\d+)/); 
-            return match ? parseInt(match[1] || match[2]) : null; 
-        }).filter(id => id !== null);
+            // 🌟 استخدام تعبير منطقي أكثر أماناً
+            return match ? parseInt(match[1] || match[2] || '0') : null; 
+        }).filter(id => id !== null && id > 0);
     }
 
     // 📝 GraphQL Query متقدم
     get ANIME_QUERY() {
+        // تم تصميم الاستعلام لجلب حقل 'id' و 'title' فقط، لأن دالة الجلب الآن ستستخدم التجميع
+        // هذا الاستعلام لم يعد يُستخدم في دالة fetchAnime الفردية ولكنه يُحفظ للاستخدام البديل/المستقبلي
         return `
             query ($id: Int) {
                 Media(id: $id, type: ANIME) {
@@ -516,20 +885,88 @@ class AniListManager {
             }
         `;
     }
+    
+    // ⚡ دالة جديدة: تحضير استعلام GraphQL المجمّع
+    prepareGraphQLQueryBatch(ids) {
+        let queryParts = [];
+        let variables = {};
+        
+        ids.forEach((id, index) => {
+            const alias = `anime${id}`;
+            const variableName = `id${id}`;
+            
+            // 🌟 بناء استعلام مخصص لكل ID باستخدام الـ Alias في GraphQL
+            queryParts.push(`
+                ${alias}: Media(id: $${variableName}, type: ANIME) {
+                    id
+                    idMal
+                    title { userPreferred romaji english native }
+                    description(asHtml: false)
+                    episodes duration status season seasonYear averageScore meanScore popularity favourites genres
+                    tags { name category rank }
+                    coverImage { large extraLarge color }
+                    bannerImage format
+                    startDate { year month day } endDate { year month day }
+                    nextAiringEpisode { airingAt timeUntilAiring episode }
+                    studios(isMain: true) { nodes { name siteUrl } }
+                    relations { edges { node { id title { userPreferred } type format } relationType } }
+                    recommendations { nodes { mediaRecommendation { id title { userPreferred } coverImage { large } } } }
+                    stats { statusDistribution { status amount } scoreDistribution { score amount } }
+                    siteUrl modNotes isAdult trending updatedAt
+                }
+            `);
+            
+            variables[variableName] = id;
+        });
 
-    // 🚀 دالة الجلب المتقدمة مع إعادة المحاولة الذكية
-    async fetchAnime(id) {
-        this.performance.requestsCount++;
+        const query = `
+            query (${ids.map(id => `$id${id}: Int`).join(', ')}) {
+                ${queryParts.join('\n')}
+            }
+        `;
+        
+        return { query, variables };
+    }
+
+
+    // 🚀 دالة الجلب المتقدمة مع إعادة المحاولة الذكية (مُعدلة لدعم الجلب الخلفي)
+    // 🌟 تم الآن توجيهها لاستخدام الجلب المجمع (fetchAnimeBatch) حتى في الوضع الفردي
+    async fetchAnime(id, isBackground = false) {
+        if (!isBackground) {
+            this.performance.requestsCount++;
+        }
 
         // التحقق من التخزين المؤقت أولاً
         const cached = this.advancedCache.get(`anime_${id}`);
-        if (cached) {
+        if (cached && !isBackground) { // لا نستخدم الكاش إذا كان تحديثاً خلفياً
             this.performance.successfulRequests++;
             return cached;
+        } 
+        
+        // 🌟 التحقق من وجود جلب مسبق
+        const prefetchedPromise = this.prefetchedAnime.get(id);
+        if (prefetchedPromise) {
+            this.prefetchedAnime.delete(id); // استخدام الجلب المسبق ثم إزالته
+            console.log(`⚡ استخدام الجلب المسبق للأنمي ID: ${id}`);
+            return prefetchedPromise;
         }
-
+        
+        // 🌟 استخدام الدالة المجمّعة حتى لجلب ID واحد (لضمان نفس الاستعلامات)
+        const result = await this.fetchAnimeBatch([id], isBackground); 
+        return result[0];
+    }
+    
+    
+    // ⚡ دالة جديدة: جلب مجموعة من الأنميات باستخدام التجميع (Batching)
+    async fetchAnimeBatch(ids, isBackground = false) {
+        if (!isBackground) {
+            this.performance.requestsCount++;
+        }
+        
         let retries = this.MAX_RETRIES;
         let lastError;
+        
+        const { query, variables } = this.prepareGraphQLQueryBatch(ids);
 
         while (retries > 0) {
             try {
@@ -542,10 +979,7 @@ class AniListManager {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                     },
-                    body: JSON.stringify({
-                        query: this.ANIME_QUERY,
-                        variables: { id: id }
-                    }),
+                    body: JSON.stringify({ query, variables }),
                     signal: controller.signal
                 });
 
@@ -553,7 +987,7 @@ class AniListManager {
 
                 if (response.status === 429) {
                     const retryAfter = response.headers.get('Retry-After') || 60;
-                    this.showToast(`⏳ تجاوز حد الطلبات، إعادة المحاولة بعد ${retryAfter} ثانية`, 'warning');
+                    if (!isBackground) this.showToast(`⏳ تجاوز حد الطلبات، إعادة المحاولة بعد ${retryAfter} ثانية`, 'warning');
                     await this.delay(retryAfter * 1000);
                     continue;
                 }
@@ -568,20 +1002,26 @@ class AniListManager {
                     throw new Error(`خطأ في GraphQL: ${result.errors[0].message}`);
                 }
                 
-                if (result.data && result.data.Media) {
-                    const anime = result.data.Media;
-                    
-                    // حفظ في التخزين المؤقت
-                    this.advancedCache.set(`anime_${id}`, anime, {
-                        size: JSON.stringify(anime).length,
-                        source: 'api'
+                const fetchedAnime = [];
+                // 🌟 معالجة نتائج التجميع
+                if (result.data) {
+                    ids.forEach(id => {
+                        const alias = `anime${id}`;
+                        const anime = result.data[alias];
+                        
+                        if (anime && anime.id) {
+                            // حفظ في الكاش
+                            this.advancedCache.set(`anime_${id}`, anime, {
+                                size: JSON.stringify(anime).length,
+                                source: isBackground ? 'api_bg_refresh' : 'api_batch_fetch'
+                            });
+                            fetchedAnime.push(anime);
+                        }
                     });
-                    
-                    this.performance.successfulRequests++;
-                    return anime;
                 }
                 
-                throw new Error('بيانات الوسائط غير متوفرة في الاستجابة');
+                if (!isBackground) this.performance.successfulRequests++;
+                return fetchedAnime;
                 
             } catch (error) {
                 lastError = error;
@@ -589,116 +1029,237 @@ class AniListManager {
                 
                 if (retries > 0) {
                     const backoffDelay = Math.pow(2, this.MAX_RETRIES - retries) * 1000;
-                    this.showToast(`🔄 إعادة المحاولة ${this.MAX_RETRIES - retries}/${this.MAX_RETRIES}`, 'info');
+                    if (!isBackground) this.showToast(`🔄 إعادة المحاولة ${this.MAX_RETRIES - retries}/${this.MAX_RETRIES}`, 'info');
                     await this.delay(backoffDelay);
                 }
             }
         }
 
-        this.performance.failedRequests++;
-        this.logError('FetchAnime', lastError);
-        throw new Error(`فشل جلب البيانات بعد ${this.MAX_RETRIES} محاولات: ${lastError.message}`);
+        if (!isBackground) {
+            this.performance.failedRequests++;
+            this.logError('FetchAnimeBatch', lastError, ErrorSeverity.HIGH);
+        }
+        throw new Error(`فشل جلب البيانات المجمعة بعد ${this.MAX_RETRIES} محاولات: ${lastError.message}`);
     }
 
-    // 🎯 جلب البيانات مع التقدم المتقدم
+
+    // 🎯 جلب البيانات مع التقدم المتقدم (مُعدلة لاستخدام التجميع)
     async fetchAnimeData() {
-        if (this.loadingState.isLoading) {
+        const loadingState = this.stateService.get('loadingState');
+
+        if (loadingState.isLoading) {
             this.showToast('جاري التحميل بالفعل...', 'info');
             return;
         }
 
-        this.loadingState.isLoading = true;
+        this.stateService.set('loadingState', { ...loadingState, isLoading: true });
         this.performance.startTime = performance.now();
         
         const animeIds = this.extractAnimeIds();
         
         try {
             this.showLoadingState(true);
-            this.updateProgress(0, 'بدء التحميل...');
-
-            if (this.loadingState.currentIndex === 0) {
-                // مسح الشبكة وإضافة هياكل التحميل عند البدء لأول مرة
-                const animeGrid = document.getElementById('animeGrid');
-                if(animeGrid) {
-                    animeGrid.innerHTML = this.createSkeletonLoader(this.BATCH_SIZE);
-                }
-            }
+            this.stateService.set('loadingState', { 
+                ...this.stateService.get('loadingState'), 
+                progress: 0, 
+                message: 'بدء التحميل...' 
+            });
 
             const totalIds = animeIds.length;
             let successfulFetches = 0;
             let failedFetches = 0;
-            const totalBatches = Math.ceil(totalIds / this.BATCH_SIZE);
+            const batchSize = this.MAX_BATCH_IDS; // استخدام حجم التجميع الأقصى
+            const totalBatches = Math.ceil(totalIds / batchSize);
+            let currentList = [...this.currentAnimeList]; 
+            
+            // 🌟 إضافة السكلتون المبدئي لجميع العناصر
+            const container = document.getElementById('animeGrid');
+            if(container) {
+                 container.innerHTML = this.createSkeletonLoader(totalIds);
+            }
 
-
-            for (let i = this.loadingState.currentIndex; i < totalIds; i += this.BATCH_SIZE) {
-                const batchIds = animeIds.slice(i, i + this.BATCH_SIZE);
-                const currentBatch = Math.floor(i / this.BATCH_SIZE) + 1;
+            for (let i = 0; i < totalIds; i += batchSize) { // 🌟 البدء من الصفر دائماً والاعتماد على الكاش
+                const batchIds = animeIds.slice(i, i + batchSize);
+                const currentBatch = Math.floor(i / batchSize) + 1;
                 
-                // تحديث شريط التقدم بالرسالة المطلوبة
-                this.updateProgress(
-                    (i / totalIds) * 100,
-                    `جاري تحميل الدفعة ${currentBatch} من ${totalBatches}`
-                );
-
-                // معالجة الدفعة
-                const batchPromises = batchIds.map(id => this.fetchAnime(id));
-                const batchResults = await Promise.allSettled(batchPromises);
-
-                // معالجة النتائج
-                batchResults.forEach((result, index) => {
-                    if (result.status === 'fulfilled' && result.value) {
-                        this.currentAnimeList.push(result.value);
-                        this.createAnimeCard(result.value);
+                // 1. التحقق من الكاش للدفعة الحالية
+                const uncachedIds = [];
+                const cachedData = [];
+                
+                batchIds.forEach(id => {
+                    const cached = this.advancedCache.get(`anime_${id}`);
+                    if (cached) {
+                        cachedData.push(cached);
                         successfulFetches++;
                     } else {
-                        failedFetches++;
-                        console.error(`فشل تحميل الأنمي ${batchIds[index]}:`, result.reason);
+                        uncachedIds.push(id);
+                    }
+                });
+                
+                // 2. تحديث الواجهة بالبيانات المخزنة فوراً
+                cachedData.forEach(anime => {
+                     // 🌟 إضافة بطاقة فوراً بدون إزالة سكلتون
+                    if (!currentList.some(a => a.id === anime.id)) {
+                         currentList.push(anime);
+                         // 🌟 استخدام دالة تحديث البطاقة الذكية
+                         this.updateAnimeCard(anime, true, 'skeleton', i); 
+                    }
+                });
+                // 🌟 لا نقوم بتحديث الحالة حتى يتم جلب البيانات الجديدة (لتجنب التحديثات المفرطة)
+                
+                // 3. تحديث شريط التقدم بالرسالة المطلوبة
+                this.stateService.set('loadingState', {
+                    ...this.stateService.get('loadingState'),
+                    progress: (i / totalIds) * 100,
+                    message: `جاري تحميل الدفعة ${currentBatch} من ${totalBatches} (تم تخزين ${cachedData.length} أنمي)`
+                });
+                
+                let fetchedData = [];
+
+                // 4. جلب البيانات غير المخزنة باستخدام التجميع
+                if (uncachedIds.length > 0) {
+                    try {
+                        const result = await this.fetchAnimeBatch(uncachedIds);
+                        fetchedData = result;
+                        successfulFetches += fetchedData.length;
+                        failedFetches += uncachedIds.length - fetchedData.length;
+                    } catch (error) {
+                        failedFetches += uncachedIds.length; // اعتبار كل الطلبات غير المنجزة فاشلة
+                        console.error('خطأ في طلب التجميع:', error);
+                        this.logError('BatchFetchError', error, ErrorSeverity.HIGH);
+                    }
+                }
+                
+                // 5. معالجة نتائج التجميع
+                fetchedData.forEach(anime => {
+                    if (!currentList.some(a => a.id === anime.id)) {
+                         currentList.push(anime);
+                         this.updateAnimeCard(anime, true, 'skeleton', animeIds.indexOf(anime.id));
                     }
                 });
 
-                this.loadingState.currentIndex = i + this.BATCH_SIZE;
-                this.loadingState.progress = (this.loadingState.currentIndex / totalIds) * 100;
+                // 6. تحديث القائمة النهائية والحالة
+                this.stateService.set('currentAnimeList', currentList);
+                this.stateService.set('loadingState', {
+                    ...this.stateService.get('loadingState'),
+                    currentIndex: i + batchSize,
+                    progress: Math.min(100, ((i + batchSize) / totalIds) * 100),
+                });
+                
+                // 7. إزالة السكلتون الذي لم يتم تحديثه (فشل)
+                const totalProcessedInBatch = cachedData.length + fetchedData.length;
+                const totalIdsInBatch = batchIds.length;
+                const failedInBatch = totalIdsInBatch - totalProcessedInBatch;
+                
+                if (failedInBatch > 0) {
+                     const skeletons = container.querySelectorAll('.skeleton');
+                     // 🌟 إزالة السكلتون الفاشل من نهاية الدفعة (افتراضياً)
+                     for (let k = 0; k < failedInBatch; k++) {
+                         if (skeletons[i + k]) {
+                             // 🌟 وضع علامة فشل بدلاً من الإزالة
+                             skeletons[i + k].classList.add('failed-load');
+                             skeletons[i + k].innerHTML = `<div class="error-load-text">فشل التحميل ${animeIds[i+k]}</div>`;
+                             // skeletons[i + k].remove();
+                         }
+                     }
+                }
+
 
                 // تأخير بين الدفعات مع التقدم
-                if (this.loadingState.currentIndex < totalIds) {
-                    await this.delay(this.DELAY_MS);
+                if (this.stateService.get('loadingState').currentIndex < totalIds) {
+                    await this.delay(this.DELAY_MS / 2); // تقليل التأخير مع التجميع
+                    
+                    // 🌟 تفعيل الجلب المسبق للدفعة التالية
+                    const nextBatchIds = animeIds.slice(i + batchSize, i + batchSize * 2);
+                    this.prefetchRelatedData(nextBatchIds);
                 }
             }
+            
+            // 8. تطبيق الفرز والتصفية على القائمة النهائية (للتأكد من الترتيب الصحيح)
+            this.applyCurrentFiltersAndSorting();
+
 
             // الانتهاء من التحميل
-            this.loadingState.allLoaded = true;
-            this.loadingState.progress = 100;
-
-            // تحديث الشريط للمرة الأخيرة
-            this.updateProgress(100, 'اكتمل التحميل بنجاح!'); 
+            this.stateService.set('loadingState', {
+                ...this.stateService.get('loadingState'),
+                allLoaded: true,
+                progress: 100,
+                message: 'اكتمل التحميل بنجاح!'
+            });
 
             // إظهار إحصائيات الأداء
             this.showPerformanceSummary(successfulFetches, failedFetches);
 
             // حفظ القائمة الكاملة بعد التحميل
-            this.advancedCache.set('current_anime_list', this.currentAnimeList, { source: 'full_fetch' });
+            this.advancedCache.set('current_anime_list', currentList, { source: 'full_fetch' });
             
             // تطبيق الرسوم المتحركة
-            if (this.uiSettings.animations) {
+            if (this.stateService.get('uiSettings').animations) {
                 this.addScrollAnimations();
             }
 
         } catch (error) {
             this.handleDataFetchError(error);
         } finally {
-            this.loadingState.isLoading = false;
+            this.stateService.set('loadingState', { ...this.stateService.get('loadingState'), isLoading: false });
             this.showLoadingState(false);
             // 🛑 إخفاء شريط التقدم بعد الانتهاء
             setTimeout(() => this.hideProgressBar(), 1000); 
         }
     }
+    
+    // 🌟 دالة جديدة: الجلب المسبق للبيانات المرتبطة
+    prefetchRelatedData(ids) {
+        // فلترة المعرفات التي هي قيد الجلب المسبق أو موجودة في الكاش
+        const newIdsToPrefetch = ids.filter(id => 
+            !this.prefetchedAnime.has(id) && !this.advancedCache.get(`anime_${id}`)
+        );
+        
+        if (newIdsToPrefetch.length === 0) return;
+        
+        console.log(`⚡ بدء الجلب المسبق لـ ${newIdsToPrefetch.length} أنمي`);
+        
+        // استخدام fetchAnimeBatch في وضع الخلفية وإنشاء Promise لحفظها
+        const prefetchPromise = this.fetchAnimeBatch(newIdsToPrefetch, true);
+        
+        newIdsToPrefetch.forEach(id => {
+            this.prefetchedAnime.set(id, prefetchPromise);
+            
+            // 🌟 تحديث الـ Promise عند الانتهاء (لضمان أن الكاش تم تحديثه)
+            prefetchPromise.then(result => {
+                const fetchedAnime = result.find(a => a.id === id);
+                if (fetchedAnime) {
+                     // 🌟 وضع البيانات مباشرة في الكاش (تم بالفعل داخل fetchAnimeBatch)
+                     this.updateSingleAnimeInState(fetchedAnime); // تحديث الواجهة فورًا
+                }
+                this.prefetchedAnime.delete(id);
+            }).catch(() => {
+                this.prefetchedAnime.delete(id);
+            });
+        });
+    }
+
+    // 🌟 تحديث حالة أنمي مفردة في قائمة الحالة (للتحديث الخلفي/المسبق)
+    updateSingleAnimeInState(anime) {
+        const currentList = this.stateService.get('currentAnimeList');
+        const index = currentList.findIndex(a => a.id === anime.id);
+        
+        if (index > -1) {
+            // 🌟 إنشاء قائمة جديدة لضمان عدم الطفرة (Immutability)
+            const newList = [...currentList];
+            newList[index] = anime;
+            this.stateService.set('currentAnimeList', newList);
+            this.updateAnimeCard(anime, false); // تحديث بطاقة الأنمي على الواجهة
+        }
+    }
+
 
     // 📊 إنشاء هيكل التحميل
     createSkeletonLoader(count) {
         let skeletonHTML = '';
         for (let i = 0; i < count; i++) {
             skeletonHTML += `
-                <div class="anime-card skeleton">
+                <div class="anime-card skeleton" data-skeleton-index="${i}">
                     <div class="skeleton-image"></div>
                     <div class="skeleton-title"></div>
                     <div class="skeleton-text"></div>
@@ -710,52 +1271,24 @@ class AniListManager {
 
     // 📊 تحديث شريط التقدم (معدلة)
     updateProgress(percent, message = '') {
-        let progressBar = document.getElementById('progress-bar');
+        let progressContainer = document.getElementById('progress-container');
         let progressText = document.getElementById('progress-text');
         const progressFill = document.getElementById('progress-fill');
         
-        if (!progressBar) {
-            const progressContainer = document.createElement('div');
+        // 🌟 إذا لم يكن موجوداً، قم بإنشائه (تم نقل معظم CSS إلى أسفل)
+        if (!progressContainer && document.body) {
+            progressContainer = document.createElement('div');
             progressContainer.id = 'progress-container';
-            progressContainer.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                background: rgba(0, 0, 0, 0.9);
-                padding: 10px;
-                z-index: 9999;
-                backdrop-filter: blur(10px);
-                transition: opacity 0.3s ease; /* إضافة انتقال للإخفاء */
-            `;
+            progressContainer.style.cssText = `z-index: 9999; opacity: 1;`;
 
-            progressBar = document.createElement('div');
+            const progressBar = document.createElement('div');
             progressBar.id = 'progress-bar';
-            progressBar.style.cssText = `
-                width: 100%;
-                height: 4px;
-                background: #333;
-                border-radius: 2px;
-                overflow: hidden;
-            `;
 
             const newProgressFill = document.createElement('div');
             newProgressFill.id = 'progress-fill';
-            newProgressFill.style.cssText = `
-                height: 100%;
-                background: linear-gradient(90deg, #00ff88, #0099ff);
-                transition: width 0.3s ease;
-                width: 0%;
-            `;
 
             progressText = document.createElement('div');
             progressText.id = 'progress-text';
-            progressText.style.cssText = `
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            `;
 
             progressBar.appendChild(newProgressFill);
             progressContainer.appendChild(progressBar);
@@ -764,10 +1297,8 @@ class AniListManager {
         }
 
         // تحديث التقدم والنص
-        document.getElementById('progress-fill').style.width = `${percent}%`;
-        if (progressText) {
-            progressText.textContent = message;
-        }
+        if (progressFill) progressFill.style.width = `${percent}%`;
+        if (progressText) progressText.textContent = message;
     }
 
     // 📊 إخفاء شريط التقدم (جديدة)
@@ -788,14 +1319,14 @@ class AniListManager {
         const cacheStats = this.advancedCache.getStats();
         
         const summary = `
-            ✅ تم تحميل ${successful} أنمي بنجاح
-            ❌ فشل تحميل ${failed} أنمي
-            ⏱️ وقت التحميل: ${totalTime.toFixed(2)} ثانية
-            📊 نسبة النجاح: ${((successful / (successful + failed)) * 100).toFixed(1)}%
-            💾 ضربات التخزين المؤقت: ${cacheStats.totalHits}
+            ✅ ${successful} أنمي
+            ❌ ${failed} أنمي
+            ⏱️ ${totalTime.toFixed(2)} ثانية
+            📊 نجاح: ${((successful / (successful + failed)) * 100).toFixed(1)}%
+            💾 ضربات التخزين: ${cacheStats.totalHits} (حجم التخزين: ${cacheStats.totalStorageSizeKB} KB)
         `;
 
-        this.showToast(summary, 'success', 5000);
+        this.showToast(summary, 'success', 7000); // زيادة المدة
         
         // حفظ إحصائيات الأداء
         this.savePerformanceMetrics(successful, failed, totalTime);
@@ -810,117 +1341,153 @@ class AniListManager {
             totalTime: totalTime,
             cacheStats: this.advancedCache.getStats(),
             userAgent: navigator.userAgent,
+            // 🌟 التأكد من وجود navigator.connection
             connection: navigator.connection ? {
                 effectiveType: navigator.connection.effectiveType,
                 downlink: navigator.connection.downlink,
                 rtt: navigator.connection.rtt
-            } : null
+            } : null,
+            // 🛡️ إضافة حالة الذاكرة
+            memory: this.stateService.get('memoryUsage')
         };
 
         try {
             const existingMetrics = JSON.parse(localStorage.getItem('performance_metrics') || '[]');
             existingMetrics.push(metrics);
-            // حفظ آخر 50 سجل أداء فقط
-            localStorage.setItem('performance_metrics', JSON.stringify(existingLogs.slice(-50)));
+            // حفظ آخر 50 سجل أداء فقط (تم تصحيح اسم المتغير)
+            localStorage.setItem('performance_metrics', JSON.stringify(existingMetrics.slice(-50)));
         } catch (error) {
             console.warn('تعذر حفظ مؤشرات الأداء:', error);
+            this.logError('SavePerformance', error, ErrorSeverity.LOW);
         }
     }
 
-    // 🎨 إنشاء بطاقة الأنمي المتقدمة (معدلة)
-    createAnimeCard(anime) {
+    // 🎨 إنشاء وتحديث بطاقة الأنمي المتقدمة
+    updateAnimeCard(anime, isNewCard = false, placeholderClass = null, skeletonIndex = null) {
         const container = document.getElementById('animeGrid');
+        if (!container) return;
+
+        // 1. البحث عن البطاقة الحالية أو هيكل التحميل
+        let card = container.querySelector(`[data-anime-id="${anime.id}"]`);
+        let placeholderElement = null;
         
-        // إزالة هيكل التحميل إذا كان موجوداً
-        const skeletons = container.querySelectorAll('.skeleton');
-        if (skeletons.length > 0) {
-            // إزالة هيكل واحد فقط
-            skeletons[0].remove();
+        if (!card && placeholderClass) {
+             // 🌟 البحث عن هيكل التحميل باستخدام الفهرس
+             placeholderElement = container.querySelector(`.${placeholderClass}[data-skeleton-index="${skeletonIndex}"]`);
+             // 🌟 البحث في حالة عدم وجود فهرس (في حالة الإضافة من التخزين المؤقت)
+             if (!placeholderElement) { 
+                 placeholderElement = container.querySelector(`.${placeholderClass}`);
+             }
+        }
+        
+        // 2. إذا كانت البطاقة موجودة بالفعل، قم بتحديثها فقط
+        if (card && !isNewCard) {
+             // 🌟 تحديث أزرار المفضلة وما شابه
+             this.updateFavoriteButton(anime.id);
+             return card;
         }
 
-        const card = document.createElement('div');
-        card.className = 'anime-card fade-in';
-        card.setAttribute('data-anime-id', anime.id);
-        card.setAttribute('data-status', anime.status);
-        
-        const title = anime.title.userPreferred || anime.title.romaji || 'عنوان غير متوفر';
-        const score = anime.averageScore ? (anime.averageScore / 10).toFixed(1) : 'N/A';
-        const year = anime.seasonYear || 'N/A';
-        const episodes = anime.episodes || '?';
-        
-        // تحسين جودة الصورة بناءً على الإعدادات
-        let coverImage = anime.coverImage?.extraLarge || anime.coverImage?.large;
-        if (this.uiSettings.imageQuality === 'low') {
-            coverImage = anime.coverImage?.large;
-        }
-        
-        // 🎯 منطق تحديد رابط المشاهدة/السيرفر
-        const dataFile = this.ANIME_DATA_FILES.get(anime.id);
-        
-        // إذا كان هناك ملف بيانات مخصص، نذهب إلى صفحة السيرفرات مباشرة
-        // وإلا، نذهب إلى صفحة التفاصيل القياسية (anime.html)
-        const watchLink = dataFile 
-            ? `servers.html?datafile=${dataFile}&animeId=${anime.id}` 
-            : `anime.html?id=${anime.id}`; 
+
+        // 3. إنشاء أو إعادة استخدام البطاقة
+        if (!card) {
+            card = document.createElement('div');
+            // 🌟 إضافة خاصية will-change لتحسين أداء التصيير
+            card.style.willChange = 'transform, opacity'; 
+            card.className = 'anime-card fade-in';
+            card.setAttribute('data-anime-id', anime.id);
+            card.setAttribute('data-status', anime.status);
+            // 🌟 إضافة خاصية لضمان ترتيب الأنماط بعد الجلب
+            card.style.order = skeletonIndex !== null ? skeletonIndex : 999; 
             
-        // رابط الصفحة التفصيلية (للنقر على البطاقة)
-        const detailsLink = `anime.html?id=${anime.id}`;
+            // ... (بقية منطق إنشاء البطاقة من createAnimeCard) ...
+            
+            const title = anime.title.userPreferred || anime.title.romaji || 'عنوان غير متوفر';
+            const score = anime.averageScore ? (anime.averageScore / 10).toFixed(1) : 'N/A';
+            const year = anime.seasonYear || 'N/A';
+            const episodes = anime.episodes || '?';
+            
+            const uiSettings = this.stateService.get('uiSettings');
+
+            let coverImage = anime.coverImage?.extraLarge || anime.coverImage?.large;
+            if (uiSettings.imageQuality === 'low') {
+                coverImage = anime.coverImage?.large;
+            }
+            
+            const dataFile = this.ANIME_DATA_FILES.get(anime.id);
+            const watchLink = dataFile 
+                ? `servers.html?datafile=${dataFile}&animeId=${anime.id}` 
+                : `anime.html?id=${anime.id}`; 
+                
+            const detailsLink = `anime.html?id=${anime.id}`;
 
 
-        card.innerHTML = `
-            <div class="anime-image-container">
-                <img 
-                    src="${coverImage || 'https://via.placeholder.com/300x400/1a1a3a/ffffff?text=صورة+غير+متوفرة'}" 
-                    alt="${title}"
-                    loading="lazy"
-                    onerror="this.src='https://via.placeholder.com/300x400/1a1a3a/ffffff?text=صورة+غير+متوفرة'"
-                >
-                <div class="anime-overlay">
-                    <div class="anime-year">${year}</div>
-                    <div class="anime-rating">
-                        <i class="fas fa-star"></i> ${score}
+            card.innerHTML = `
+                <div class="anime-image-container">
+                    <img 
+                        src="${coverImage || 'https://via.placeholder.com/300x400/1a1a3a/ffffff?text=صورة+غير+متوفرة'}" 
+                        alt="${title}"
+                        loading="lazy"
+                        onerror="this.src='https://via.placeholder.com/300x400/1a1a3a/ffffff?text=صورة+غير+متوفرة'"
+                    >
+                    <div class="anime-overlay">
+                        <div class="anime-year">${year}</div>
+                        <div class="anime-rating">
+                            <i class="fas fa-star"></i> ${score}
+                        </div>
+                        <div class="anime-episodes">${episodes} حلقة</div>
+                        <div class="anime-badge ${anime.status.toLowerCase()}">${this.getStatusText(anime.status)}</div>
                     </div>
-                    <div class="anime-episodes">${episodes} حلقة</div>
-                    <div class="anime-badge ${anime.status.toLowerCase()}">${this.getStatusText(anime.status)}</div>
+                    <div class="anime-actions">
+                        <button class="btn-favorite" onclick="event.stopPropagation(); aniListManager.toggleFavorite(${anime.id})">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <a href="${watchLink}" class="btn-watch-link" onclick="event.stopPropagation(); aniListManager.storeAnimeData(${anime.id})">
+                            <i class="fas fa-play"></i>
+                        </a>
+                        <button class="btn-share" onclick="event.stopPropagation(); aniListManager.shareAnime(${anime.id})">
+                            <i class="fas fa-share"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="anime-actions">
-                    <button class="btn-favorite" onclick="event.stopPropagation(); aniListManager.toggleFavorite(${anime.id})">
-                        <i class="far fa-heart"></i>
-                    </button>
-                    <a href="${watchLink}" class="btn-watch-link" onclick="event.stopPropagation(); aniListManager.storeAnimeData(${anime.id})">
-                        <i class="fas fa-play"></i>
-                    </a>
-                    <button class="btn-share" onclick="event.stopPropagation(); aniListManager.shareAnime(${anime.id})">
-                        <i class="fas fa-share"></i>
-                    </button>
+                <div class="anime-info">
+                    <h3 class="anime-title">${title}</h3>
+                    <div class="anime-genres">
+                        ${(anime.genres || []).slice(0, 2).map(genre => 
+                            `<span class="genre-tag">${genre}</span>`
+                        ).join('')}
+                    </div>
                 </div>
-            </div>
-            <div class="anime-info">
-                <h3 class="anime-title">${title}</h3>
-                <div class="anime-genres">
-                    ${(anime.genres || []).slice(0, 2).map(genre => 
-                        `<span class="genre-tag">${genre}</span>`
-                    ).join('')}
-                </div>
-            </div>
-        `;
+            `;
 
-        // عند النقر على البطاقة بالكامل (للذهاب لصفحة التفاصيل)
-        card.addEventListener('click', () => {
-            // حفظ بيانات الأنمي
-            this.storeAnimeData(anime.id);
-            // التوجيه إلى صفحة التفاصيل (anime.html)
-            window.location.href = detailsLink;
-        });
+            card.addEventListener('click', () => {
+                this.storeAnimeData(anime.id);
+                window.location.href = detailsLink;
+            });
+            
+            this.updateFavoriteButton(anime.id);
+        }
+        
+        // 4. استبدال هيكل التحميل بالبطاقة الجديدة
+        if (placeholderElement) {
+            container.replaceChild(card, placeholderElement);
+        } else if (isNewCard) {
+            // إضافة البطاقة إذا لم يكن هناك هيكل تحويل
+             container.appendChild(card);
+        }
 
-        container.appendChild(card);
-        this.updateFavoriteButton(anime.id); // تحديث حالة زر المفضلة
         return card;
+    }
+    
+    // 🎨 إنشاء بطاقة الأنمي المتقدمة (معدلة)
+    createAnimeCard(anime, removeSkeleton = false) {
+        // 🌟 توجيه الدالة القديمة لاستخدام الدالة الجديدة
+        return this.updateAnimeCard(anime, true, removeSkeleton ? 'skeleton' : null);
     }
 
     // 👇 دالة مساعدة لحفظ بيانات الأنمي قبل الانتقال (تم تعديلها)
     storeAnimeData(animeId) {
-        const anime = this.currentAnimeList.find(a => a.id === animeId);
+        // 🌟 البحث في القائمة المحدثة
+        const anime = this.stateService.get('currentAnimeList').find(a => a.id === animeId);
         if (anime) {
              // 1. التخزين المؤقت لبيانات الأنمي في sessionStorage (للوصول السريع في الصفحة التالية)
              sessionStorage.setItem('currentAnime', JSON.stringify(anime));
@@ -978,7 +1545,7 @@ class AniListManager {
 
     // 📤 مشاركة الأنمي
     shareAnime(animeId) {
-        const anime = this.currentAnimeList.find(a => a.id === animeId);
+        const anime = this.stateService.get('currentAnimeList').find(a => a.id === animeId);
         if (!anime) return;
 
         const title = anime.title.userPreferred;
@@ -1005,8 +1572,8 @@ class AniListManager {
         this.showToast(`جاري التوجيه إلى تفاصيل ${anime.title.userPreferred}...`, 'info');
         
         this.storeAnimeData(anime.id);
-
-        // تأثير انتقال سلس
+        
+        // 🌟 تطبيق تأثير التلاشي للتوجيه
         document.body.style.opacity = '0.7';
         document.body.style.transition = 'opacity 0.3s ease';
 
@@ -1018,31 +1585,49 @@ class AniListManager {
 
     // 🔍 البحث المتقدم
     searchAnime(searchTerm) {
+        const currentList = this.stateService.get('currentAnimeList');
         if (!searchTerm.trim()) {
-            this.displayAnime(this.currentAnimeList);
+            // 🌟 العودة إلى القائمة بعد تطبيق التصفية والفرز
+            this.applyCurrentFiltersAndSorting(); 
             return;
         }
 
-        const filtered = this.currentAnimeList.filter(anime => {
+        const searchLower = searchTerm.toLowerCase();
+        
+        // 🌟 تطبيق البحث على القائمة الكاملة أولاً
+        const unfilteredList = this.advancedCache.get('current_anime_list') || currentList;
+        
+        const filtered = unfilteredList.filter(anime => {
             const title = anime.title.userPreferred || anime.title.romaji || '';
             const englishTitle = anime.title.english || '';
             const nativeTitle = anime.title.native || '';
+            const description = anime.description || ''; // 🌟 البحث في الوصف أيضًا
             const genres = anime.genres || [];
-            const searchLower = searchTerm.toLowerCase();
 
             return (
                 title.toLowerCase().includes(searchLower) ||
                 englishTitle.toLowerCase().includes(searchLower) ||
                 nativeTitle.toLowerCase().includes(searchLower) ||
+                description.toLowerCase().includes(searchLower) || // 🌟 إضافة البحث في الوصف
                 genres.some(genre => genre.toLowerCase().includes(searchLower))
             );
         });
 
-        this.displayAnime(filtered);
+        // 🌟 تطبيق التصفية والفرز على نتائج البحث
+        const filters = this.stateService.get('currentFilters');
+        const finalFiltered = this.applyFiltersAndSortingLogic(filtered, filters);
+        
+        this.displayAnime(finalFiltered);
         
         // إظهار نتائج البحث
-        this.showSearchResults(filtered.length, searchTerm);
+        this.showSearchResults(finalFiltered.length, searchTerm);
     }
+    
+    // 🌟 دالة البحث التي تستخدم Debounce
+    performSearch(searchTerm) {
+        this.debouncedSearch(searchTerm);
+    }
+
 
     // 📊 عرض نتائج البحث
     showSearchResults(count, term) {
@@ -1057,22 +1642,35 @@ class AniListManager {
                 border-radius: 8px;
                 margin: 10px 0;
             `;
-            document.querySelector('.search-container').appendChild(newResultsInfo);
+            // 🌟 البحث عن الحاوية بشكل آمن قبل الإضافة
+            const searchContainer = document.querySelector('.search-container');
+            if (searchContainer) {
+                 searchContainer.appendChild(newResultsInfo);
+            }
         }
 
         const element = document.getElementById('search-results-info');
-        if (count === 0) {
-            element.innerHTML = `❌ لم يتم العثور على نتائج لـ "<strong>${term}</strong>"`;
-            element.style.color = '#ff4757';
-        } else {
-            element.innerHTML = `✅ تم العثور على ${count} نتيجة لـ "<strong>${term}</strong>"`;
-            element.style.color = '#00ff88';
+        if (element) {
+            if (count === 0) {
+                element.innerHTML = `❌ لم يتم العثور على نتائج لـ "<strong>${term}</strong>"`;
+                element.style.color = '#ff4757';
+            } else {
+                element.innerHTML = `✅ تم العثور على ${count} نتيجة لـ "<strong>${term}</strong>"`;
+                element.style.color = '#00ff88';
+            }
         }
     }
 
-    // 🎛️ تصفية متقدمة
-    filterAnime(filters) {
-        let filtered = [...this.currentAnimeList];
+    // 🎛️ تحديث الفلتر (جديدة)
+    updateFilter(key, value) {
+        const currentFilters = this.stateService.get('currentFilters');
+        const newFilters = { ...currentFilters, [key]: value };
+        this.stateService.set('currentFilters', newFilters);
+    }
+    
+    // 🎛️ منطق تطبيق التصفية والفرز (جديدة)
+    applyFiltersAndSortingLogic(list, filters) {
+        let filtered = [...list];
 
         if (filters.status) {
             filtered = filtered.filter(anime => anime.status === filters.status);
@@ -1085,16 +1683,67 @@ class AniListManager {
         }
 
         if (filters.year) {
-            filtered = filtered.filter(anime => anime.seasonYear == filters.year);
+            // 🌟 تحويل القيمة إلى رقم لضمان المقارنة الصحيحة
+            const yearNum = parseInt(filters.year);
+            filtered = filtered.filter(anime => anime.seasonYear === yearNum);
         }
 
         if (filters.minScore) {
+            const minScore = filters.minScore * 10;
             filtered = filtered.filter(anime => 
-                anime.averageScore && anime.averageScore >= filters.minScore * 10
+                anime.averageScore && anime.averageScore >= minScore
             );
         }
+        
+        // 🌟 تطبيق الفرز
+        filtered.sort((a, b) => {
+            let valA, valB;
+            switch (filters.sortBy) {
+                case 'score':
+                    valA = a.averageScore || 0;
+                    valB = b.averageScore || 0;
+                    break;
+                case 'popularity':
+                    valA = a.popularity || 0;
+                    valB = b.popularity || 0;
+                    break;
+                case 'title':
+                    valA = a.title.userPreferred || '';
+                    valB = b.title.userPreferred || '';
+                    if (filters.sortDirection === 'asc') {
+                        return valA.localeCompare(valB);
+                    }
+                    return valB.localeCompare(valA);
+                case 'year':
+                    valA = a.seasonYear || 0;
+                    valB = b.seasonYear || 0;
+                    break;
+                default: // الافتراضي
+                    valA = a.id;
+                    valB = b.id;
+            }
+            
+            if (filters.sortBy === 'title') return 0; // تم التعامل معه بالأعلى
 
-        this.displayAnime(filtered);
+            if (filters.sortDirection === 'asc') {
+                return valA - valB;
+            }
+            return valB - valA;
+        });
+
+        return filtered;
+    }
+    
+    // 🎛️ تطبيق الفلاتر والفرز على القائمة المعروضة
+    applyCurrentFiltersAndSorting() {
+        const fullList = this.advancedCache.get('current_anime_list') || this.stateService.get('currentAnimeList');
+        const filters = this.stateService.get('currentFilters');
+        
+        // 🌟 التأكد من تطبيق الفرز والتصفية على القائمة الكاملة
+        const finalFiltered = this.applyFiltersAndSortingLogic(fullList, filters);
+        
+        // 🌟 إعادة عرض القائمة المفلترة والمفرزة
+        this.displayAnime(finalFiltered);
     }
 
     // 🎯 الحصول على نص الحالة
@@ -1112,15 +1761,26 @@ class AniListManager {
     // 📱 إدارة حالة التحميل
     showLoadingState(show) {
         const loading = document.getElementById('loading');
+        const loadingState = this.stateService.get('loadingState');
+
         if (loading) {
             loading.style.display = show ? 'block' : 'none';
             
             if (show) {
+                // 🌟 تحديث الإحصائيات داخل اللودر
+                const stats = this.advancedCache.getStats();
+                const memory = this.stateService.get('memoryUsage'); // 🛡️ إضافة مراقبة الذاكرة
+                const loaderStatsHTML = `
+                    <p>الطلبات: ${this.performance.requestsCount}</p>
+                    <p>ضربات التخزين المؤقت: ${stats.totalHits}</p>
+                    <p class="${memory.warning ? 'warning-text' : ''}">الذاكرة: ${memory.currentMB} MB</p>
+                `;
+
                 loading.innerHTML = `
                     <div class="advanced-loader">
                         <div class="loader-spinner"></div>
-                        <div class="loader-text">جاري تحميل أحدث الأنميات...</div>
-                        <div class="loader-stats" id="loader-stats"></div>
+                        <div class="loader-text">${loadingState.message}</div>
+                        <div class="loader-stats" id="loader-stats">${loaderStatsHTML}</div>
                     </div>
                 `;
             }
@@ -1135,12 +1795,16 @@ class AniListManager {
         
         if (error.message.includes('429')) {
             userMessage = '🛑 تجاوز حد طلبات API. يرجى الانتظار دقيقة والمحاولة مرة أخرى.';
-        } else if (error.message.includes('Network') || error.message.includes('fetch')) {
+            this.logError('DataFetchError', error, ErrorSeverity.HIGH);
+        } else if (error.message.includes('Network') || error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
             userMessage = '🌐 مشكلة في الاتصال بالإنترنت. تحقق من اتصالك وحاول مرة أخرى.';
+            this.logError('DataFetchError', error, ErrorSeverity.CRITICAL);
         } else if (error.message.includes('timeout')) {
             userMessage = '⏰ انتهت مهلة الطلب. جارٍ إعادة المحاولة...';
+            this.logError('DataFetchError', error, ErrorSeverity.MEDIUM);
         } else {
             userMessage = `❌ حدث خطأ: ${error.message}`;
+            this.logError('DataFetchError', error, ErrorSeverity.MEDIUM);
         }
         
         this.showError(userMessage);
@@ -1150,8 +1814,13 @@ class AniListManager {
     displayAnime(animeList) {
         const container = document.getElementById('animeGrid');
         
-        // إزالة جميع الأنماط السابقة
-        container.innerHTML = '';
+        // 🌟 إزالة محتوى الحاوية بطريقة أسرع
+        if (container) {
+             container.innerHTML = '';
+        } else {
+             return;
+        }
+
 
         if (!animeList || animeList.length === 0) {
             container.innerHTML = `
@@ -1165,35 +1834,51 @@ class AniListManager {
         }
 
         animeList.forEach(anime => {
-            this.createAnimeCard(anime);
+            this.createAnimeCard(anime, false); // عدم إزالة السكلتون هنا
         });
 
-        if (this.uiSettings.animations) {
+        if (this.stateService.get('uiSettings').animations) {
             this.addScrollAnimations();
         }
     }
 
-    // ✨ إضافة تأثيرات التمرير
+    // ✨ إضافة تأثيرات التمرير (تم تحسين Intersection Observer)
     addScrollAnimations() {
+        // إزالة المراقبين القدامى أولاً لتجنب التسريبات
+        if (this.scrollObserver) {
+            this.scrollObserver.disconnect();
+        }
+        
         const animeCards = document.querySelectorAll('.anime-card:not(.skeleton)');
-        const observer = new IntersectionObserver((entries) => {
+        
+        // 🌟 تحسين IntersectionObserver باستخدام rootMargin لتحميل استباقي/تحريك استباقي
+        this.scrollObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.style.opacity = '1';
                     entry.target.style.transform = 'translateY(0) scale(1)';
-                    observer.unobserve(entry.target);
+                    // 🌟 إضافة will-change: auto لـ transition end (متقدم جدًا)
+                    entry.target.addEventListener('transitionend', function handler() {
+                         entry.target.style.willChange = 'auto';
+                         entry.target.removeEventListener('transitionend', handler);
+                    });
+                    this.scrollObserver.unobserve(entry.target);
                 }
             });
         }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            threshold: 0.05, // تفعيل التحريك عند ظهور 5% من العنصر
+            rootMargin: '0px 0px -100px 0px' // تحميل واستباق التحريك قبل 100 بكسل من دخول العنصر
         });
 
         animeCards.forEach(card => {
+            // 🌟 تطبيق الترتيب بناءً على خاصية order
+            const order = card.style.order;
             card.style.opacity = '0';
             card.style.transform = 'translateY(30px) scale(0.95)';
+            // 🌟 استخدام will-change لتحسين تصيير التحريك
+            card.style.willChange = 'transform, opacity'; 
             card.style.transition = 'opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease';
-            observer.observe(card);
+            this.scrollObserver.observe(card);
         });
     }
 
@@ -1223,7 +1908,10 @@ class AniListManager {
             </div>
         `;
 
-        document.body.appendChild(toast);
+        // 🌟 إضافة إلى body بشكل آمن
+        if (document.body) {
+             document.body.appendChild(toast);
+        }
 
         // إخفاء تلقائي
         setTimeout(() => {
@@ -1239,7 +1927,14 @@ class AniListManager {
         const container = document.getElementById('animeGrid');
         
         // مسح محتوى الشبكة
-        container.innerHTML = '';
+        if (container) {
+             container.innerHTML = '';
+        } else {
+             // إظهار في toast إذا كانت الحاوية غير موجودة
+             this.showToast(message, 'error', 15000);
+             return;
+        }
+
 
         container.innerHTML = `
             <div class="error-state">
@@ -1260,37 +1955,56 @@ class AniListManager {
         try {
             const savedSettings = localStorage.getItem('ui_settings');
             if (savedSettings) {
-                this.uiSettings = { ...this.uiSettings, ...JSON.parse(savedSettings) };
+                // 🌟 تحديث StateService بالإعدادات المحفوظة
+                const settings = JSON.parse(savedSettings);
+                this.stateService.set('uiSettings', { 
+                    ...this.stateService.get('uiSettings'), 
+                    ...settings 
+                });
             }
         } catch (error) {
             console.warn('تعذر تحميل إعدادات الواجهة:', error);
+            this.logError('LoadUISettings', error, ErrorSeverity.LOW);
         }
     }
 
     // 💾 حفظ إعدادات الواجهة
     saveUISettings() {
         try {
-            localStorage.setItem('ui_settings', JSON.stringify(this.uiSettings));
+            // 🌟 حفظ الإعدادات من StateService
+            localStorage.setItem('ui_settings', JSON.stringify(this.stateService.get('uiSettings')));
         } catch (error) {
             console.warn('تعذر حفظ إعدادات الواجهة:', error);
+            this.logError('SaveUISettings', error, ErrorSeverity.LOW);
         }
     }
 
     // 🎨 تبديل السمة
     toggleTheme() {
-        this.uiSettings.theme = this.uiSettings.theme === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', this.uiSettings.theme);
+        const currentTheme = this.stateService.get('uiSettings').theme;
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        this.stateService.set('uiSettings', { 
+            ...this.stateService.get('uiSettings'), 
+            theme: newTheme 
+        });
+        
         this.saveUISettings();
-        this.showToast(`تم التبديل إلى السمة ${this.uiSettings.theme === 'dark' ? 'الداكنة' : 'الفاتحة'}`, 'success');
+        this.showToast(`تم التبديل إلى السمة ${newTheme === 'dark' ? 'الداكنة' : 'الفاتحة'}`, 'success');
     }
 
     // 🌐 تبديل اللغة
     toggleLanguage() {
-        this.uiSettings.language = this.uiSettings.language === 'ar' ? 'en' : 'ar';
-        document.documentElement.setAttribute('lang', this.uiSettings.language);
-        document.documentElement.setAttribute('dir', this.uiSettings.language === 'ar' ? 'rtl' : 'ltr');
+        const currentLang = this.stateService.get('uiSettings').language;
+        const newLang = currentLang === 'ar' ? 'en' : 'ar';
+        
+        this.stateService.set('uiSettings', { 
+            ...this.stateService.get('uiSettings'), 
+            language: newLang 
+        });
+
         this.saveUISettings();
-        this.showToast(`تم التبديل إلى اللغة ${this.uiSettings.language === 'ar' ? 'العربية' : 'الإنجليزية'}`, 'success');
+        this.showToast(`تم التبديل إلى اللغة ${newLang === 'ar' ? 'العربية' : 'الإنجليزية'}`, 'success');
     }
 
     // 📊 الحصول على إحصائيات النظام
@@ -1306,10 +2020,11 @@ class AniListManager {
             },
             cache: cacheStats,
             anime: {
-                total: this.currentAnimeList.length,
-                cached: this.advancedCache.performanceMetrics.size
+                total: this.stateService.get('currentAnimeList').length,
+                cached: this.advancedCache.performanceMetrics.size // هذا مقياس لعدد السجلات في الخريطة وليس حجم الكاش
             },
-            ui: this.uiSettings
+            ui: this.stateService.get('uiSettings'),
+            memory: this.stateService.get('memoryUsage') // 🛡️ إضافة إحصائيات الذاكرة
         };
     }
 
@@ -1320,8 +2035,10 @@ class AniListManager {
             sessionStorage.clear();
             // إعادة إنشاء الكائن Cache
             this.advancedCache = new AdvancedCache();
-            this.currentAnimeList = [];
-            this.loadingState.currentIndex = 0;
+            // 🌟 إعادة تعيين الحالة عبر StateService
+            this.stateService.set('currentAnimeList', []);
+            this.stateService.set('loadingState', { currentIndex: 0, isLoading: false, allLoaded: false, progress: 0, message: 'جاهز للبدء' });
+            
             this.showToast('تم مسح جميع البيانات بنجاح', 'success');
             setTimeout(() => location.reload(), 1000);
         }
@@ -1330,10 +2047,11 @@ class AniListManager {
     // 📤 تصدير البيانات
     exportData() {
         const exportData = {
-            animeList: this.currentAnimeList,
+            animeList: this.stateService.get('currentAnimeList'),
             favorites: JSON.parse(localStorage.getItem('favorite_anime') || '[]'),
-            settings: this.uiSettings,
+            settings: this.stateService.get('uiSettings'),
             performance: this.getSystemStats(),
+            errorLogs: JSON.parse(localStorage.getItem('error_logs') || '[]'), // 🛡️ تصدير سجلات الأخطاء
             exportDate: new Date().toISOString()
         };
 
@@ -1363,18 +2081,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // تحميل البيانات المخزنة مسبقاً إذا كانت موجودة
     const cachedAnime = window.aniListManager.advancedCache.get('current_anime_list');
     if (cachedAnime && cachedAnime.length > 0) {
-        window.aniListManager.currentAnimeList = cachedAnime;
-        window.aniListManager.displayAnime(cachedAnime);
+        // 🌟 تحديث StateService بالبيانات المخزنة
+        window.aniListManager.stateService.set('currentAnimeList', cachedAnime);
+        // 🌟 تطبيق الفرز/التصفية على الكاش عند البدء
+        window.aniListManager.applyCurrentFiltersAndSorting(); 
     }
     
+    // 🌟 إعداد مستمع للبحث
+    const searchInput = document.getElementById('anime-search');
+    if (searchInput) {
+        // 🌟 ربط بدالة performSearch التي تستخدم Debounce
+        searchInput.addEventListener('input', (event) => {
+            window.aniListManager.performSearch(event.target.value);
+        });
+    }
+
     // بدء جلب البيانات الحديثة
     setTimeout(() => {
         window.aniListManager.start();
     }, 1000);
 
-    // إضافة أنماط CSS الإضافية
+    // إضافة أنماط CSS الإضافية (لضمان وجودها وتطبيقها بشكل صحيح)
     const additionalStyles = `
-        /* إضافة نمط progress-container للتأكد من ظهوره أعلى الصفحة */
+        /* 🌟 إصلاح الأنماط للحاويات الجديدة */
+        
         #progress-container {
             position: fixed;
             top: 0;
@@ -1384,7 +2114,15 @@ document.addEventListener('DOMContentLoaded', () => {
             padding: 10px;
             z-index: 9999;
             backdrop-filter: blur(10px);
-            transition: opacity 0.3s ease; /* هام للإخفاء السلس */
+            transition: opacity 0.3s ease;
+        }
+
+        #progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            overflow: hidden;
         }
         
         #progress-fill {
@@ -1392,6 +2130,13 @@ document.addEventListener('DOMContentLoaded', () => {
             background: linear-gradient(90deg, #00ff88, #0099ff);
             transition: width 0.3s ease;
             width: 0%;
+        }
+        
+        #progress-text {
+            color: white;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 5px;
         }
 
         .advanced-toast {
@@ -1431,6 +2176,7 @@ document.addEventListener('DOMContentLoaded', () => {
             display: flex;
             align-items: center;
             gap: 10px;
+            white-space: pre-line; /* 🌟 دعم الأسطر الجديدة */
         }
         
         .toast-close {
@@ -1476,6 +2222,19 @@ document.addEventListener('DOMContentLoaded', () => {
             height: 15px;
             background: #333;
             border-radius: 4px;
+        }
+        
+        .failed-load {
+            background: #444;
+            border: 2px dashed #ff4757;
+            color: #ff4757;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            text-align: center;
+            padding: 10px;
+            min-height: 350px;
         }
         
         .empty-state, .error-state {
@@ -1536,7 +2295,7 @@ document.addEventListener('DOMContentLoaded', () => {
             opacity: 1;
         }
         
-        .btn-favorite, .btn-share, .btn-watch-link { /* تم إضافة .btn-watch-link */
+        .btn-favorite, .btn-share, .btn-watch-link {
             background: rgba(0, 0, 0, 0.7);
             border: none;
             color: white;
@@ -1548,8 +2307,8 @@ document.addEventListener('DOMContentLoaded', () => {
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            text-decoration: none; /* مهم للروابط */
-            font-size: 14px; /* لتقليل حجم أيقونة التشغيل */
+            text-decoration: none;
+            font-size: 14px;
         }
         
         .btn-favorite:hover, .btn-share:hover, .btn-watch-link:hover {
@@ -1565,11 +2324,67 @@ document.addEventListener('DOMContentLoaded', () => {
             font-size: 11px;
             margin: 2px;
         }
+        
+        /* 🌟 أنماط اللودر المتقدم */
+        .advanced-loader {
+            text-align: center;
+            padding: 50px;
+            color: white;
+        }
+        
+        .loader-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #00ff88;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loader-text {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .loader-stats {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .loader-stats .warning-text {
+            color: #ffa502;
+            font-weight: bold;
+        }
+        
+        /* 🌟 أنماط السمة (theme) */
+        [data-theme="dark"] {
+             /* الأنماط الداكنة */
+             --main-bg-color: #121212;
+             --card-bg-color: #1e1e1e;
+             --text-color: #ffffff;
+        }
+        
+        [data-theme="light"] {
+             /* الأنماط الفاتحة */
+             --main-bg-color: #f4f4f4;
+             --card-bg-color: #ffffff;
+             --text-color: #121212;
+        }
+        
     `;
     
     const styleSheet = document.createElement('style');
     styleSheet.textContent = additionalStyles;
-    document.head.appendChild(styleSheet);
+    // 🌟 إضافة إلى head بشكل آمن
+    if (document.head) {
+         document.head.appendChild(styleSheet);
+    }
 });
 
 // 🚀 تصدير الكلاس للاستخدام العالمي
