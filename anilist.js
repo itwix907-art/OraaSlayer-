@@ -1,4 +1,5 @@
 // anilist.js - Anime Data Management Module (Enterprise Level)
+// 💡 تم تحسين الكود ليتوافق مع معايير الـ Enterprise: إدارة الحالة، التخزين المؤقت المتقدم، الجلب المجمع، وإدارة الموارد.
 
 // قائمة الأنميات الأصلية (لم يتم تغييرها)
 const ANIME_URLS_LIST = [
@@ -139,30 +140,86 @@ const throttle = (func, limit) => {
     };
 };
 
-// 🎯 إدارة حالة التطبيق (State Management)
-class StateService {
-    constructor(initialState) {
-        this.state = initialState;
-        this.listeners = new Map();
-        // 🌟 إضافة خاصية لضمان عدم تغيير الحالة مباشرة من الخارج
-        Object.freeze(this.state); 
+/**
+ * دالة مقارنة عميقة (Shallow Compare) لضمان عدم تغيير الحالة بلا داع.
+ * @param {Object} objA - الكائن الأول.
+ * @param {Object} objB - الكائن الثاني.
+ * @returns {boolean} - هل الكائنان متماثلان؟
+ */
+const shallowCompare = (objA, objB) => {
+    if (Object.is(objA, objB)) return true;
+    if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) return false;
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    for (let i = 0; i < keysA.length; i++) {
+        if (!Object.prototype.hasOwnProperty.call(objB, keysA[i]) || !Object.is(objA[keysA[i]], objB[keysA[i]])) {
+            return false;
+        }
     }
 
-    // 🌟 جلب قيمة من الحالة
+    return true;
+};
+
+// 🎯 إدارة حالة التطبيق (State Management)
+// 🌟 استخدام Proxy لضمان عدم الطفرة (Immutability) بشكل صارم
+class StateService {
+    constructor(initialState) {
+        this._state = initialState;
+        this.listeners = new Map();
+        // 🌟 إنشاء Proxy لضمان عدم تغيير الحالة مباشرة من الخارج
+        this.state = new Proxy(this._state, {
+            get: (target, key) => target[key],
+            set: () => {
+                console.error("🚫 محاولة تغيير حالة StateService مباشرة! استخدم دالة .set() لضمان الطفرة.");
+                return false;
+            },
+            deleteProperty: () => {
+                console.error("🚫 محاولة حذف خاصية من StateService مباشرة! استخدم دالة .set() لتحديث الحالة.");
+                return false;
+            }
+        });
+        Object.freeze(this._state); 
+    }
+
+    // 🌟 جلب قيمة من الحالة (القراءة المباشرة من _state)
     get(key) {
-        return this.state[key];
+        return this._state[key];
     }
 
     // 🌟 تحديث قيمة في الحالة وإخطار المستمعين
     set(key, value) {
-        const oldValue = this.state[key];
-        if (oldValue !== value) {
-            // 🌟 إنشاء نسخة جديدة من الحالة لضمان عدم الطفرة (Immutability)
-            const newState = { ...this.state, [key]: value };
-            this.state = newState;
-            Object.freeze(this.state); // إعادة التجميد
-            this.notify(key, value);
+        const oldValue = this._state[key];
+        
+        // 🌟 مقارنة القيمة القديمة بالجديدة لتجنب التحديث غير الضروري
+        if (Object.is(oldValue, value) || shallowCompare(oldValue, value)) { 
+            return;
         }
+
+        // 🌟 إنشاء نسخة جديدة من الحالة لضمان عدم الطفرة (Immutability)
+        const newState = { ...this._state, [key]: value };
+        this._state = newState;
+        
+        // 💡 تحديث الـ Proxy ليشير إلى الحالة الجديدة
+        this.state = new Proxy(this._state, {
+            get: (target, key) => target[key],
+            set: () => {
+                console.error("🚫 محاولة تغيير حالة StateService مباشرة! استخدم دالة .set() لضمان الطفرة.");
+                return false;
+            },
+            deleteProperty: () => {
+                console.error("🚫 محاولة حذف خاصية من StateService مباشرة! استخدم دالة .set() لتحديث الحالة.");
+                return false;
+            }
+        });
+
+        Object.freeze(this._state); // إعادة التجميد
+        this.notify(key, value);
+        // 🌟 تسجيل الحدث (Event Logging)
+        window.aniListManager?.logEvent('StateUpdate', `Key: ${key}`, { oldValue, newValue: value });
     }
 
     // 🌟 التسجيل للاستماع لتغيير مفتاح معين
@@ -188,9 +245,11 @@ class StateService {
             // 🌟 استخدام نسخة من الـ Set لتجنب مشاكل التعديل أثناء المرور
             Array.from(this.listeners.get(key)).forEach(callback => {
                  try {
-                    callback(value);
+                    // إرسال نسخة من القيمة لضمان عدم الطفرة العرضية داخل المستمع
+                    callback(value); 
                 } catch (e) {
                     console.error(`خطأ في مستمع الحالة للمفتاح ${key}:`, e);
+                    window.aniListManager?.logError('StateListenerError', e, ErrorSeverity.LOW);
                 }
             });
         }
@@ -206,10 +265,27 @@ class AdvancedCache {
         // 🌟 تحديد مدة التنبؤ بالتحديث (ساعة واحدة قبل الانتهاء)
         this.predictiveRefreshThreshold = 1 * 60 * 60 * 1000; 
         this.performanceMetrics = new Map();
+        // 🌟 كاش احتياطي في الذاكرة لتقليل التحميل من التخزين
+        this.inMemoryCache = new Map(); 
+        
         // 🌟 تعيين التنظيف الدوري كل ساعة ومراقبة التنبؤ
         setInterval(() => this.cleanupAndMonitor(), 60 * 60 * 1000); 
     }
-
+    
+    // 🛡️ دالة مساعدة للتحقق من التخزين
+    isStorageAvailable(type) {
+        try {
+            const storage = window[type];
+            const x = '__storage_test__';
+            storage.setItem(x, x);
+            storage.removeItem(x);
+            return true;
+        } catch (e) {
+            console.warn(`⚠️ التخزين ${type} غير متاح. سبب الخطأ:`, e);
+            return false;
+        }
+    }
+    
     // 🔧 حفظ البيانات مع الوقت والنسخة الاحتياطية
     set(key, data, metadata = {}) {
         try {
@@ -225,11 +301,20 @@ class AdvancedCache {
                 expiry: expiryTime // استخدام المتغير الجديد
             };
 
-            // التخزين في localStorage
-            localStorage.setItem(`cache_${key}`, JSON.stringify(cacheItem));
+            const itemString = JSON.stringify(cacheItem);
+
+            // 1. التخزين في localStorage
+            if (this.isStorageAvailable('localStorage')) {
+                 localStorage.setItem(`cache_${key}`, itemString);
+            }
             
-            // التخزين في sessionStorage للوصول السريع
-            sessionStorage.setItem(`session_${key}`, JSON.stringify(data));
+            // 2. التخزين في sessionStorage للوصول السريع
+            if (this.isStorageAvailable('sessionStorage')) {
+                 sessionStorage.setItem(`session_${key}`, JSON.stringify(data));
+            }
+            
+            // 3. التخزين في الذاكرة (النسخة الاحتياطية والوصول الأسرع)
+            this.inMemoryCache.set(key, cacheItem);
             
             // تحديث مؤشرات الأداء
             this.updateMetrics('write', key, data);
@@ -237,6 +322,7 @@ class AdvancedCache {
             return true;
         } catch (error) {
             console.warn('⚠️ تعذر حفظ التخزين المؤقت:', error);
+            window.aniListManager?.logError('CacheSetError', error, ErrorSeverity.LOW);
             return false;
         }
     }
@@ -244,20 +330,37 @@ class AdvancedCache {
     // 🔧 جلب البيانات مع التحقق من الصلاحية
     get(key) {
         try {
-            // محاولة جلب من sessionStorage أولاً (الأسرع)
-            const sessionData = sessionStorage.getItem(`session_${key}`);
-            if (sessionData) {
-                this.updateMetrics('hit', key, 'session');
-                // 🌟 التحقق من الصلاحية الخلفي (في حال وجود نسخة في session)
-                this.checkAndRefresh(key); 
-                return JSON.parse(sessionData);
+            // 1. محاولة جلب من الذاكرة أولاً (الأسرع والأكثر أماناً)
+            if (this.inMemoryCache.has(key)) {
+                const cacheItem = this.inMemoryCache.get(key);
+                if (Date.now() > cacheItem.expiry) {
+                    this.delete(key);
+                    this.updateMetrics('miss', key, 'expired_memory');
+                    return null;
+                }
+                this.updateMetrics('hit', key, 'memory');
+                this.checkAndRefresh(key); // فحص التحديث الخلفي
+                return cacheItem.data;
+            }
+            
+            // 2. محاولة جلب من sessionStorage (الوصول السريع للجلسة)
+            if (this.isStorageAvailable('sessionStorage')) {
+                 const sessionData = sessionStorage.getItem(`session_${key}`);
+                 if (sessionData) {
+                     this.updateMetrics('hit', key, 'session');
+                     this.checkAndRefresh(key); 
+                     // 💡 يجب جلب الـ cacheItem الكامل من localStorage لتحديث الذاكرة
+                     const localCacheItem = this._getLocalStorageItem(key);
+                     if (localCacheItem) this.inMemoryCache.set(key, localCacheItem);
+                     return JSON.parse(sessionData);
+                 }
             }
 
-            // جلب من localStorage مع التحقق من الصلاحية
-            const cached = localStorage.getItem(`cache_${key}`);
-            if (cached) {
-                const cacheItem = JSON.parse(cached);
-                
+
+            // 3. جلب من localStorage مع التحقق من الصلاحية
+            const cacheItem = this._getLocalStorageItem(key);
+            
+            if (cacheItem) {
                 // التحقق من انتهاء الصلاحية
                 if (Date.now() > cacheItem.expiry) {
                     this.delete(key);
@@ -267,12 +370,15 @@ class AdvancedCache {
                 
                 // 🌟 التحقق التنبؤي من الصلاحية
                 if (cacheItem.expiry - Date.now() < this.predictiveRefreshThreshold) {
-                    // تشغيل جلب خلفي غير حاصر (Non-Blocking)
                     this.triggerBackgroundRefresh(key); 
                 }
                 
-                // تحديث sessionStorage للوصول المستقبلي
-                sessionStorage.setItem(`session_${key}`, JSON.stringify(cacheItem.data));
+                // تحديث sessionStorage والذاكرة للوصول المستقبلي
+                if (this.isStorageAvailable('sessionStorage')) {
+                     sessionStorage.setItem(`session_${key}`, JSON.stringify(cacheItem.data));
+                }
+                this.inMemoryCache.set(key, cacheItem);
+                
                 this.updateMetrics('hit', key, 'local');
                 
                 return cacheItem.data;
@@ -282,20 +388,36 @@ class AdvancedCache {
             return null;
         } catch (error) {
             console.warn('⚠️ تعذر تحميل التخزين المؤقت:', error);
+            window.aniListManager?.logError('CacheGetError', error, ErrorSeverity.LOW);
             // 🌟 حذف العنصر الفاسد
             this.delete(key);
             return null;
         }
     }
     
+    // 🔧 دالة مساعدة داخلية لجلب العنصر من localStorage
+    _getLocalStorageItem(key) {
+        if (!this.isStorageAvailable('localStorage')) return null;
+        const cached = localStorage.getItem(`cache_${key}`);
+        if (cached) {
+            try {
+                return JSON.parse(cached);
+            } catch (e) {
+                console.warn(`⚠️ فشل تحليل كاش المفتاح ${key}. سيتم حذفه.`);
+                this.delete(key);
+                return null;
+            }
+        }
+        return null;
+    }
+    
     // 🌟 التحقق والتحديث للحالة
     checkAndRefresh(key) {
-        const cached = localStorage.getItem(`cache_${key}`);
-        if (!cached) return false;
+        // 🌟 البحث في الذاكرة أولاً
+        const cacheItem = this.inMemoryCache.get(key) || this._getLocalStorageItem(key);
+        if (!cacheItem) return false;
 
         try {
-            const cacheItem = JSON.parse(cached);
-            
             // 🚨 التحقق من انتهاء الصلاحية
             if (Date.now() > cacheItem.expiry) {
                 this.delete(key);
@@ -311,7 +433,9 @@ class AdvancedCache {
             }
             
             // إذا كان صالحاً، قم بتحديث الـ sessionStorage لضمان أقصى سرعة
-            sessionStorage.setItem(`session_${key}`, JSON.stringify(cacheItem.data));
+            if (this.isStorageAvailable('sessionStorage')) {
+                 sessionStorage.setItem(`session_${key}`, JSON.stringify(cacheItem.data));
+            }
             return true;
 
         } catch (error) {
@@ -324,12 +448,14 @@ class AdvancedCache {
     triggerBackgroundRefresh(key) {
         // منع التشغيل المتعدد
         if (sessionStorage.getItem(`refreshing_${key}`)) return;
+        if (!window.aniListManager) return;
 
         console.log(`⏳ بدء التحديث الخلفي التنبؤي للكاش: ${key}`);
+        window.aniListManager.logEvent('CacheRefreshStart', key);
         sessionStorage.setItem(`refreshing_${key}`, 'true');
 
         const animeIdMatch = key.match(/^anime_(\d+)/);
-        if (animeIdMatch && window.aniListManager) {
+        if (animeIdMatch) {
             const animeId = parseInt(animeIdMatch[1]);
             // استخدام دالة الجلب المتقدمة ولكن بوضع "التحديث الخلفي"
             // 🌟 استخدام الدالة المجمعة الجديدة للتحسين
@@ -338,6 +464,7 @@ class AdvancedCache {
                     const anime = data[0]; // استخراج أول عنصر من نتائج التجميع
                     if (anime) {
                          console.log(`✅ اكتمل التحديث الخلفي بنجاح للكاش: ${key}`);
+                         window.aniListManager.logEvent('CacheRefreshSuccess', key);
                          // 🌟 تحديث الحالة في StateService إذا كان الأنمي في القائمة الحالية (تحسين تجربة المستخدم)
                          window.aniListManager.updateSingleAnimeInState(anime);
                          
@@ -356,20 +483,34 @@ class AdvancedCache {
 
     // 🔧 حذف البيانات
     delete(key) {
-        localStorage.removeItem(`cache_${key}`);
-        sessionStorage.removeItem(`session_${key}`);
+        if (this.isStorageAvailable('localStorage')) {
+             localStorage.removeItem(`cache_${key}`);
+        }
+        if (this.isStorageAvailable('sessionStorage')) {
+             sessionStorage.removeItem(`session_${key}`);
+        }
+        this.inMemoryCache.delete(key);
+        // إزالة علامة التحديث إن وجدت
+        sessionStorage.removeItem(`refreshing_${key}`);
     }
     
     // 🌟 إضافة دالة لحذف جميع الكاش
     clearAll() {
-        const keysToRemove = Object.keys(localStorage).filter(key => key.startsWith('cache_'));
-        keysToRemove.forEach(key => this.delete(key.replace('cache_', '')));
-        sessionStorage.clear();
+        if (this.isStorageAvailable('localStorage')) {
+            const keysToRemove = Object.keys(localStorage).filter(key => key.startsWith('cache_'));
+            keysToRemove.forEach(key => this.delete(key.replace('cache_', '')));
+        }
+        if (this.isStorageAvailable('sessionStorage')) {
+             sessionStorage.clear();
+        }
+        this.inMemoryCache.clear();
         this.performanceMetrics.clear();
     }
 
     // 🔧 تنظيف التخزين المؤقت المنتهي ومراقبة التنبؤ
     cleanupAndMonitor() {
+        if (!this.isStorageAvailable('localStorage')) return;
+
         // 1. التنظيف القياسي
         const keys = Object.keys(localStorage).filter(key => key.startsWith('cache_'));
         keys.forEach(key => {
@@ -388,8 +529,12 @@ class AdvancedCache {
                 } 
                 
                 // 2. مراقبة التنبؤ
-                else if (cacheItem.expiry - Date.now() < this.predictiveRefreshThreshold) {
-                    this.triggerBackgroundRefresh(pureKey);
+                else {
+                    // تحديث الذاكرة لضمان الاتساق
+                    this.inMemoryCache.set(pureKey, cacheItem); 
+                    if (cacheItem.expiry - Date.now() < this.predictiveRefreshThreshold) {
+                        this.triggerBackgroundRefresh(pureKey);
+                    }
                 }
                 
             } catch (error) {
@@ -425,8 +570,8 @@ class AdvancedCache {
         };
 
         this.performanceMetrics.forEach(metric => {
-            if (metric.type === 'hit') stats.totalHits++;
-            if (metric.type === 'miss') stats.totalMisses++;
+            if (metric.type.includes('hit')) stats.totalHits++; // 🌟 يشمل hits من الذاكرة والتخزين
+            if (metric.type.includes('miss')) stats.totalMisses++;
             if (metric.type === 'write') stats.totalWrites++;
             // 🌟 الجمع الذكي لحجم البيانات
             if (metric.type !== 'miss') { 
@@ -435,11 +580,15 @@ class AdvancedCache {
         });
         
         // 🌟 إضافة مقياس حجم التخزين الفعلي لـ localStorage
-        const totalStorageSize = Object.keys(localStorage).reduce((total, key) => {
-            // تقدير حجم التخزين: استخدام length * 2 للبايت (UTF-16)
-            return total + (localStorage.getItem(key).length * 2); 
-        }, 0);
+        let totalStorageSize = 0;
+        if (this.isStorageAvailable('localStorage')) {
+             totalStorageSize = Object.keys(localStorage).reduce((total, key) => {
+                // تقدير حجم التخزين: استخدام length * 2 للبايت (UTF-16)
+                return total + (localStorage.getItem(key)?.length * 2 || 0); 
+            }, 0);
+        }
         stats.totalStorageSizeKB = (totalStorageSize / 1024).toFixed(2);
+        stats.inMemoryCacheCount = this.inMemoryCache.size; // 💡 عدد العناصر في كاش الذاكرة
 
         return stats;
     }
@@ -453,11 +602,47 @@ const ErrorSeverity = {
     CRITICAL: 'CRITICAL' // يتطلب إرسال للخادم
 };
 
+// 🛡️ كلاس إدارة التفاعل (لضمان إزالة مُستمعي الأحداث)
+class InteractionManager {
+    constructor() {
+        this.eventListeners = [];
+    }
+
+    /**
+     * إضافة مُستمع حدث مع تتبع لإزالته لاحقاً.
+     * @param {Element} element - العنصر.
+     * @param {string} eventType - نوع الحدث.
+     * @param {Function} handler - الدالة المُعالجة.
+     * @param {Object} options - خيارات الحدث.
+     */
+    add(element, eventType, handler, options) {
+        element.addEventListener(eventType, handler, options);
+        this.eventListeners.push({ element, eventType, handler, options });
+    }
+
+    /**
+     * إزالة جميع مُستمعي الأحداث المُسجّلين.
+     */
+    cleanup() {
+        this.eventListeners.forEach(({ element, eventType, handler, options }) => {
+            // 🌟 محاولة الإزالة، مع تجاهل الأخطاء إذا تم حذف العنصر من DOM
+            try {
+                element.removeEventListener(eventType, handler, options);
+            } catch (e) {
+                // قد يتم إطلاق هذا إذا تمت إزالة العنصر من DOM قبل التنظيف
+            }
+        });
+        this.eventListeners = [];
+    }
+}
+
+
 // 🎯 النظام الرئيسي المحسّن (Enterprise Level)
 class AniListManager {
     constructor() {
         this.ANILIST_API = 'https://graphql.anilist.co';
         this.advancedCache = new AdvancedCache();
+        this.interactionManager = new InteractionManager(); // 💡 مُدير التفاعل الجديد
         this.animeUrls = ANIME_URLS_LIST;
         
         // 🌟 إدارة الحالة التفاعلية
@@ -492,7 +677,8 @@ class AniListManager {
                 sortDirection: 'desc' // القيمة الافتراضية
             },
             // 🌟 إضافة حالة لـ Pre-fetching
-            prefetchedAnime: new Map() // ID -> Promise
+            prefetchedAnime: new Map(), // ID -> Promise
+            lastSearchTerm: '' // 💡 لتتبع آخر بحث وتجنب إعادة التشغيل
         });
         
         // ربط القائمة المعروضة بالحالة
@@ -527,15 +713,15 @@ class AniListManager {
             startTime: 0,
             requestsCount: 0,
             successfulRequests: 0,
-            failedRequests: 0
+            failedRequests: 0,
+            eventLogs: [] // 💡 سجل الأحداث
         };
         
         // 🌟 تعيين حالة الجلب المسبق (لضمان أن دالة fetchAnimeBatch تستخدم الـ Map)
         this.prefetchedAnime = this.stateService.get('prefetchedAnime');
 
-
-        // 🎨 إعدادات الواجهة المتقدمة (مدمجة الآن في StateService)
-        // this.uiSettings = { ...this.stateService.get('uiSettings') }; 
+        // 💡 إعداد Intersection Observer للتحريك
+        this.scrollObserver = null; 
         
         this.init();
     }
@@ -547,6 +733,7 @@ class AniListManager {
         this.setupPerformanceMonitoring();
         this.advancedCache.cleanupAndMonitor(); // 🌟 استخدام الدالة الجديدة
         this.setupErrorHandling();
+        this.loadAdditionalStyles(); // 💡 تحميل الأنماط المُحسّنة
         
         // 🛡️ بدء مراقبة الذاكرة كل 30 ثانية
         setInterval(() => this.monitorMemoryUsage(), 30000); 
@@ -564,6 +751,8 @@ class AniListManager {
             // 🌟 إعادة تطبيق تأثيرات التمرير عند تغيير الإعدادات
             if (newSettings.animations) {
                 this.addScrollAnimations();
+            } else {
+                this.removeScrollAnimations(); // 💡 إزالة الرسوم المتحركة إذا تم تعطيلها
             }
         });
         
@@ -590,6 +779,7 @@ class AniListManager {
         this.stateService.subscribe('currentFilters', (newFilters) => {
             // 🌟 إعادة تصفية وفرز القائمة المعروضة حاليًا
             this.applyCurrentFiltersAndSorting();
+            this.logEvent('FiltersApplied', JSON.stringify(newFilters));
         });
     }
 
@@ -600,9 +790,8 @@ class AniListManager {
         if ('connection' in navigator) {
             // 🌟 إضافة تحديث فوري عند بدء التشغيل
             this.adjustSettingsBasedOnConnection(); 
-            navigator.connection.addEventListener('change', () => {
-                this.adjustSettingsBasedOnConnection();
-            });
+            // 🌟 استخدام InteractionManager لتنظيف مستمعي الأحداث
+            this.interactionManager.add(navigator.connection, 'change', this.adjustSettingsBasedOnConnection.bind(this));
         }
 
         // تتبع وقت التحميل
@@ -648,12 +837,15 @@ class AniListManager {
                 this.BATCH_SIZE = 2; // تقليل حجم الدفعة لتقليل الإجهاد على الشبكة
                 newSettings.imageQuality = 'low';
                 newSettings.animations = false;
+                this.logEvent('ConnectionAdjustment', 'Slow - Low Quality/Animations Off');
             } else if (connection.effectiveType.includes('2g')) {
                 this.BATCH_SIZE = 3;
                 newSettings.imageQuality = 'medium';
+                this.logEvent('ConnectionAdjustment', 'Medium - Medium Quality');
             } else {
                 this.BATCH_SIZE = 4;
                 newSettings.imageQuality = 'high';
+                this.logEvent('ConnectionAdjustment', 'Fast - High Quality');
             }
         }
         
@@ -663,16 +855,16 @@ class AniListManager {
 
     // 🛡️ إعداد معالجة الأخطاء المتقدم
     setupErrorHandling() {
-        window.addEventListener('error', (event) => {
+        this.interactionManager.add(window, 'error', (event) => {
             this.logError('Global Error', event.error, ErrorSeverity.CRITICAL);
         });
 
-        window.addEventListener('unhandledrejection', (event) => {
+        this.interactionManager.add(window, 'unhandledrejection', (event) => {
             this.logError('Unhandled Promise Rejection', event.reason, ErrorSeverity.HIGH);
         });
         
         // 🌟 إضافة معالجة للأخطاء المتعلقة بالموارد
-        document.addEventListener('error', (event) => {
+        this.interactionManager.add(document, 'error', (event) => {
             if (event.target.tagName === 'IMG' || event.target.tagName === 'SCRIPT' || event.target.tagName === 'LINK') {
                  this.logError('ResourceLoadFailure', `Failed to load resource: ${event.target.src || event.target.href}`, ErrorSeverity.LOW);
             }
@@ -711,6 +903,27 @@ class AniListManager {
             console.error(`🚨 خطأ حرج تم الإبلاغ عنه: ${errorLog.message}`);
         }
     }
+    
+    // 💡 دالة جديدة: تسجيل الأحداث الهامة
+    logEvent(type, message, data = {}) {
+        const eventLog = {
+            type,
+            message,
+            timestamp: new Date().toISOString(),
+            data
+        };
+        
+        this.performance.eventLogs.push(eventLog);
+        // 🌟 الحفاظ على حجم السجل محدوداً
+        if (this.performance.eventLogs.length > 500) {
+            this.performance.eventLogs.shift();
+        }
+        
+        // يمكن إرسال الأحداث الهامة جداً للخادم أيضاً
+        if (type === 'FullDataLoad' || type === 'BatchFetchSuccess') {
+            // console.log(`[EVENT] ${type}: ${message}`);
+        }
+    }
 
     // ⏰ دالة التأخير الذكية
     delay(ms) {
@@ -746,18 +959,21 @@ class AniListManager {
                  document.body.appendChild(indicator);
             }
 
-            // إضافة أنيميشن CSS
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes progressPulse {
-                    0% { transform: scaleX(0); opacity: 1; }
-                    50% { transform: scaleX(0.5); opacity: 0.7; }
-                    100% { transform: scaleX(1); opacity: 0; }
+            // إضافة أنيميشن CSS (التأكد من عدم الإضافة المتعددة)
+            if (!document.getElementById('progressPulseStyle')) {
+                const style = document.createElement('style');
+                style.id = 'progressPulseStyle';
+                style.textContent = `
+                    @keyframes progressPulse {
+                        0% { transform: scaleX(0); opacity: 1; }
+                        50% { transform: scaleX(0.5); opacity: 0.7; }
+                        100% { transform: scaleX(1); opacity: 0; }
+                    }
+                `;
+                // 🌟 إضافة إلى head بشكل آمن
+                if (document.head) {
+                    document.head.appendChild(style);
                 }
-            `;
-            // 🌟 إضافة إلى head بشكل آمن
-            if (document.head) {
-                document.head.appendChild(style);
             }
         }
     }
@@ -783,8 +999,7 @@ class AniListManager {
 
     // 📝 GraphQL Query متقدم
     get ANIME_QUERY() {
-        // تم تصميم الاستعلام لجلب حقل 'id' و 'title' فقط، لأن دالة الجلب الآن ستستخدم التجميع
-        // هذا الاستعلام لم يعد يُستخدم في دالة fetchAnime الفردية ولكنه يُحفظ للاستخدام البديل/المستقبلي
+        // ... (تم الحفاظ على الكود الأصلي للدالة Getter) ...
         return `
             query ($id: Int) {
                 Media(id: $id, type: ANIME) {
@@ -946,9 +1161,17 @@ class AniListManager {
         // 🌟 التحقق من وجود جلب مسبق
         const prefetchedPromise = this.prefetchedAnime.get(id);
         if (prefetchedPromise) {
-            this.prefetchedAnime.delete(id); // استخدام الجلب المسبق ثم إزالته
-            console.log(`⚡ استخدام الجلب المسبق للأنمي ID: ${id}`);
-            return prefetchedPromise;
+            // 💡 لا نحذف هنا، بل ننتظر اكتماله
+            console.log(`⚡ انتظار اكتمال الجلب المسبق للأنمي ID: ${id}`);
+            const result = await prefetchedPromise;
+            // 💡 البحث عن الأنمي المطلوب ضمن نتائج الدفعة
+            const anime = result.find(a => a.id === id);
+            
+            if (!isBackground) this.performance.successfulRequests++;
+            if(anime) return anime;
+            
+            // إذا لم يتم العثور عليه في نتائج الدفعة (خطأ في التجميع)، سنطلب بشكل فردي (fallback)
+            this.prefetchedAnime.delete(id);
         }
         
         // 🌟 استخدام الدالة المجمّعة حتى لجلب ID واحد (لضمان نفس الاستعلامات)
@@ -972,6 +1195,8 @@ class AniListManager {
             try {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT_MS);
+                
+                this.logEvent('BatchFetchAttempt', `IDs: ${ids.join(',')}, Retry: ${this.MAX_RETRIES - retries + 1}`);
 
                 const response = await fetch(this.ANILIST_API, {
                     method: 'POST',
@@ -988,6 +1213,7 @@ class AniListManager {
                 if (response.status === 429) {
                     const retryAfter = response.headers.get('Retry-After') || 60;
                     if (!isBackground) this.showToast(`⏳ تجاوز حد الطلبات، إعادة المحاولة بعد ${retryAfter} ثانية`, 'warning');
+                    this.logEvent('RateLimit', `Retry-After: ${retryAfter}s`);
                     await this.delay(retryAfter * 1000);
                     continue;
                 }
@@ -1009,18 +1235,22 @@ class AniListManager {
                         const alias = `anime${id}`;
                         const anime = result.data[alias];
                         
-                        if (anime && anime.id) {
+                        // 💡 التحقق من أن النتيجة صالحة وأنها تنتمي للأنمي المحدد
+                        if (anime && anime.id === id) { 
                             // حفظ في الكاش
                             this.advancedCache.set(`anime_${id}`, anime, {
                                 size: JSON.stringify(anime).length,
                                 source: isBackground ? 'api_bg_refresh' : 'api_batch_fetch'
                             });
                             fetchedAnime.push(anime);
+                        } else {
+                            this.logError('PartialBatchFailure', `ID: ${id} failed to return data.`, ErrorSeverity.LOW);
                         }
                     });
                 }
                 
                 if (!isBackground) this.performance.successfulRequests++;
+                this.logEvent('BatchFetchSuccess', `Fetched ${fetchedAnime.length}/${ids.length} anime.`);
                 return fetchedAnime;
                 
             } catch (error) {
@@ -1030,6 +1260,7 @@ class AniListManager {
                 if (retries > 0) {
                     const backoffDelay = Math.pow(2, this.MAX_RETRIES - retries) * 1000;
                     if (!isBackground) this.showToast(`🔄 إعادة المحاولة ${this.MAX_RETRIES - retries}/${this.MAX_RETRIES}`, 'info');
+                    this.logError('BatchFetchRetry', lastError, ErrorSeverity.MEDIUM, backoffDelay);
                     await this.delay(backoffDelay);
                 }
             }
@@ -1037,7 +1268,7 @@ class AniListManager {
 
         if (!isBackground) {
             this.performance.failedRequests++;
-            this.logError('FetchAnimeBatch', lastError, ErrorSeverity.HIGH);
+            this.logError('FetchAnimeBatchCritical', lastError, ErrorSeverity.HIGH);
         }
         throw new Error(`فشل جلب البيانات المجمعة بعد ${this.MAX_RETRIES} محاولات: ${lastError.message}`);
     }
@@ -1064,6 +1295,7 @@ class AniListManager {
                 progress: 0, 
                 message: 'بدء التحميل...' 
             });
+            this.logEvent('DataFetchStart', `Total IDs: ${animeIds.length}`);
 
             const totalIds = animeIds.length;
             let successfulFetches = 0;
@@ -1101,9 +1333,9 @@ class AniListManager {
                      // 🌟 إضافة بطاقة فوراً بدون إزالة سكلتون
                     if (!currentList.some(a => a.id === anime.id)) {
                          currentList.push(anime);
-                         // 🌟 استخدام دالة تحديث البطاقة الذكية
-                         this.updateAnimeCard(anime, true, 'skeleton', i); 
                     }
+                    // 🌟 استخدام دالة تحديث البطاقة الذكية
+                    this.updateAnimeCard(anime, true, 'skeleton', animeIds.indexOf(anime.id)); 
                 });
                 // 🌟 لا نقوم بتحديث الحالة حتى يتم جلب البيانات الجديدة (لتجنب التحديثات المفرطة)
                 
@@ -1134,8 +1366,8 @@ class AniListManager {
                 fetchedData.forEach(anime => {
                     if (!currentList.some(a => a.id === anime.id)) {
                          currentList.push(anime);
-                         this.updateAnimeCard(anime, true, 'skeleton', animeIds.indexOf(anime.id));
                     }
+                    this.updateAnimeCard(anime, true, 'skeleton', animeIds.indexOf(anime.id));
                 });
 
                 // 6. تحديث القائمة النهائية والحالة
@@ -1147,21 +1379,22 @@ class AniListManager {
                 });
                 
                 // 7. إزالة السكلتون الذي لم يتم تحديثه (فشل)
+                // 💡 تحسين: نعتمد على دالة updateAnimeCard لاستبدال السكلتون.
+                // إذا لم يتم جلب عنصر ما، فإن السكلتون سيبقى (ويجب أن يتم إزالة الفاشل منه يدوياً)
                 const totalProcessedInBatch = cachedData.length + fetchedData.length;
                 const totalIdsInBatch = batchIds.length;
                 const failedInBatch = totalIdsInBatch - totalProcessedInBatch;
                 
                 if (failedInBatch > 0) {
-                     const skeletons = container.querySelectorAll('.skeleton');
-                     // 🌟 إزالة السكلتون الفاشل من نهاية الدفعة (افتراضياً)
-                     for (let k = 0; k < failedInBatch; k++) {
-                         if (skeletons[i + k]) {
-                             // 🌟 وضع علامة فشل بدلاً من الإزالة
-                             skeletons[i + k].classList.add('failed-load');
-                             skeletons[i + k].innerHTML = `<div class="error-load-text">فشل التحميل ${animeIds[i+k]}</div>`;
-                             // skeletons[i + k].remove();
+                     // 🌟 تحديد السكلتون الذي فشل تحميله (الأفضل هو تتبع ID الأنمي الفاشل)
+                     uncachedIds.filter(id => !fetchedData.some(a => a.id === id)).forEach(failedId => {
+                         const failedIndex = animeIds.indexOf(failedId);
+                         const placeholder = container.querySelector(`[data-skeleton-index="${failedIndex}"]`);
+                         if (placeholder) {
+                              placeholder.classList.add('failed-load');
+                              placeholder.innerHTML = `<div class="error-load-text">فشل التحميل ${failedId}</div>`;
                          }
-                     }
+                     });
                 }
 
 
@@ -1192,6 +1425,7 @@ class AniListManager {
 
             // حفظ القائمة الكاملة بعد التحميل
             this.advancedCache.set('current_anime_list', currentList, { source: 'full_fetch' });
+            this.logEvent('FullDataLoad', `Total Fetched: ${successfulFetches}, Total Time: ${(performance.now() - this.performance.startTime) / 1000}s`);
             
             // تطبيق الرسوم المتحركة
             if (this.stateService.get('uiSettings').animations) {
@@ -1218,6 +1452,7 @@ class AniListManager {
         if (newIdsToPrefetch.length === 0) return;
         
         console.log(`⚡ بدء الجلب المسبق لـ ${newIdsToPrefetch.length} أنمي`);
+        this.logEvent('PrefetchStart', `IDs: ${newIdsToPrefetch.join(',')}`);
         
         // استخدام fetchAnimeBatch في وضع الخلفية وإنشاء Promise لحفظها
         const prefetchPromise = this.fetchAnimeBatch(newIdsToPrefetch, true);
@@ -1232,6 +1467,7 @@ class AniListManager {
                      // 🌟 وضع البيانات مباشرة في الكاش (تم بالفعل داخل fetchAnimeBatch)
                      this.updateSingleAnimeInState(fetchedAnime); // تحديث الواجهة فورًا
                 }
+                // 💡 الحذف من الخريطة فقط بعد اكتمال الـ Promise
                 this.prefetchedAnime.delete(id);
             }).catch(() => {
                 this.prefetchedAnime.delete(id);
@@ -1247,9 +1483,11 @@ class AniListManager {
         if (index > -1) {
             // 🌟 إنشاء قائمة جديدة لضمان عدم الطفرة (Immutability)
             const newList = [...currentList];
-            newList[index] = anime;
+            // 💡 استخدام Object.assign لدمج التحديثات بذكاء
+            newList[index] = Object.assign({}, newList[index], anime);
             this.stateService.set('currentAnimeList', newList);
-            this.updateAnimeCard(anime, false); // تحديث بطاقة الأنمي على الواجهة
+            this.updateAnimeCard(newList[index], false); // تحديث بطاقة الأنمي على الواجهة
+            this.logEvent('SingleAnimeUpdate', `ID: ${anime.id}`);
         }
     }
 
@@ -1258,8 +1496,9 @@ class AniListManager {
     createSkeletonLoader(count) {
         let skeletonHTML = '';
         for (let i = 0; i < count; i++) {
+            // 🌟 إضافة خاصية order لضمان الترتيب الصحيح للسكلتون
             skeletonHTML += `
-                <div class="anime-card skeleton" data-skeleton-index="${i}">
+                <div class="anime-card skeleton" data-skeleton-index="${i}" style="order: ${i};">
                     <div class="skeleton-image"></div>
                     <div class="skeleton-title"></div>
                     <div class="skeleton-text"></div>
@@ -1275,7 +1514,7 @@ class AniListManager {
         let progressText = document.getElementById('progress-text');
         const progressFill = document.getElementById('progress-fill');
         
-        // 🌟 إذا لم يكن موجوداً، قم بإنشائه (تم نقل معظم CSS إلى أسفل)
+        // 🌟 إذا لم يكن موجوداً، قم بإنشائه
         if (!progressContainer && document.body) {
             progressContainer = document.createElement('div');
             progressContainer.id = 'progress-container';
@@ -1308,7 +1547,7 @@ class AniListManager {
             progressContainer.style.opacity = '0';
             // الإزالة من DOM بعد الانتقال
             setTimeout(() => {
-                progressContainer.remove();
+                this.removeElement(progressContainer);
             }, 300);
         }
     }
@@ -1348,7 +1587,9 @@ class AniListManager {
                 rtt: navigator.connection.rtt
             } : null,
             // 🛡️ إضافة حالة الذاكرة
-            memory: this.stateService.get('memoryUsage')
+            memory: this.stateService.get('memoryUsage'),
+            // 💡 إضافة سجل الأحداث
+            eventLogsSnapshot: this.performance.eventLogs 
         };
 
         try {
@@ -1371,13 +1612,13 @@ class AniListManager {
         let card = container.querySelector(`[data-anime-id="${anime.id}"]`);
         let placeholderElement = null;
         
-        if (!card && placeholderClass) {
+        if (!card && placeholderClass && skeletonIndex !== null) {
              // 🌟 البحث عن هيكل التحميل باستخدام الفهرس
              placeholderElement = container.querySelector(`.${placeholderClass}[data-skeleton-index="${skeletonIndex}"]`);
-             // 🌟 البحث في حالة عدم وجود فهرس (في حالة الإضافة من التخزين المؤقت)
-             if (!placeholderElement) { 
-                 placeholderElement = container.querySelector(`.${placeholderClass}`);
-             }
+        }
+        // 💡 إضافة بحث بديل عن السكلتون في حالة الجلب المسبق الذي لا يتضمن فهرساً دقيقاً
+        if (!card && placeholderClass && !placeholderElement) { 
+             placeholderElement = container.querySelector(`.${placeholderClass}`);
         }
         
         // 2. إذا كانت البطاقة موجودة بالفعل، قم بتحديثها فقط
@@ -1438,13 +1679,13 @@ class AniListManager {
                         <div class="anime-badge ${anime.status.toLowerCase()}">${this.getStatusText(anime.status)}</div>
                     </div>
                     <div class="anime-actions">
-                        <button class="btn-favorite" onclick="event.stopPropagation(); aniListManager.toggleFavorite(${anime.id})">
+                        <button class="btn-favorite" data-id="${anime.id}">
                             <i class="far fa-heart"></i>
                         </button>
-                        <a href="${watchLink}" class="btn-watch-link" onclick="event.stopPropagation(); aniListManager.storeAnimeData(${anime.id})">
+                        <a href="${watchLink}" class="btn-watch-link" data-id="${anime.id}">
                             <i class="fas fa-play"></i>
                         </a>
-                        <button class="btn-share" onclick="event.stopPropagation(); aniListManager.shareAnime(${anime.id})">
+                        <button class="btn-share" data-id="${anime.id}">
                             <i class="fas fa-share"></i>
                         </button>
                     </div>
@@ -1458,18 +1699,35 @@ class AniListManager {
                     </div>
                 </div>
             `;
-
-            card.addEventListener('click', () => {
+            
+            // 💡 ربط الأحداث عبر InteractionManager لتجنب تسرب الذاكرة
+            this.interactionManager.add(card, 'click', () => {
                 this.storeAnimeData(anime.id);
                 window.location.href = detailsLink;
             });
             
+            this.interactionManager.add(card.querySelector('.btn-favorite'), 'click', (event) => {
+                event.stopPropagation(); 
+                this.toggleFavorite(anime.id);
+            });
+            
+            this.interactionManager.add(card.querySelector('.btn-watch-link'), 'click', (event) => {
+                event.stopPropagation(); 
+                this.storeAnimeData(anime.id);
+            });
+            
+            this.interactionManager.add(card.querySelector('.btn-share'), 'click', (event) => {
+                event.stopPropagation(); 
+                this.shareAnime(anime.id);
+            });
+
             this.updateFavoriteButton(anime.id);
         }
         
         // 4. استبدال هيكل التحميل بالبطاقة الجديدة
         if (placeholderElement) {
             container.replaceChild(card, placeholderElement);
+            this.removeElement(placeholderElement); // 💡 إزالة آمنة للسكلتون
         } else if (isNewCard) {
             // إضافة البطاقة إذا لم يكن هناك هيكل تحويل
              container.appendChild(card);
@@ -1504,6 +1762,8 @@ class AniListManager {
                 title: anime.title.userPreferred,
                 timestamp: Date.now()
             }));
+            
+            this.logEvent('AnimeViewed', `ID: ${anime.id}`);
 
         }
     }
@@ -1517,9 +1777,11 @@ class AniListManager {
         if (index > -1) {
             favorites.splice(index, 1); // ⚡ تم تصحيح طريقة الحذف
             this.showToast('تم إزالة من المفضلة', 'info');
+            this.logEvent('FavoriteRemoved', `ID: ${animeId}`);
         } else {
             favorites.push(animeId);
             this.showToast('تم إضافة إلى المفضلة', 'success');
+            this.logEvent('FavoriteAdded', `ID: ${animeId}`);
         }
         
         localStorage.setItem('favorite_anime', JSON.stringify(favorites));
@@ -1557,10 +1819,12 @@ class AniListManager {
                 text: `شاهد ${title} على AniList`,
                 url: url
             });
+            this.logEvent('AnimeShared', `ID: ${animeId} via Native Share`);
         } else {
             // نسخ الرابط إلى الحافظة
             navigator.clipboard.writeText(url).then(() => {
                 this.showToast('تم نسخ الرابط إلى الحافظة', 'success');
+                this.logEvent('AnimeShared', `ID: ${animeId} via Clipboard`);
             });
         }
     }
@@ -1586,9 +1850,16 @@ class AniListManager {
     // 🔍 البحث المتقدم
     searchAnime(searchTerm) {
         const currentList = this.stateService.get('currentAnimeList');
+        const lastSearchTerm = this.stateService.get('lastSearchTerm');
+
+        if (searchTerm.trim() === lastSearchTerm) return; // 💡 تجنب إعادة التشغيل إذا لم يتغير المصطلح
+
+        this.stateService.set('lastSearchTerm', searchTerm.trim());
+
         if (!searchTerm.trim()) {
             // 🌟 العودة إلى القائمة بعد تطبيق التصفية والفرز
             this.applyCurrentFiltersAndSorting(); 
+            this.showSearchResults(currentList.length, searchTerm);
             return;
         }
 
@@ -1621,6 +1892,7 @@ class AniListManager {
         
         // إظهار نتائج البحث
         this.showSearchResults(finalFiltered.length, searchTerm);
+        this.logEvent('SearchPerformed', `Term: ${searchTerm}, Results: ${finalFiltered.length}`);
     }
     
     // 🌟 دالة البحث التي تستخدم Debounce
@@ -1631,11 +1903,12 @@ class AniListManager {
 
     // 📊 عرض نتائج البحث
     showSearchResults(count, term) {
-        const resultsInfo = document.getElementById('search-results-info');
+        // 💡 استخدام دالة مُساعدة للتعامل مع الـ DOM بشكل أفضل
+        let resultsInfo = document.getElementById('search-results-info');
         if (!resultsInfo) {
-            const newResultsInfo = document.createElement('div');
-            newResultsInfo.id = 'search-results-info';
-            newResultsInfo.style.cssText = `
+            resultsInfo = document.createElement('div');
+            resultsInfo.id = 'search-results-info';
+            resultsInfo.style.cssText = `
                 padding: 10px;
                 text-align: center;
                 background: rgba(0, 0, 0, 0.3);
@@ -1645,18 +1918,22 @@ class AniListManager {
             // 🌟 البحث عن الحاوية بشكل آمن قبل الإضافة
             const searchContainer = document.querySelector('.search-container');
             if (searchContainer) {
-                 searchContainer.appendChild(newResultsInfo);
+                 searchContainer.appendChild(resultsInfo);
             }
         }
 
-        const element = document.getElementById('search-results-info');
-        if (element) {
-            if (count === 0) {
-                element.innerHTML = `❌ لم يتم العثور على نتائج لـ "<strong>${term}</strong>"`;
-                element.style.color = '#ff4757';
+        if (resultsInfo) {
+            if (term.trim() === '' && count > 0) {
+                 resultsInfo.innerHTML = `✅ تم عرض ${count} أنمي في القائمة الحالية.`;
+                 resultsInfo.style.color = '#00ff88';
+            } else if (count === 0 && term.trim() !== '') {
+                resultsInfo.innerHTML = `❌ لم يتم العثور على نتائج لـ "<strong>${term}</strong>"`;
+                resultsInfo.style.color = '#ff4757';
+            } else if (count > 0 && term.trim() !== '') {
+                resultsInfo.innerHTML = `✅ تم العثور على ${count} نتيجة لـ "<strong>${term}</strong>"`;
+                resultsInfo.style.color = '#00ff88';
             } else {
-                element.innerHTML = `✅ تم العثور على ${count} نتيجة لـ "<strong>${term}</strong>"`;
-                element.style.color = '#00ff88';
+                 this.removeElement(resultsInfo);
             }
         }
     }
@@ -1816,6 +2093,8 @@ class AniListManager {
         
         // 🌟 إزالة محتوى الحاوية بطريقة أسرع
         if (container) {
+             // 💡 تنظيف مُستمعي الأحداث القدامى قبل مسح DOM
+             this.interactionManager.cleanup(); 
              container.innerHTML = '';
         } else {
              return;
@@ -1834,12 +2113,32 @@ class AniListManager {
         }
 
         animeList.forEach(anime => {
-            this.createAnimeCard(anime, false); // عدم إزالة السكلتون هنا
+            // 💡 إعادة إنشاء البطاقات لضمان تطبيق الترتيب الجديد
+            this.updateAnimeCard(anime, true, null, animeList.indexOf(anime)); 
         });
+        
+        // 💡 تحديث الترتيب الفعلي لعناصر الشبكة
+        container.style.display = 'grid'; // التأكد من تطبيق نمط الشبكة
 
         if (this.stateService.get('uiSettings').animations) {
             this.addScrollAnimations();
+        } else {
+            this.removeScrollAnimations();
         }
+    }
+    
+    // 💡 دالة لإزالة تأثيرات التمرير
+    removeScrollAnimations() {
+        if (this.scrollObserver) {
+            this.scrollObserver.disconnect();
+            this.scrollObserver = null;
+        }
+        document.querySelectorAll('.anime-card').forEach(card => {
+            card.style.opacity = '1';
+            card.style.transform = 'none';
+            card.style.transition = 'none';
+            card.style.willChange = 'auto';
+        });
     }
 
     // ✨ إضافة تأثيرات التمرير (تم تحسين Intersection Observer)
@@ -1886,7 +2185,7 @@ class AniListManager {
     showToast(message, type = 'success', duration = 3000) {
         // إزالة أي إشعارات سابقة
         const existingToasts = document.querySelectorAll('.advanced-toast');
-        existingToasts.forEach(toast => toast.remove());
+        existingToasts.forEach(toast => this.removeElement(toast));
 
         const toast = document.createElement('div');
         toast.className = `advanced-toast show ${type}`;
@@ -1902,7 +2201,7 @@ class AniListManager {
             <div class="toast-content">
                 <span class="toast-icon">${icons[type] || '💡'}</span>
                 <span class="toast-message">${message}</span>
-                <button class="toast-close" onclick="this.parentElement.parentElement.remove()">
+                <button class="toast-close">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -1912,12 +2211,22 @@ class AniListManager {
         if (document.body) {
              document.body.appendChild(toast);
         }
+        
+        // 💡 ربط الإغلاق عبر مدير التفاعل
+        const closeButton = toast.querySelector('.toast-close');
+        if (closeButton) {
+            this.interactionManager.add(closeButton, 'click', () => {
+                this.removeElement(toast);
+            });
+        }
+
 
         // إخفاء تلقائي
         setTimeout(() => {
             if (toast.parentElement) {
                 toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
+                // 💡 إزالة آمنة بعد الانتقال
+                setTimeout(() => this.removeElement(toast), 300);
             }
         }, duration);
     }
@@ -1928,6 +2237,7 @@ class AniListManager {
         
         // مسح محتوى الشبكة
         if (container) {
+             this.interactionManager.cleanup(); 
              container.innerHTML = '';
         } else {
              // إظهار في toast إذا كانت الحاوية غير موجودة
@@ -1936,16 +2246,23 @@ class AniListManager {
         }
 
 
-        container.innerHTML = `
-            <div class="error-state">
-                <i class="fas fa-exclamation-triangle" style="font-size: 64px; margin-bottom: 20px; color: #ff4757;"></i>
-                <h3>حدث خطأ</h3>
-                <p>${message}</p>
-                <button onclick="aniListManager.fetchAnimeData()" class="retry-btn">
-                    <i class="fas fa-redo"></i> إعادة المحاولة
-                </button>
-            </div>
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-state';
+        errorElement.innerHTML = `
+            <i class="fas fa-exclamation-triangle" style="font-size: 64px; margin-bottom: 20px; color: #ff4757;"></i>
+            <h3>حدث خطأ</h3>
+            <p>${message}</p>
+            <button class="retry-btn">
+                <i class="fas fa-redo"></i> إعادة المحاولة
+            </button>
         `;
+        
+        const retryButton = errorElement.querySelector('.retry-btn');
+        this.interactionManager.add(retryButton, 'click', () => {
+             this.fetchAnimeData();
+        });
+        
+        container.appendChild(errorElement);
         
         this.showLoadingState(false);
     }
@@ -1973,6 +2290,7 @@ class AniListManager {
         try {
             // 🌟 حفظ الإعدادات من StateService
             localStorage.setItem('ui_settings', JSON.stringify(this.stateService.get('uiSettings')));
+            this.logEvent('SettingsSaved', JSON.stringify(this.stateService.get('uiSettings')));
         } catch (error) {
             console.warn('تعذر حفظ إعدادات الواجهة:', error);
             this.logError('SaveUISettings', error, ErrorSeverity.LOW);
@@ -2016,12 +2334,13 @@ class AniListManager {
                 successfulRequests: this.performance.successfulRequests,
                 failedRequests: this.performance.failedRequests,
                 successRate: this.performance.requestsCount > 0 ? 
-                    (this.performance.successfulRequests / this.performance.requestsCount * 100).toFixed(1) : 0
+                    (this.performance.successfulRequests / this.performance.requestsCount * 100).toFixed(1) : 0,
+                eventLogsCount: this.performance.eventLogs.length // 💡 عدد الأحداث
             },
             cache: cacheStats,
             anime: {
                 total: this.stateService.get('currentAnimeList').length,
-                cached: this.advancedCache.performanceMetrics.size // هذا مقياس لعدد السجلات في الخريطة وليس حجم الكاش
+                cached: cacheStats.inMemoryCacheCount // 💡 استخدام عدد العناصر في الذاكرة
             },
             ui: this.stateService.get('uiSettings'),
             memory: this.stateService.get('memoryUsage') // 🛡️ إضافة إحصائيات الذاكرة
@@ -2033,6 +2352,9 @@ class AniListManager {
         if (confirm('هل أنت متأكد من رغبتك في مسح جميع البيانات المخزنة؟')) {
             localStorage.clear();
             sessionStorage.clear();
+            this.advancedCache.clearAll(); // 💡 استخدام دالة التنظيف المحدثة
+            this.interactionManager.cleanup(); // 💡 تنظيف مُستمعي الأحداث
+
             // إعادة إنشاء الكائن Cache
             this.advancedCache = new AdvancedCache();
             // 🌟 إعادة تعيين الحالة عبر StateService
@@ -2041,6 +2363,7 @@ class AniListManager {
             
             this.showToast('تم مسح جميع البيانات بنجاح', 'success');
             setTimeout(() => location.reload(), 1000);
+            this.logEvent('DataCleared', 'All local storage and state cleared.');
         }
     }
 
@@ -2052,6 +2375,7 @@ class AniListManager {
             settings: this.stateService.get('uiSettings'),
             performance: this.getSystemStats(),
             errorLogs: JSON.parse(localStorage.getItem('error_logs') || '[]'), // 🛡️ تصدير سجلات الأخطاء
+            fullEventLogs: this.performance.eventLogs, // 💡 تصدير سجلات الأحداث
             exportDate: new Date().toISOString()
         };
 
@@ -2065,6 +2389,307 @@ class AniListManager {
         
         this.showToast('تم تصدير البيانات بنجاح', 'success');
     }
+    
+    // 💡 دالة مُحسّنة لإزالة العناصر من DOM
+    removeElement(element) {
+        if (element && element.parentNode) {
+            // إزالة مُستمعي الأحداث قبل الإزالة
+            const id = element.getAttribute('data-anime-id');
+            if (id) {
+                 // 💡 تنظيف مُستمعي الأحداث المرتبطة ببطاقة الأنمي المحددة
+                 this.interactionManager.eventListeners = this.interactionManager.eventListeners.filter(listener => listener.element !== element);
+            }
+            element.remove();
+        }
+    }
+    
+    // 💡 دالة جديدة: تحميل الأنماط الإضافية
+    loadAdditionalStyles() {
+        const additionalStyles = `
+            /* 🌟 إصلاح الأنماط للحاويات الجديدة */
+            
+            #progress-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                padding: 10px;
+                z-index: 9999;
+                backdrop-filter: blur(10px);
+                transition: opacity 0.3s ease;
+            }
+
+            #progress-bar {
+                width: 100%;
+                height: 4px;
+                background: #333;
+                border-radius: 2px;
+                overflow: hidden;
+            }
+            
+            #progress-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #00ff88, #0099ff);
+                transition: width 0.3s ease;
+                width: 0%;
+            }
+            
+            #progress-text {
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }
+
+            .advanced-toast {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(0, 0, 0, 0.9);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                border-left: 4px solid #00ff88;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                z-index: 10000;
+                max-width: 400px;
+                backdrop-filter: blur(10px);
+                transform: translateX(400px);
+                transition: transform 0.3s ease;
+            }
+            
+            .advanced-toast.show {
+                transform: translateX(0);
+            }
+            
+            .advanced-toast.error {
+                border-left-color: #ff4757;
+            }
+            
+            .advanced-toast.warning {
+                border-left-color: #ffa502;
+            }
+            
+            .advanced-toast.info {
+                border-left-color: #0099ff;
+            }
+            
+            .toast-content {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                white-space: pre-line; /* 🌟 دعم الأسطر الجديدة */
+            }
+            
+            .toast-close {
+                background: none;
+                border: none;
+                color: white;
+                cursor: pointer;
+                opacity: 0.7;
+                transition: opacity 0.2s ease;
+            }
+            
+            .toast-close:hover {
+                opacity: 1;
+            }
+            
+            .skeleton {
+                animation: skeleton-pulse 1.5s ease-in-out infinite;
+            }
+            
+            @keyframes skeleton-pulse {
+                0% { opacity: 0.6; }
+                50% { opacity: 0.3; }
+                100% { opacity: 0.6; }
+            }
+            
+            .skeleton-image {
+                width: 100%;
+                height: 300px;
+                background: #333;
+                border-radius: 8px;
+            }
+            
+            .skeleton-title {
+                width: 80%;
+                height: 20px;
+                background: #333;
+                border-radius: 4px;
+                margin: 10px 0;
+            }
+            
+            .skeleton-text {
+                width: 60%;
+                height: 15px;
+                background: #333;
+                border-radius: 4px;
+            }
+            
+            .failed-load {
+                background: #444;
+                border: 2px dashed #ff4757;
+                color: #ff4757;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                text-align: center;
+                padding: 10px;
+                min-height: 350px;
+            }
+            
+            .empty-state, .error-state {
+                text-align: center;
+                padding: 40px 20px;
+                color: #888;
+            }
+            
+            .retry-btn {
+                background: #00ff88;
+                color: black;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-weight: bold;
+                margin-top: 15px;
+                transition: all 0.3s ease;
+            }
+            
+            .retry-btn:hover {
+                background: #00cc6a;
+                transform: translateY(-2px);
+            }
+            
+            .anime-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(
+                    to bottom,
+                    rgba(0, 0, 0, 0.3) 0%,
+                    transparent 30%,
+                    transparent 70%,
+                    rgba(0, 0, 0, 0.7) 100%
+                );
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            .anime-card:hover .anime-overlay {
+                opacity: 1;
+            }
+            
+            .anime-actions {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                display: flex;
+                gap: 5px;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            .anime-card:hover .anime-actions {
+                opacity: 1;
+            }
+            
+            .btn-favorite, .btn-share, .btn-watch-link {
+                background: rgba(0, 0, 0, 0.7);
+                border: none;
+                color: white;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                font-size: 14px;
+            }
+            
+            .btn-favorite:hover, .btn-share:hover, .btn-watch-link:hover {
+                background: rgba(0, 0, 0, 0.9);
+                transform: scale(1.1);
+            }
+            
+            .genre-tag {
+                background: rgba(0, 255, 136, 0.2);
+                color: #00ff88;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 11px;
+                margin: 2px;
+            }
+            
+            /* 🌟 أنماط اللودر المتقدم */
+            .advanced-loader {
+                text-align: center;
+                padding: 50px;
+                color: white;
+            }
+            
+            .loader-spinner {
+                border: 4px solid rgba(255, 255, 255, 0.1);
+                border-top: 4px solid #00ff88;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 1s linear infinite;
+                margin: 0 auto 15px;
+            }
+            
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            .loader-text {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+            
+            .loader-stats {
+                font-size: 12px;
+                opacity: 0.7;
+            }
+
+            .loader-stats .warning-text {
+                color: #ffa502;
+                font-weight: bold;
+            }
+            
+            /* 🌟 أنماط السمة (theme) */
+            [data-theme="dark"] {
+                 /* الأنماط الداكنة */
+                 --main-bg-color: #121212;
+                 --card-bg-color: #1e1e1e;
+                 --text-color: #ffffff;
+            }
+            
+            [data-theme="light"] {
+                 /* الأنماط الفاتحة */
+                 --main-bg-color: #f4f4f4;
+                 --card-bg-color: #ffffff;
+                 --text-color: #121212;
+            }
+        `;
+        
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = additionalStyles;
+        // 🌟 إضافة إلى head بشكل آمن
+        if (document.head && !document.getElementById('additionalStyles')) {
+             styleSheet.id = 'additionalStyles';
+             document.head.appendChild(styleSheet);
+        }
+    }
+
 
     // iniciar la aplicación
     start() {
@@ -2085,13 +2710,16 @@ document.addEventListener('DOMContentLoaded', () => {
         window.aniListManager.stateService.set('currentAnimeList', cachedAnime);
         // 🌟 تطبيق الفرز/التصفية على الكاش عند البدء
         window.aniListManager.applyCurrentFiltersAndSorting(); 
+        window.aniListManager.logEvent('AppStart', 'Loaded from Cache');
+    } else {
+        window.aniListManager.logEvent('AppStart', 'No Cache Found');
     }
     
     // 🌟 إعداد مستمع للبحث
     const searchInput = document.getElementById('anime-search');
     if (searchInput) {
         // 🌟 ربط بدالة performSearch التي تستخدم Debounce
-        searchInput.addEventListener('input', (event) => {
+        window.aniListManager.interactionManager.add(searchInput, 'input', (event) => {
             window.aniListManager.performSearch(event.target.value);
         });
     }
@@ -2101,290 +2729,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.aniListManager.start();
     }, 1000);
 
-    // إضافة أنماط CSS الإضافية (لضمان وجودها وتطبيقها بشكل صحيح)
-    const additionalStyles = `
-        /* 🌟 إصلاح الأنماط للحاويات الجديدة */
-        
-        #progress-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 10px;
-            z-index: 9999;
-            backdrop-filter: blur(10px);
-            transition: opacity 0.3s ease;
-        }
-
-        #progress-bar {
-            width: 100%;
-            height: 4px;
-            background: #333;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        
-        #progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff88, #0099ff);
-            transition: width 0.3s ease;
-            width: 0%;
-        }
-        
-        #progress-text {
-            color: white;
-            font-size: 12px;
-            text-align: center;
-            margin-top: 5px;
-        }
-
-        .advanced-toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            border-left: 4px solid #00ff88;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            z-index: 10000;
-            max-width: 400px;
-            backdrop-filter: blur(10px);
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        }
-        
-        .advanced-toast.show {
-            transform: translateX(0);
-        }
-        
-        .advanced-toast.error {
-            border-left-color: #ff4757;
-        }
-        
-        .advanced-toast.warning {
-            border-left-color: #ffa502;
-        }
-        
-        .advanced-toast.info {
-            border-left-color: #0099ff;
-        }
-        
-        .toast-content {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            white-space: pre-line; /* 🌟 دعم الأسطر الجديدة */
-        }
-        
-        .toast-close {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.2s ease;
-        }
-        
-        .toast-close:hover {
-            opacity: 1;
-        }
-        
-        .skeleton {
-            animation: skeleton-pulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes skeleton-pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 0.3; }
-            100% { opacity: 0.6; }
-        }
-        
-        .skeleton-image {
-            width: 100%;
-            height: 300px;
-            background: #333;
-            border-radius: 8px;
-        }
-        
-        .skeleton-title {
-            width: 80%;
-            height: 20px;
-            background: #333;
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-        
-        .skeleton-text {
-            width: 60%;
-            height: 15px;
-            background: #333;
-            border-radius: 4px;
-        }
-        
-        .failed-load {
-            background: #444;
-            border: 2px dashed #ff4757;
-            color: #ff4757;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            text-align: center;
-            padding: 10px;
-            min-height: 350px;
-        }
-        
-        .empty-state, .error-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #888;
-        }
-        
-        .retry-btn {
-            background: #00ff88;
-            color: black;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-        }
-        
-        .retry-btn:hover {
-            background: #00cc6a;
-            transform: translateY(-2px);
-        }
-        
-        .anime-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(
-                to bottom,
-                rgba(0, 0, 0, 0.3) 0%,
-                transparent 30%,
-                transparent 70%,
-                rgba(0, 0, 0, 0.7) 100%
-            );
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .anime-card:hover .anime-overlay {
-            opacity: 1;
-        }
-        
-        .anime-actions {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            display: flex;
-            gap: 5px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .anime-card:hover .anime-actions {
-            opacity: 1;
-        }
-        
-        .btn-favorite, .btn-share, .btn-watch-link {
-            background: rgba(0, 0, 0, 0.7);
-            border: none;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        
-        .btn-favorite:hover, .btn-share:hover, .btn-watch-link:hover {
-            background: rgba(0, 0, 0, 0.9);
-            transform: scale(1.1);
-        }
-        
-        .genre-tag {
-            background: rgba(0, 255, 136, 0.2);
-            color: #00ff88;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            margin: 2px;
-        }
-        
-        /* 🌟 أنماط اللودر المتقدم */
-        .advanced-loader {
-            text-align: center;
-            padding: 50px;
-            color: white;
-        }
-        
-        .loader-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid #00ff88;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .loader-text {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        
-        .loader-stats {
-            font-size: 12px;
-            opacity: 0.7;
-        }
-
-        .loader-stats .warning-text {
-            color: #ffa502;
-            font-weight: bold;
-        }
-        
-        /* 🌟 أنماط السمة (theme) */
-        [data-theme="dark"] {
-             /* الأنماط الداكنة */
-             --main-bg-color: #121212;
-             --card-bg-color: #1e1e1e;
-             --text-color: #ffffff;
-        }
-        
-        [data-theme="light"] {
-             /* الأنماط الفاتحة */
-             --main-bg-color: #f4f4f4;
-             --card-bg-color: #ffffff;
-             --text-color: #121212;
-        }
-        
-    `;
-    
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = additionalStyles;
-    // 🌟 إضافة إلى head بشكل آمن
-    if (document.head) {
-         document.head.appendChild(styleSheet);
-    }
+    // 💡 لا حاجة لتحميل الأنماط هنا، تم نقلها إلى دالة loadAdditionalStyles في init()
 });
 
 // 🚀 تصدير الكلاس للاستخدام العالمي

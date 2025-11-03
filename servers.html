@@ -559,6 +559,8 @@
     let currentAnimeVideoData = null; 
     // لتخزين مفتاح السيرفر الأخير المشاهَد
     let lastWatchedServer = null; 
+    // ⭐ المتغير الجديد الذي يحل المشكلة: معرف الأنمي
+    let ANIME_ID = null; 
     
     // 🎬 قاعدة بيانات السيرفرات (كما هي)
     const SERVER_DATABASE = {
@@ -627,6 +629,29 @@
       }
     };
 
+    /**
+     * وظيفة مساعدة للعثور على مفتاح السيرفر (مثل 'streamwish') من الاسم المعطى في ملف JSON
+     * @param {string} serverName - اسم السيرفر كما ورد في ملف JSON (قد يحتوي على كلمات إضافية)
+     * @returns {string} - المفتاح النظيف للسيرفر من SERVER_DATABASE، أو الاسم المنظف من ملف JSON إذا لم يُعثر عليه.
+     */
+    function getServerKey(serverName) {
+        // تحويل الاسم إلى حروف صغيرة لتسهيل المقارنة
+        const lowerName = serverName.toLowerCase();
+        
+        // البحث عن المفتاح الذي يتطابق اسمه مع جزء من الاسم
+        const foundKey = Object.keys(SERVER_DATABASE).find(key => 
+            lowerName.includes(SERVER_DATABASE[key].name.toLowerCase())
+        );
+        
+        // إذا وجد المفتاح، نرجعه.
+        if (foundKey) {
+            return foundKey;
+        }
+
+        // إذا لم يُعثر عليه، نرجع اسم السيرفر من JSON بعد تنظيفه ليكون بمثابة مفتاح فريد.
+        return lowerName.replace(/\s/g, '_'); 
+    }
+
     // ------------------------------------------------------------------
     // 0. Firebase Setup (مطلوب للتطبيق الواقعي)
     // ------------------------------------------------------------------
@@ -644,12 +669,17 @@
     let userId = null;
     let isAuthReady = false;
 
+    // 💡 تحسين: التأكد من وجود كائن Firebase و API Key قبل التهيئة
     if (firebaseConfig.apiKey !== "YOUR_API_KEY" && typeof firebase !== 'undefined' && firebase.initializeApp) {
-        const app = firebase.initializeApp(firebaseConfig);
-        db = firebase.firestore(app);
-        auth = firebase.auth(app);
+        try {
+            const app = firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore(app);
+            auth = firebase.auth(app);
+        } catch (e) {
+             console.error("Firebase initialization failed:", e);
+        }
     } else {
-        console.error("Firebase is not initialized. Please provide a valid firebaseConfig.");
+        console.warn("Firebase is not fully initialized. Assuming development/testing mode.");
     }
 
     async function ensureAuth() {
@@ -698,7 +728,8 @@
 
     async function getWatchHistoryFromFirestore(animeTitle) {
       if (!db || !userId || !animeTitle || !isAuthReady) return {};
-      const animeKey = animeTitle.replace(/\s+/g, '_');
+      // 💡 استخدام عنوان الأنمي المنظف كمفتاح للمستند
+      const animeKey = animeTitle.replace(/\s+/g, '_'); 
       const docRef = db.collection(`artifacts/${appId}/users/${userId}/watch-history`).doc(animeKey);
       try {
         const docSnap = await docRef.get();
@@ -715,11 +746,12 @@
 
     async function saveWatchHistoryToFirestore(animeTitle, episodeNumber, serverKey) {
       if (!db || !userId || !animeTitle || !isAuthReady) return;
+      // 💡 استخدام عنوان الأنمي المنظف كمفتاح للمستند
       const animeKey = animeTitle.replace(/\s+/g, '_');
       const docRef = db.collection(`artifacts/${appId}/users/${userId}/watch-history`).doc(animeKey);
 
       const episodeUpdate = {
-        server: serverKey,
+        server: serverKey, // حفظ المفتاح النظيف (streamwish)
         watchedAt: new Date().toISOString(),
         completed: true
       };
@@ -758,11 +790,18 @@
       }, 4000);
     }
     
-    // الانتقال المباشر لصفحة الأنمي
+    // ⭐⭐ الحل الرئيسي: العودة لصفحة الأنمي بالـ ID الصحيح ⭐⭐
     function goToAnimePage() {
-      // إزالة الحلقة المحددة لضمان العودة لصفحة الأنمي الأصلية
+      // إزالة الحلقة المحددة فقط، لكي يتمكن anime.html من تحميل بيانات الأنمي بشكل صحيح.
       localStorage.removeItem("selectedEpisode"); 
-      window.location.href = 'anime.html';
+      
+      if (ANIME_ID) {
+          // العودة الإجبارية إلى anime.html مع معرف الأنمي في الرابط
+          window.location.replace(`anime.html?id=${ANIME_ID}`);
+      } else {
+          // في حال عدم توفر الـ ID نعود لصفحة البداية
+          window.location.replace('index.html'); 
+      }
     }
 
     // ------------------------------------------------------------------
@@ -777,7 +816,9 @@
         try {
             const response = await fetch(dataPath);
             if (!response.ok) {
-                throw new Error(`تعذر العثور على ملف: ${dataPath}`);
+                // محاولة إظهار رسالة خطأ أكثر دقة للمطور
+                console.warn(`File not found or network error: ${response.status} for ${dataPath}`);
+                throw new Error(`تعذر العثور على ملف: ${dataPath} (قد يكون خطأ 404)`);
             }
             const data = await response.json(); 
             return data;
@@ -799,6 +840,10 @@
         ANIME_DATA = JSON.parse(localStorage.getItem("selectedAnime")) || {};
         EPISODE_DATA = JSON.parse(localStorage.getItem("selectedEpisode")) || {};
         
+        // ⭐⭐ استخراج الـ ID الذي سيستخدمه زر الرجوع ⭐⭐
+        ANIME_ID = ANIME_DATA.id;
+        
+        // 💡 استخدام عنوان slug إذا لم يكن المفتاح متوفراً
         const animeFileKeyRaw = ANIME_DATA.animeFileKey || ANIME_DATA.title_slug; 
         
         if (!animeFileKeyRaw) {
@@ -813,25 +858,26 @@
             .replace(/[^\w]/g, '') // إزالة أي رموز أخرى غير الأبجدية الرقمية و _
             .replace(/_{2,}/g, '_') // استبدال الشرطات السفلية المتتالية بـ _ واحدة
             .replace(/^_|_$/g, ''); // إزالة الشرطات السفلية من البداية والنهاية
-
+            
         // 2. جلب بيانات الفيديو التفصيلية من ملف JSON باستخدام المفتاح النظيف
         currentAnimeVideoData = await fetchAnimeData(animeFileKey);
         
-        if (!currentAnimeVideoData) {
+        if (!currentAnimeVideoData || !Array.isArray(currentAnimeVideoData.episodes)) {
             const errorTitle = ANIME_DATA.title || 'الأنمي غير معروف';
-            throw new Error(`تعذر تحميل بيانات الفيديو لـ ${errorTitle}. تأكد من تطابق اسم ملف JSON مع المفتاح النظيف: ${animeFileKey}`);
+            throw new Error(`تعذر تحميل بيانات الفيديو أو قائمة الحلقات فارغة لـ ${errorTitle}. تأكد من تطابق اسم ملف JSON مع المفتاح النظيف: ${animeFileKey}`);
         }
 
         // 3. دمج البيانات وتحديد رقم وإجمالي الحلقات
         ANIME_DATA = { ...ANIME_DATA, ...currentAnimeVideoData }; 
         
-        currentEpisodeNumber = EPISODE_DATA.episodeNumber || 1;
+        // 💡 التأكد من أن رقم الحلقة الحالية منطقي
+        currentEpisodeNumber = Math.max(1, parseInt(EPISODE_DATA.episodeNumber) || 1);
         // الاعتماد على طول مصفوفة الحلقات الفعلية في JSON لتحديد الإجمالي
         totalEpisodes = currentAnimeVideoData.episodes.length || 1; 
 
         // 4. جلب السيرفر الأخير المشاهد من Firestore
         const history = await getWatchHistoryFromFirestore(ANIME_DATA.title);
-        lastWatchedServer = history[currentEpisodeNumber]?.server || null;
+        lastWatchedServer = history[currentEpisodeNumber]?.server || null; // المفتاح النظيف
 
         return true;
       } catch (error) {
@@ -873,7 +919,8 @@
       
       // عرض حالة المشاهدة عند التهيئة
       if (lastWatchedServer) {
-        const serverName = SERVER_DATABASE[lastWatchedServer]?.name || lastWatchedServer;
+        // 💡 نعتمد على المفتاح النظيف للعرض
+        const serverName = SERVER_DATABASE[lastWatchedServer]?.name || lastWatchedServer; 
         showToast(`📺 لقد شاهدت هذه الحلقة مسبقاً (سيرفر: ${serverName}). اختر مجدداً أو ابدأ المشاهدة.`, "info");
       } else {
         showToast(`ابدأ بالاختيار! الحلقة ${currentEpisodeNumber} جاهزة للمشاهدة.`, "success");
@@ -905,19 +952,19 @@
       if (lastWatchedServer) {
          // محاولة وضع السيرفر المفضل في البداية
          episodeServers.sort((a, b) => {
-            if (a.name === lastWatchedServer) return -1;
-            if (b.name === lastWatchedServer) return 1;
+             const keyA = getServerKey(a.name);
+             const keyB = getServerKey(b.name);
+            if (keyA === lastWatchedServer) return -1;
+            if (keyB === lastWatchedServer) return 1;
             return 0;
          });
       }
 
 
       episodeServers.forEach((serverEntry) => {
-        // البحث عن معلومات السيرفر في قاعدة البيانات باستخدام الاسم أو مفتاح السيرفر
-        let serverKey = Object.keys(SERVER_DATABASE).find(key => 
-            serverEntry.name.toLowerCase().includes(SERVER_DATABASE[key].name.toLowerCase())
-        ) || serverEntry.name.toLowerCase().replace(/\s/g, '_'); // استخدام اسم السيرفر إذا لم يُعثر على مفتاح
-
+        // 💡 استخدام وظيفة getServerKey لتوحيد المفاتيح
+        const serverKey = getServerKey(serverEntry.name);
+        
         const serverData = SERVER_DATABASE[serverKey] || { // بيانات افتراضية إذا لم يكن السيرفر في القائمة
             name: serverEntry.name,
             icon: "fa-solid fa-server",
@@ -928,17 +975,21 @@
         
         // هنا نعتبر السيرفر متاحاً دائماً طالما أن لديه رابط في ملف JSON
         const isAvailable = !!serverEntry.url; 
-        const isLastWatched = serverEntry.name === lastWatchedServer || serverKey === lastWatchedServer; 
+        // 💡 مقارنة المفتاح النظيف (serverKey) مع المفتاح المحفوظ (lastWatchedServer)
+        const isLastWatched = serverKey === lastWatchedServer; 
         
         const serverCard = document.createElement('div');
         serverCard.className = `server-card ${isAvailable ? '' : 'disabled'} ${isLastWatched ? 'last-watched' : ''}`;
         
+        // 💡 استخدام serverData.name لضمان استخدام الاسم الموحد من قاعدة بياناتنا إذا كان متاحًا
+        const displayName = serverData.name;
+
         serverCard.innerHTML = `
           <div class="server-header">
             <div class="server-icon">
               <i class="${serverData.icon}" style="color: white;"></i>
             </div>
-            <div class="server-name">${serverData.name} ${isLastWatched ? '<i class="fa-solid fa-check-circle" style="color:var(--warning-color); margin-right:5px;"></i>' : ''}</div>
+            <div class="server-name">${displayName} ${isLastWatched ? '<i class="fa-solid fa-check-circle" style="color:var(--warning-color); margin-right:5px;"></i>' : ''}</div>
             <div class="server-status ${isAvailable ? 'status-available' : 'status-unavailable'}">
               ${isAvailable ? 'متاح' : 'غير متاح'}
             </div>
@@ -951,8 +1002,8 @@
         `;
         
         if (isAvailable) {
-            // نمرر كائن السيرفر مباشرة من JSON
-          serverCard.addEventListener('click', () => selectServer(serverEntry.name, serverEntry));
+            // نمرر المفتاح النظيف (serverKey) وبيانات السيرفر من JSON عند الضغط
+          serverCard.addEventListener('click', () => selectServer(serverKey, serverEntry));
         }
         
         serversList.appendChild(serverCard);
@@ -963,7 +1014,11 @@
     // ------------------------------------------------------------------
     // 4. وظيفة اختيار السيرفر والانتقال للمشاهدة
     // ------------------------------------------------------------------
-    // تم تحديث الدالة لتقبل بيانات السيرفر مباشرة من ملف JSON
+    /**
+     * اختيار السيرفر وحفظ التاريخ والانتقال لصفحة المشاهدة.
+     * @param {string} serverKey - المفتاح النظيف للسيرفر (مثل 'streamwish').
+     * @param {object} serverDataFromJSON - بيانات السيرفر كما وردت في ملف JSON.
+     */
     function selectServer(serverKey, serverDataFromJSON) {
       const loading = document.getElementById('loading');
       loading.style.display = 'block';
@@ -981,7 +1036,7 @@
       const serverInfo = {
         name: serverDataFromJSON.name,
         url: finalUrl,
-        // حفظ الـ key للتاريخ، سواء كان من قاعدة بياناتنا أو الاسم من JSON
+        // 💡 حفظ المفتاح النظيف ليكون مرجعاً موحداً
         type: serverKey, 
         episode: currentEpisodeNumber,
         anime: ANIME_DATA.title,
@@ -991,7 +1046,7 @@
       
       localStorage.setItem("selectedServer", JSON.stringify(serverInfo));
         
-      // تحديث حالة المشاهدة في Firebase/Firestore
+      // تحديث حالة المشاهدة في Firebase/Firestore باستخدام المفتاح النظيف
       saveWatchHistoryToFirestore(ANIME_DATA.title, currentEpisodeNumber, serverKey);
       
       // رسالة العد التنازلي للمستخدم
@@ -1053,7 +1108,7 @@
 
       // 3. تحديث البيانات المتعلقة بالحالة (السيرفر الأخير)
       const history = await getWatchHistoryFromFirestore(ANIME_DATA.title);
-      lastWatchedServer = history[currentEpisodeNumber]?.server || null;
+      lastWatchedServer = history[currentEpisodeNumber]?.server || null; // المفتاح النظيف
 
       // 4. تحديث عناصر UI الرئيسية ديناميكياً
       document.getElementById('pageTitle').textContent = `سيرفرات ${ANIME_DATA.title} - حلقة ${currentEpisodeNumber}`;
@@ -1106,11 +1161,11 @@
     // 9. إضافة اختصارات لوحة المفاتيح
     // ------------------------------------------------------------------
     document.addEventListener('keydown', function(e) {
-      // السهم الأيمن للحلقة السابقة
+      // السهم الأيمن للحلقة السابقة (لأن الصفحة RTL)
       if (e.key === 'ArrowRight' && currentEpisodeNumber > 1) {
         navigateEpisode(currentEpisodeNumber - 1);
       }
-      // السهم الأيسر للحلقة التالية
+      // السهم الأيسر للحلقة التالية (لأن الصفحة RTL)
       else if (e.key === 'ArrowLeft' && currentEpisodeNumber < totalEpisodes) {
         navigateEpisode(currentEpisodeNumber + 1);
       }

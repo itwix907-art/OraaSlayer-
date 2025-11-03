@@ -816,6 +816,8 @@
     // 💡 الثوابت والمتغيرات العامة
     const OWNER_EMAIL = "itwix907@gmail.com";
     const ANILIST_API = 'https://graphql.anilist.co'; 
+    const MAX_COMMENT_LENGTH = 300; 
+    const MIN_COMMENT_LENGTH = 5;
 
     // متغيرات Firebase
     let currentUser = null;
@@ -872,9 +874,11 @@
             getAnalytics(app);
             firebaseInitialized = true;
             console.log('✅ Firebase initialized successfully');
+            return true; // إضافة قيمة إرجاع للإشارة إلى النجاح
         } catch (error) {
             console.error('❌ Firebase initialization error:', error);
             firebaseInitialized = false;
+            return false; // إضافة قيمة إرجاع للإشارة إلى الفشل
         }
     }
 
@@ -891,11 +895,19 @@
     function showToast(msg, type = "info") {
       const toast = document.getElementById('toast');
       toast.textContent = msg;
+      // إعادة تعيين الفئات لضمان إزالة الفئات السابقة
       toast.className = 'toast'; 
       toast.classList.add(type);
-      setTimeout(() => { toast.classList.add('show'); }, 10);
+      
+      // لتشغيل الانتقال، يجب الانتظار لدورة تحديث DOM
+      requestAnimationFrame(() => {
+          toast.classList.add('show'); 
+      });
+
+      // إخفاء الـ toast
       setTimeout(() => { 
         toast.classList.remove('show'); 
+        // إعادة تعيين التحويل في حالة الموبايل بعد إخفاء الـ toast
         if (window.innerWidth <= 480) {
             toast.style.transform = 'translateX(50%)'; 
         }
@@ -904,10 +916,10 @@
     
     function cleanHTML(rawText) {
         if (!rawText) return 'لا يوجد وصف بعد لهذا الأنمي.';
-        let tempElement = document.createElement('div');
-        tempElement.innerHTML = rawText;
-        let cleanText = tempElement.textContent || tempElement.innerText || '';
-        return cleanText.trim().replace(/<br>/g, '\n');
+        // استخدام تعابير منتظمة للتعامل مع الـ HTML الأساسي بسرعة
+        let cleanText = rawText.replace(/<br\s*\/?>/gi, '\n') // استبدال <br> بأسطر جديدة
+                               .replace(/<[^>]+>/g, ''); // إزالة باقي وسوم HTML
+        return cleanText.trim();
     }
     
     // دالة لتحويل العنوان إلى "slug" (اسم ملف كتابي)
@@ -922,8 +934,10 @@
 
     function updateProgressBar() {
       if (!anime || !anime.id || !WATCH_STATUS_KEY) return; 
-      const watchedStatus = JSON.parse(localStorage.getItem(WATCH_STATUS_KEY)) || {};
+      // استخدام القيمة المحسوبة للحلقات أو الافتراضية بذكاء
       const totalEpisodes = anime.totalEpisodes || anime.episodes || 12; 
+      const watchedStatus = JSON.parse(localStorage.getItem(WATCH_STATUS_KEY)) || {};
+      // تصفية وحساب الحلقات المشاهدة بناءً على المفاتيح التي قيمتها true
       const watchedEpisodes = Object.keys(watchedStatus).filter(ep => watchedStatus[ep] === true).length; 
       const progressPercentage = totalEpisodes > 0 ? (watchedEpisodes / totalEpisodes) * 100 : 0;
       
@@ -934,7 +948,7 @@
       
       if (watchedEpisodes === 0) {
         progressText.textContent = 'لم تبدأ المشاهدة بعد';
-      } else if (watchedEpisodes >= totalEpisodes) {
+      } else if (watchedEpisodes >= totalEpisodes && totalEpisodes > 0) {
         progressText.textContent = `مكتمل! 🎉 (${watchedEpisodes}/${totalEpisodes})`; 
       } else {
         progressText.textContent = `شاهدت ${watchedEpisodes} من ${totalEpisodes} حلقة (${Math.round(progressPercentage)}%)`;
@@ -947,15 +961,18 @@
 
     window.goBackSmart = function() { 
       const previousPageData = JSON.parse(localStorage.getItem('previousPage')) || {};
+      // تحقق من الرابط المخزن ومنعه من العودة إلى servers.html أو anime.html في حلقة
       if (previousPageData.url && previousPageData.url.includes(window.location.origin)) {
         if (!previousPageData.url.includes('anime.html') && !previousPageData.url.includes('servers.html')) {
           window.location.replace(previousPageData.url); 
           return;
         }
       }
+      // الرجوع خطوة واحدة في تاريخ المتصفح إذا أمكن
       if (window.history.length > 1) {
         window.history.back();
       } else {
+        // العودة إلى الرئيسية كخيار أخير
         goToHome();
       }
     }
@@ -966,6 +983,7 @@
 
     function savePreviousPageForAnime() {
       const previousPage = document.referrer;
+      // شرط للتأكد من أن الصفحة السابقة صالحة ومن نفس الموقع وليست صفحة أنمي أو سيرفرات
       if (previousPage && 
           previousPage.includes(window.location.origin) &&
           !previousPage.includes('anime.html') &&
@@ -994,6 +1012,7 @@
             
         commentBox.classList.toggle('disabled', !isLoggedIn);
         commentInput.placeholder = isLoggedIn ? 'أضف تعليقك هنا...' : 'سجّل الدخول للتعليق';
+        sendComment.disabled = !isLoggedIn; // تعطيل زر الإرسال أيضًا
     }
     
     // مراقب حالة المصادقة الذكي - محسن للأداء
@@ -1007,25 +1026,30 @@
             updateAuthDependentUI(isLoggedIn);
             
             if (isLoggedIn) {
-                localStorage.setItem("loggedInUser", user.email);
+                // استخدام الـ UID بدلاً من الإيميل للتخزين المحلي هو الأكثر أمانًا
+                localStorage.setItem("loggedInUserUID", user.uid);
                 if (anime && ANIME_KEY) {
+                    // تأخير بسيط لضمان تهيئة بقية المكونات
                     setTimeout(() => {
                         fetchUserFavoritesFromFirebase(); 
                         loadComments(); 
                     }, 100);
                 }
             } else {
-                localStorage.removeItem("loggedInUser");
+                localStorage.removeItem("loggedInUserUID");
                 localStorage.removeItem("profileName");
                 updateFavoriteButtonUI(false); 
+                // إعادة تحميل التعليقات لعرضها للمستخدم غير المسجل (في حال كانت متاحة)
                 loadComments(); 
             }
             
             if (anime && ANIME_KEY) {
+                // جلب التقييم المبدئي والاشتراك في تحديثاته
                 fetchInitialRating();
             }
         }, (error) => {
             console.error('Auth state change error:', error);
+            showToast('خطأ في المصادقة. يرجى التحقق من اتصالك.', 'error');
         });
     }
 
@@ -1065,8 +1089,12 @@
             return;
         }
 
+        // تعطيل الزر أثناء المعالجة لمنع الضغط المتعدد
+        favoriteBtn.disabled = true;
+
         try {
             const userDocRef = doc(firestore, "users", currentUser.uid);
+            // إنشاء كائن بيانات الأنمي بجميع التفاصيل الضرورية
             const animeData = { 
                 animeId: ANIME_KEY, 
                 title: anime.title, 
@@ -1083,17 +1111,19 @@
                  const newFavorites = currentFavorites.filter(fav => fav.animeId !== ANIME_KEY);
                  await setDoc(userDocRef, { favorites: newFavorites }, { merge: true });
                  showToast(`💔 تم إزالة "${anime.title}" من المفضلة.`, "info");
+                 updateFavoriteButtonUI(false);
              } else {
+                 // استخدام arrayUnion يضمن إضافة العنصر فقط إذا لم يكن موجوداً
                  await updateDoc(userDocRef, { 
                      favorites: arrayUnion(animeData) 
                  });
                  showToast(`💖 تم إضافة "${anime.title}" إلى المفضلة!`, "success");
+                 updateFavoriteButtonUI(true);
              }
 
-            updateFavoriteButtonUI(!isCurrentlyFav);
 
         } catch (e) {
-             // 💡 محاولة إنشاء المستند إذا لم يكن موجوداً
+             // 💡 محاولة إنشاء المستند إذا لم يكن موجوداً (لأول مستخدم على الإطلاق)
              if (e.code === 'not-found' || (e.message && e.message.includes('No document to update'))) {
                  try {
                      const animeData = { 
@@ -1116,6 +1146,8 @@
                  console.error("🚨 خطأ في تحديث المفضلة Firebase:", e);
                  showToast("❌ حدث خطأ أثناء تحديث حالة المفضلة. جرب مرة أخرى.", "error");
              }
+        } finally {
+             favoriteBtn.disabled = false; // إعادة تفعيل الزر
         }
     }
     
@@ -1145,10 +1177,12 @@
       
       const animeRatingElement = document.getElementById("animeRating");
       if (averageRate !== null) {
-          animeRatingElement.textContent = `⭐ ${averageRate.toFixed(1)} / 5.0 (المستخدمون)`; 
+          // عرض تقييم المستخدمين بـ 10.0 بدلًا من 5.0 ليكون أوضح
+          animeRatingElement.textContent = `⭐ ${(averageRate * 2).toFixed(1)} / 10.0 (المستخدمون)`; 
       } else {
-          const displayScore = anime && anime.rating !== "غير متوفر" ? parseFloat(anime.rating).toFixed(1) : "غير متوفر";
-          animeRatingElement.textContent = `⭐ ${displayScore} / 5.0 (Anilist)`;
+          // عرض تقييم Anilist بـ 10.0 أيضًا
+          const anilistScore = anime && anime.rating !== "غير متوفر" ? (parseFloat(anime.rating) * 2).toFixed(1) : "غير متوفر";
+          animeRatingElement.textContent = `⭐ ${anilistScore} / 10.0 (Anilist)`;
       }
     }
     
@@ -1216,7 +1250,7 @@
 
     stars.forEach(star => {
       star.addEventListener("click", () => {
-        if (!currentUser) return; 
+        if (!currentUser || star.classList.contains('disabled')) return; 
         const rate = star.dataset.rate;
         sendRating(rate);
       });
@@ -1234,6 +1268,7 @@
       
       try {
           const commentsCollectionRef = collection(firestore, "animeComments", ANIME_KEY, "comments");
+          // ترتيب حسب الطابع الزمني للوصول لأحدث التعليقات
           const q = query(commentsCollectionRef, orderBy("timestamp", "desc")); 
 
           onSnapshot(q, (snapshot) => {
@@ -1274,11 +1309,13 @@
         let timestampText = "الآن";
         try {
             if (c.timestamp && c.timestamp.toDate) {
+                // تحويل طابع Firebase إلى تاريخ محلي مُنسق
                 timestampText = c.timestamp.toDate().toLocaleString('ar-SA', { 
                     year: 'numeric', month: 'numeric', day: 'numeric', 
                     hour: '2-digit', minute: '2-digit' 
                 });
             } else if (c.timestamp && typeof c.timestamp === 'string') {
+                 // في حالة كان الطابع الزمني عبارة عن string
                  timestampText = new Date(c.timestamp).toLocaleString('ar-SA', { 
                     year: 'numeric', month: 'numeric', day: 'numeric', 
                     hour: '2-digit', minute: '2-digit' 
@@ -1312,8 +1349,8 @@
       }
       
       const text = commentInput.value.trim();
-      if (!text || text.length < 5 || text.length > 300) {
-        showToast("📝 يجب أن يكون التعليق بين 5 و 300 حرف!", "warning");
+      if (!text || text.length < MIN_COMMENT_LENGTH || text.length > MAX_COMMENT_LENGTH) {
+        showToast(`📝 يجب أن يكون التعليق بين ${MIN_COMMENT_LENGTH} و ${MAX_COMMENT_LENGTH} حرف!`, "warning");
         return;
       }
       
@@ -1321,12 +1358,16 @@
       sendComment.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> إرسال...';
 
       try {
+          // تطهير النص قبل الإرسال لزيادة الأمان
           const safeText = cleanHTML(text); 
+          
+          // جلب اسم المستخدم من مستند المستخدم إن وجد، أو من Auth
           const userDocRef = doc(firestore, "users", currentUser.uid);
           const userDoc = await getDoc(userDocRef);
           
-          // محاولة جلب اسم المستخدم من مستند المستخدم، ثم اسم العرض من Auth، ثم "مستخدم"
-          const userName = userDoc.exists() ? userDoc.data().name || currentUser.displayName || "مستخدم" : currentUser.displayName || "مستخدم";
+          const userName = userDoc.exists() && userDoc.data().name 
+                           ? userDoc.data().name 
+                           : currentUser.displayName || "مستخدم";
           
           const newComment = { 
             user: userName, 
@@ -1403,7 +1444,8 @@
             loadingText.textContent = "جاري الاتصال بخوادم AniList...";
             
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); 
+            // تقليل المهلة إلى 7 ثوانٍ ليكون التطبيق أكثر استجابة
+            const timeoutId = setTimeout(() => controller.abort(), 7000); 
             
             const response = await fetch(ANILIST_API, {
                 method: 'POST',
@@ -1431,7 +1473,8 @@
                 trailerUrl = `https://www.youtube.com/embed/${media.trailer.id}`;
             }
             
-            const ratingOutOfFive = media.averageScore ? (media.averageScore / 20) : "غير متوفر";
+            // تحويل التقييم من 100 إلى 5
+            const ratingOutOfFive = media.averageScore ? (media.averageScore / 20) : "غير متوفر"; 
 
             return {
                 id: media.id,
@@ -1476,6 +1519,7 @@
                 console.log('✅ تم تحميل صورة الأنمي بنجاح');
             };
           } else {
+            // استخدام الصورة البديلة في حال عدم وجود رابط
             animeImg.src = "https://placehold.co/300x400/1A1A2E/8B5CF6?text=صورة+الأنمي";
           }
           animeImg.alt = `صورة ${anime.title}`;
@@ -1513,8 +1557,9 @@
               trailerContainer.style.display = 'none';
           }
           
-          const anilistScore = anime.rating !== "غير متوفر" ? parseFloat(anime.rating).toFixed(1) : anime.rating;
-          document.getElementById("animeRating").textContent = `⭐ ${anilistScore} / 5.0 (Anilist)`;
+          // عرض تقييم Anilist بـ 10.0
+          const anilistScore = anime.rating !== "غير متوفر" ? (parseFloat(anime.rating) * 2).toFixed(1) : anime.rating;
+          document.getElementById("animeRating").textContent = `⭐ ${anilistScore} / 10.0 (Anilist)`;
 
           loadEpisodes();
           updateProgressBar();
@@ -1529,7 +1574,8 @@
 
     function loadEpisodes() {
         const episodes = document.getElementById("episodesList");
-        const totalEpisodesNum = parseInt(anime.totalEpisodes || anime.episodes) || 0;
+        // استخدام totalEpisodes كمرجع أول
+        const totalEpisodesNum = parseInt(anime.totalEpisodes || anime.episodes) || 0; 
         episodes.innerHTML = "";
         
         const watchedStatus = JSON.parse(localStorage.getItem(WATCH_STATUS_KEY)) || {}; 
@@ -1542,7 +1588,7 @@
                 const isWatched = watchedStatus[episodeNumber];
                 
                 return `
-                    <div class="episode ${isWatched ? 'watched' : ''}" data-episode="${episodeNumber}">
+                    <div class="episode ${isWatched ? 'watched' : ''}" data-episode="${episodeNumber}" role="button" tabindex="0">
                         الحلقة ${episodeNumber}
                     </div>
                 `;
@@ -1557,22 +1603,39 @@
                     handleEpisodeClick(episodeNumber, episodeElement);
                 }
             });
+            
+            episodes.addEventListener('keypress', (e) => {
+                const episodeElement = e.target.closest('.episode');
+                if (episodeElement && e.key === 'Enter') {
+                    const episodeNumber = parseInt(episodeElement.dataset.episode);
+                    handleEpisodeClick(episodeNumber, episodeElement);
+                }
+            });
         }
     }
 
     // 🚨 التصحيح الحاسم لمشكلة نقل البيانات لصفحة servers.html
     function handleEpisodeClick(episodeNumber, episodeElement) {
+        if (!anime) {
+            showToast("❌ خطأ: لا توجد بيانات أنمي متاحة للتشغيل.", "error");
+            return;
+        }
+        
         // 1. تحديث حالة المشاهدة محلياً
         const watchedStatus = JSON.parse(localStorage.getItem(WATCH_STATUS_KEY)) || {};
         watchedStatus[episodeNumber] = true; 
         localStorage.setItem(WATCH_STATUS_KEY, JSON.stringify(watchedStatus));
         
-        // 🟢 الحل: حفظ كائن الأنمي بالكامل (والذي يحتوي الآن على title_slug/animeFileKey)
-        // هذا الكائن يحتوي على جميع المعلومات التي تحتاجها صفحة servers.html لجلب ملف JSON (إذا كانت تستخدم title_slug أو مفتاح كتابي)
+        // 🟢 الحل: حفظ كائن الأنمي بالكامل لصفحة servers.html
+        // هذا الكائن يحتوي على جميع المعلومات التي تحتاجها صفحة servers.html لجلب ملف JSON
         
-        // إضافة المفتاح الكتابي لضمان استخدامه في servers.html
-        anime.animeFileKey = anime.title_slug; 
-        localStorage.setItem("selectedAnime", JSON.stringify(anime)); 
+        // التأكد من أن المفتاح الكتابي موجود قبل الحفظ
+        const animeFileKey = anime.title_slug || titleToSlug(anime.title);
+        const animeDataForServers = {
+            ...anime, // نسخ جميع بيانات الأنمي
+            animeFileKey: animeFileKey // إضافة المفتاح الحاسم
+        };
+        localStorage.setItem("selectedAnime", JSON.stringify(animeDataForServers)); 
         
         // 2. حفظ تفاصيل الحلقة المحددة 
         localStorage.setItem("selectedEpisode", JSON.stringify({
@@ -1581,7 +1644,7 @@
             animeId: anime.id,
             totalEpisodes: anime.totalEpisodes || anime.episodes,
             // 💡 إضافة المفتاح الكتابي لضمان استخدامه في servers.html
-            animeFileKey: anime.title_slug // استخدام الـ slug الذي قمنا بإنشائه في fetchAnimeDetailsFromId
+            animeFileKey: animeFileKey 
         }));
         
         showToast(`▶️ تشغيل الحلقة ${episodeNumber} من ${anime.title}`, "info");
@@ -1617,16 +1680,20 @@
             const cacheKey = `anime_${animeId}`;
             const cachedAnime = localStorage.getItem(cacheKey);
             
+            let shouldLoadFromCache = false;
             if (cachedAnime) {
                 anime = JSON.parse(cachedAnime);
                 console.log('✅ تم تحميل بيانات الأنمي من الذاكرة المؤقتة');
+                shouldLoadFromCache = true;
                 
+                // تحديث المفاتيح الهامة حتى عند التحميل من الكاش
                 ANIME_KEY = `anilist_${anime.id}`; 
                 WATCH_STATUS_KEY = `watch_status_${ANIME_KEY}`;
                 
                 loadAnimeDetails();
-                hideLoadingScreen();
                 animatePageElements();
+                // إخفاء التحميل مبكرًا لتحسين إدراك الأداء
+                hideLoadingScreen(); 
             }
             
             // 💡 يتم جلب البيانات دائماً، حتى لو كانت مخزنة مؤقتاً، لضمان تحديثها
@@ -1635,38 +1702,39 @@
                 fetchAnimeDetailsFromId(animeId)
             ]);
             
-            let shouldUpdateUI = false;
+            let shouldUpdateUIFromFetch = false;
             
             if (fetchedAnimeResult.status === 'fulfilled' && fetchedAnimeResult.value) {
                 const fetchedAnime = fetchedAnimeResult.value;
                 
-                // تحديث الواجهة فقط إذا كانت البيانات مختلفة عن البيانات المخزنة مؤقتاً
-                if (!anime || JSON.stringify(anime) !== JSON.stringify(fetchedAnime)) {
+                // تحديث الواجهة فقط إذا لم يتم التحميل من الكاش أو كانت البيانات مختلفة
+                if (!shouldLoadFromCache || JSON.stringify(anime) !== JSON.stringify(fetchedAnime)) {
                     anime = fetchedAnime;
                     localStorage.setItem(cacheKey, JSON.stringify(anime));
-                    shouldUpdateUI = true;
+                    shouldUpdateUIFromFetch = true;
                 }
             } else if (!anime) {
                 // إذا لم يكن هناك بيانات مخزنة مؤقتاً وفشل الجلب
-                throw new Error("فشل في جلب بيانات الأنمي");
+                throw new Error("فشل في جلب بيانات الأنمي من جميع المصادر");
             }
 
+            // تحديث المفاتيح النهائية
             ANIME_KEY = `anilist_${anime.id}`; 
             WATCH_STATUS_KEY = `watch_status_${ANIME_KEY}`;
 
             loadingText.textContent = "جاري تحميل الواجهة...";
             
-            if (shouldUpdateUI || !cachedAnime) {
+            if (shouldUpdateUIFromFetch) {
+                // إعادة تحميل التفاصيل لضمان تحديثها بالبيانات الجديدة من API
                 loadAnimeDetails();
-                animatePageElements(); 
             }
             
             // يتم تهيئة Firebase بعد جلب بيانات الأنمي لضمان وجود ANIME_KEY
-            if (firebaseInit.status === 'fulfilled') {
+            if (firebaseInit.status === 'fulfilled' && auth && firestore) {
                 setupAuthListener();
             }
             
-            if (!cachedAnime) {
+            if (!shouldLoadFromCache) {
                  setTimeout(() => {
                     hideLoadingScreen();
                 }, 800);
@@ -1722,12 +1790,12 @@
                     WATCH_STATUS_KEY = `watch_status_${ANIME_KEY}`; 
                     
                     loadAnimeDetails(); 
-                    loadEpisodes(); 
+                    // لا حاجة لـ loadEpisodes() هنا لأنها داخل loadAnimeDetails()
                     updateProgressBar(); 
                     
                     // إعادة تهيئة Firebase والاستماع لحالة المصادقة بعد الاستعادة
-                    initializeFirebase().then(() => {
-                        setupAuthListener();
+                    initializeFirebase().then((success) => {
+                        if (success) setupAuthListener();
                     });
                     
                     animatePageElements();
@@ -1740,6 +1808,7 @@
     window.addEventListener('beforeunload', function() {
         if (anime && anime.id) {
             console.log('💾 حفظ بيانات الأنمي قبل مغادرة الصفحة');
+            // تأكد من حفظ أحدث بيانات الأنمي بما في ذلك أي تحديثات محتملة
             localStorage.setItem(`anime_${anime.id}`, JSON.stringify(anime));
         }
     });

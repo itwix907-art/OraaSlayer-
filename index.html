@@ -80,7 +80,7 @@
                 radial-gradient(circle at 10% 20%, rgba(139, 123, 255, 0.1) 0%, transparent 25%),
                 radial-gradient(circle at 90% 80%, rgba(255, 123, 169, 0.1) 0%, transparent 25%);
             min-height: 100vh;
-            padding-bottom: var(--footer-height);
+            /* 🟢 تحسين: تم نقل الـ padding-bottom إلى عنصر <main> ليتم حسابه ديناميكياً في JS */
             line-height: 1.5;
         }
 
@@ -395,7 +395,7 @@
         .search-bar input {
             width: 100%;
             /* 🆕 تصحيح: تعديل الـ padding للسماح لأيقونة البحث بالظهور من اليسار */
-            padding: 0.75rem 0.9375rem 0.75rem 2.8125rem; 
+            padding: 0.75rem 2.8125rem 0.75rem 0.9375rem; 
             border-radius: 0.875rem;
             border: 1px solid var(--glass-border);
             outline: none;
@@ -406,6 +406,7 @@
             font-size: 1rem;
             backdrop-filter: blur(0.5rem);
             box-shadow: 0 0.25rem 0.9375rem rgba(0, 0, 0, 0.1);
+            text-align: right; /* 🟢 تصحيح: محاذاة النص لليمين */
         }
         
         .search-bar input:focus {
@@ -416,8 +417,8 @@
         
         .search-bar .search-icon {
             position: absolute;
-            /* 🆕 تصحيح: تغيير الـ left إلى right في وضع الـ RTL */
-            right: 2.1875rem; 
+            /* 🆕 تصحيح: تغيير الـ right إلى left في وضع الـ RTL */
+            left: 2.1875rem; 
             top: 50%;
             transform: translateY(-50%);
             color: var(--accent-color);
@@ -583,7 +584,8 @@
             position: fixed;
             z-index: 150;
             top: 0;
-            right: calc(-1 * 85%);
+            /* 🟢 تصحيح: الإزاحة الأولية يجب أن تكون كاملة لليمين */
+            right: 0; 
             background: rgba(35, 35, 65, 0.95);
             backdrop-filter: var(--blur-intensity);
             overflow-x: hidden;
@@ -593,17 +595,13 @@
             box-shadow: -0.5rem 0 1.875rem rgba(0, 0, 0, 0.4);
             border-left: 1px solid var(--glass-border);
             will-change: transform; /* 🟢 تحسين الأداء */
+            /* 🟢 تصحيح: ابدأ من خارج الشاشة لليمين */
+            transform: translateX(100%);
         }
 
         .sidebar.open {
-            /* 🟢 تحسين: استخدام transform للانتقال */
+            /* 🟢 تحسين: سحبها إلى موضعها الطبيعي */
             transform: translateX(0);
-        }
-
-        /* 🆕 تعديل الـ right الافتراضي ليعمل مع الـ transform */
-        .sidebar {
-            right: 0; 
-            transform: translateX(100%); 
         }
         
         .sidebar-header {
@@ -756,7 +754,8 @@
         }
 
         input:checked + .slider:before {
-            transform: translateX(-1.375rem); /* 🆕 تصحيح: تغيير اتجاه التحول لـ RTL */
+            /* 🟢 تصحيح: تغيير اتجاه التحول لـ RTL ليعمل من اليمين لليسار */
+            transform: translateX(-1.375rem); 
         }
 
         /* التذييل والأزرار السفلية - محدثة وجذابة */
@@ -958,7 +957,7 @@
             border-left: none; 
             opacity: 0;
             /* 🆕 تصحيح: تغيير اتجاه التحول لـ RTL */
-            transform: translateX(-100%); 
+            transform: translateX(100%); 
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 🆕 دالة زمنية أكثر سلاسة */
             z-index: 1000;
             max-width: 20rem;
@@ -969,6 +968,7 @@
         
         .toast.show {
             opacity: 1;
+            /* 🟢 تصحيح: يظهر من اليمين (translateX(0)) بدلاً من (translateX(-100%)) */
             transform: translateX(0);
         }
         
@@ -1075,7 +1075,9 @@
             }
             
             .search-bar .search-icon {
-                right: 1.25rem; /* 🆕 تصحيح: تغيير الـ left إلى right */
+                /* 🟢 تصحيح: تغيير الـ right إلى left ليناسب RTL */
+                left: 1.25rem; 
+                right: unset;
             }
             
             .to-home-btn {
@@ -1139,6 +1141,8 @@
                 right: 0.75rem;
                 left: 0.75rem;
                 max-width: unset;
+                /* 🟢 تصحيح: الإشعار يظهر في المنتصف أو يغطي العرض بالكامل */
+                transform: translateX(0); 
             }
             
             /* 🟢 تصغير حجم زر توست البحث في البار العلوي ليناسب الموبايل بشكل أفضل */
@@ -1151,7 +1155,8 @@
             }
 
             .search-bar .search-icon {
-                right: 1.5rem; /* 🆕 تعديل لتناسب الـ padding الجديد */
+                left: 1.5rem; /* 🆕 تعديل لتناسب الـ padding الجديد */
+                right: unset;
             }
         }
         
@@ -1191,7 +1196,7 @@
 
         @keyframes ticker {
             0% { transform: translateX(0); }
-            /* 🟢 الإصلاح رقم 2: تصحيح الحركة لـ RTL */
+            /* 🟢 الإصلاح الحاسم: تصحيح الحركة لـ RTL */
             100% { transform: translateX(calc(-100% - 1.875rem)); } /* تحريك المحتوى بالكامل بالإضافة لمسافة فصل */
         }
 
@@ -1295,12 +1300,14 @@
         
         /* ضبط أيقونة البحث على الهواتف */
         .search-bar .search-icon {
-            right: 1.5rem; /* 🆕 تصحيح: تغيير الـ left إلى right */
+            left: 1.5rem; /* 🆕 تصحيح: تغيير الـ right إلى left */
+            right: unset;
         }
         
         /* تعديل المسافة السفلية للتذييل لمنع التداخل مع المحتوى */
         main {
-            padding-bottom: calc(var(--footer-height) + 1rem); 
+            /* 🟢 تحسين: سيتم تعيين هذه القيمة ديناميكياً في JS لضمان الدقة */
+            padding-bottom: 7rem; 
         }
 
         /* تحسينات الإعدادات الجانبية على الهواتف */
@@ -1425,7 +1432,8 @@
             transition: width 0.4s ease-out;
             box-shadow: 0 0 0.625rem rgba(95, 216, 255, 0.7);
             will-change: width; /* 🟢 تحسين الأداء */
-            transform-origin: right; /* 🆕 التحميل يبدأ من اليمين ليتوافق مع RTL */
+            /* 🆕 تصحيح: التحميل يبدأ من اليمين ليتوافق مع RTL */
+            transform-origin: right; 
         }
 
         .loading-text {
@@ -1488,8 +1496,8 @@
 
     <div id="animeLoaderBar" class="loading-bar">
         <div class="loading-progress" id="loaderProgressBar"></div>
-        </div>
-    <span class="loading-text" id="loaderProgressText">جاري تهيئة منصة Oraa Slayer...</span>
+        <span class="loading-text" id="loaderProgressText">جاري تهيئة منصة Oraa Slayer...</span>
+    </div>
 
 
     <header class="main-header">
@@ -1536,7 +1544,7 @@
     </div>
 
     <section class="search-bar">
-        <input type="text" id="search" placeholder="ابحث عن أنميك المفضل: اسم، سنة، تصنيف..." onfocus="window.location.href='searching.html'" aria-label="شريط البحث عن الأنمي">
+        <input type="text" id="search" placeholder="ابحث عن أنميك المفضل: اسم، سنة، تصنيف..." onfocus="window.location.href='searching.html'" aria-label="شريط البحث عن الأنمي" role="search" aria-expanded="false">
         <i class="fas fa-search search-icon"></i>
     </section>
 
@@ -1937,7 +1945,9 @@
                 toast.classList.add('show', type);
             });
             
-            setTimeout(() => {
+            // 🟢 تحسين: استخدام clearTimout لضمان عدم حدوث تداخل بين الـ Toasts
+            clearTimeout(window.toastTimer); 
+            window.toastTimer = setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
         }
@@ -1972,6 +1982,7 @@
         async function updateHeaderUI(user) {
             
             // 1. التحديث الأولي من Firebase Auth
+            // 🟢 تحسين: استخدام اسم مستعار ذكي إذا لم يكن هناك اسم عرض (displayName)
             headerName.textContent = user.displayName || user.email.split('@')[0] || 'Oraa User'; 
             headerProfile.src = user.photoURL || defaultAvatar; 
             authStatusText.textContent = 'مسجل: ' + (user.emailVerified ? 'موثق' : 'غير موثق');
@@ -1984,6 +1995,7 @@
             try {
                 // 2. جلب وتطبيق البيانات المخصصة من Firestore (مصدر الحقيقة النهائي)
                 const userDocRef = doc(db, "users", user.uid);
+                // 🟢 تحسين: جلب المستند مرة واحدة فقط
                 const userDoc = await getDoc(userDocRef); 
                 
                 if (userDoc.exists()) {
@@ -2005,12 +2017,14 @@
                 
                 // 3. جلب عدد المفضلة من Firestore
                 const favoritesCollectionRef = collection(db, "users", user.uid, "favorites");
+                // 🟢 تحسين: استخدام getDocs لجلب المجموعة (Collection)
                 const snapshot = await getDocs(favoritesCollectionRef);
                 updateFavoritesCountUI(snapshot.size);
 
             } catch (error) {
                 console.error("Error fetching Firestore user data or favorites:", error);
                 showToast('خطأ في مزامنة بيانات FirePASS', 'error');
+                // في حالة فشل الاتصال، يتم الرجوع إلى العداد المحلي
                 updateFavoritesCountUI(getLocalFavoritesCount());
             }
         }
@@ -2040,6 +2054,23 @@
         // =================================================================================
         // وظائف الواجهة الأمامية العامة (UX/UI Enhancements)
         // =================================================================================
+        
+        // 🟢 تحسين: حساب مسافة الـ padding السفلية ديناميكياً
+        const mainElement = document.getElementById('animeGrid');
+        const footerElement = document.querySelector('footer');
+
+        function updateMainPadding() {
+            if (mainElement && footerElement) {
+                // حساب ارتفاع الفوتر الحقيقي + مسافة إضافية 1rem
+                const paddingBottom = footerElement.offsetHeight + 16; // 16px = 1rem
+                mainElement.style.paddingBottom = `${paddingBottom}px`;
+            }
+        }
+
+        // 🟢 تحسين: ربط تحديث الـ padding بحدث onload و resize لضمان الدقة
+        window.addEventListener('load', updateMainPadding);
+        window.addEventListener('resize', updateMainPadding);
+
 
         // 🟢 تحسين: تبديل قائمة المستخدم (بمنطق أذكى)
         userInfo.addEventListener('click', (e) => {
@@ -2114,18 +2145,20 @@
         const progressBar = document.getElementById('loaderProgressBar');
         const progressText = document.getElementById('loaderProgressText');
         const totalItems = 24; 
+        let currentLoadProgress = 0; // 🟢 إضافة متغير لتتبع التقدم
 
         /**
          * إظهار شريط التحميل وبدء التحميل.
          */
         function startLoading() {
+            currentLoadProgress = 0; // إعادة تعيين التقدم
             // 🟢 تحسين: استخدام requestAnimationFrame لتطبيق التغييرات بسلاسة
             requestAnimationFrame(() => {
                 loaderBar.style.display = 'block';
                 setTimeout(() => loaderBar.classList.add('show'), 50);
                 setTimeout(() => progressText.classList.add('show'), 300); // إظهار النص بعد تأخير بسيط
             });
-            updateLoader(0);
+            updateLoader(currentLoadProgress);
         }
         window.startLoading = startLoading;
 
@@ -2163,6 +2196,7 @@
         // -------------------------------------------------------------
         const offlineIndicator = document.getElementById('offlineIndicator');
         const body = document.body;
+        let initialLoadComplete = false; // 🟢 تتبع ما إذا كان التحميل الأولي قد اكتمل
 
         function updateOnlineStatus() {
             if (navigator.onLine) {
@@ -2170,7 +2204,7 @@
                 offlineIndicator.classList.remove('show');
                 body.classList.remove('offline-mode');
                 // 🟢 تحسين: عدم عرض التوست في حال كان المستخدم متصلاً عند تحميل الصفحة
-                if (document.readyState === 'complete') {
+                if (initialLoadComplete) {
                     showToast('تم استعادة الاتصال بالإنترنت', 'success');
                 }
             } else {
@@ -2185,7 +2219,11 @@
         window.addEventListener('offline', updateOnlineStatus);
         
         // التحقق عند التحميل الأولي للصفحة
-        document.addEventListener('DOMContentLoaded', updateOnlineStatus);
+        document.addEventListener('DOMContentLoaded', () => {
+             updateOnlineStatus(); // تحديث حالة الاتصال
+             initialLoadComplete = true; // وضع علامة اكتمال التحميل الأولي
+             updateMainPadding(); // تحديث الـ padding السفلية
+        });
         
     </script>
 
@@ -2214,6 +2252,7 @@
                     <img src="${anime.coverImage.extraLarge || anime.coverImage.large}" 
                          alt="${anime.title.arabic || anime.title.english}" 
                          loading="lazy"
+                         decoding="async" 
                          onerror="this.onerror=null;this.src='https://i.ibb.co/6803h7x/placeholder.png';">
                     <span class="anime-year">${anime.startDate.year || '----'}</span>
                     <span class="anime-rating"><i class="fa-solid fa-star"></i> ${ratingScore}</span>
