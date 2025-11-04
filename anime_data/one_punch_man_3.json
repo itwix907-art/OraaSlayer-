@@ -1,0 +1,19 @@
+{
+  "id": "OnePunchMan_Season_3",
+  "title": "One-Punch Man Season 3",
+  "totalEpisodes": 1,
+  "img": "assets/img/onepunchman_s3.jpg", 
+  "episodes": [
+    {
+      "epNum": 1,
+      "title": "الحلقة 1",
+      "servers": [
+        {
+          "name": "سيرفر Google Drive",
+          "quality": "HD",
+          "url": "https://drive.google.com/file/d/1BAnD1BJPF034CFosX_QlonoShSM_tGgH/preview"
+        }
+      ]
+    }
+  ]
+}

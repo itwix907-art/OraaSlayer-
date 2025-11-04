@@ -1,7 +1,7 @@
 {
   "id": "Gachiakuta",
   "title": "Gachiakuta",
-  "totalEpisodes": 1,
+  "totalEpisodes": 4,
   "img": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178025-Q25v7Xh9Xv9t.jpg",
   "episodes": [
     {
@@ -12,6 +12,44 @@
           "name": "سيرفر Vimeo",
           "quality": "HD",
           "url": "https://player.vimeo.com/video/1130679983"
+        },
+        {
+          "name": "سيرفر Google Drive",
+          "quality": "HD",
+          "url": "https://drive.google.com/file/d/1ESX2sBXH6vql7xEjsHLqAseFDl1wVpyb/preview"
+        }
+      ]
+    },
+    {
+      "epNum": 2,
+      "title": "الحلقة 2",
+      "servers": [
+        {
+          "name": "سيرفر Google Drive",
+          "quality": "HD",
+          "url": "https://drive.google.com/file/d/1Kq7wMoHO3uG5IyCprnPGiWSDFnmNOzUA/preview"
+        }
+      ]
+    },
+    {
+      "epNum": 3,
+      "title": "الحلقة 3",
+      "servers": [
+        {
+          "name": "سيرفر Google Drive",
+          "quality": "HD",
+          "url": "https://drive.google.com/file/d/1gmZV6nya-dOL9gCKPwzJaMP3xR83FRxI/preview"
+        }
+      ]
+    },
+    {
+      "epNum": 4,
+      "title": "الحلقة 4",
+      "servers": [
+        {
+          "name": "سيرفر Google Drive",
+          "quality": "HD",
+          "url": "https://drive.google.com/file/d/1riwtQCle52r0pevagbNcAva17Z4B_f3X/preview"
         }
       ]
     }
