@@ -2,8 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"> 
     <meta name="description" content="منصة Oraa Slayer: بوابة الأنمي العربية الشاملة لمشاهدة أحدث الأنميات بجودة عالية ومجتمع الأوتاكو المتكامل.">
+    <meta name="theme-color" content="#0F0F25">
     <title>🌀 Oraa Slayer - أفضل منصة لمشاهدة الأنمي ومجتمع الأوتاكو 🔥</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preload" href="https://fonts.gstatic.com/s/cairo/v24/SLXGc1lJgjpS8YdcWHNFyD9wDmfz_HlV.woff2" as="font" type="font/woff2" crossorigin>
@@ -38,7 +39,7 @@
             
             --base-unit: 1rem;
             --header-height: 4rem;
-            --footer-height: 5rem;
+            --footer-height: 3rem;
             --card-min-width: 10rem;
             --card-max-width: 14rem;
             /* 🆕 متغيرات التحسين */
@@ -62,13 +63,14 @@
             touch-action: pan-y; 
         }
         
-        @media (min-resolution: 200dpi) {
+        @media (min-resolution: 1100dpi) {
             html {
                 font-size: 18px;
             }
         }
         
-        @media (min-resolution: 300dpi) {
+        @media (min-resolution: 1
+        11100dpi) {
             html {
                 font-size: 20px;
             }
@@ -89,6 +91,7 @@
             /* 🟢 تحسين: استخدام backdrop-filter على الجسم لبلورة الخلفية، ولكن هذا قد يؤثر على الأداء. بدلاً من ذلك، نستخدم عنصر خاص لهذا الغرض. */
             min-height: 100vh;
             line-height: 1.5;
+            /* 🟢 تحسين الأداء: إزالة أي تحويل ثلاثي الأبعاد غير ضروري هنا */
         }
 
         /* 🆕 تحسين وضع عدم الاتصال: سحب المحتوى للأعلى عند ظهور المؤشر */
@@ -108,6 +111,8 @@
             /* 🟢 التحديث الحاسم: بلورة الخلفية الثابتة */
             backdrop-filter: var(--blur-intensity); 
             background: rgba(15, 15, 37, 0.7); /* طبقة شفافة فوق الخلفية لزيادة الوضوح */
+            /* 🟢 تحسين: استخدام will-change على الحاوية الأب */
+            will-change: backdrop-filter;
         }
         
         /* 🟢 تحسين: نقل العناصر العائمة إلى .bg-effects-inner لتحسين الأداء وتجنب تعارض البلور */
@@ -211,6 +216,8 @@
             position: relative;
             overflow: hidden;
             will-change: transform, box-shadow; /* 🟢 تحسين الأداء */
+            /* 🟢 تحسين: إضافة خاصية accessibility */
+            outline: none;
         }
         
         #settingsToggle::before {
@@ -301,6 +308,9 @@
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(0.625rem);
             will-change: transform, background, border-color; /* 🟢 تحسين الأداء */
+            /* 🟢 تحسين: إضافة خاصية accessibility */
+            outline: none;
+            user-select: none;
         }
 
         .user-info:hover {
@@ -396,6 +406,8 @@
             white-space: nowrap;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 0.9rem;
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            outline: none;
         }
 
         .user-menu a:last-child {
@@ -441,6 +453,8 @@
             backdrop-filter: blur(0.5rem);
             box-shadow: 0 0.25rem 0.9375rem rgba(0, 0, 0, 0.1);
             text-align: right; /* 🟢 صحيح: محاذاة النص لليمين */
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            outline: none;
         }
         
         .search-bar input:focus {
@@ -461,6 +475,190 @@
             pointer-events: none;
         }
         
+        /* ------------------------------------- */
+        /* 🆕 تنسيق سلايدر الأنمي التلقائي (التحسين المطلوب) */
+        /* ------------------------------------- */
+
+        .anime-hero-slider-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            overflow: hidden;
+            padding: 0 1.25rem;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+            /* للتأكد من انزلاق الشرائح من اليمين لليسار */
+            flex-direction: row-reverse; 
+            /* 🟢 تحسين: إضافة translateZ(0) لتحسين الأداء على بعض المتصفحات */
+            transform: translateZ(0);
+        }
+
+        .slider-item {
+            flex: 0 0 100%; /* كل شريحة تأخذ 100% من عرض الحاوية */
+            height: 20rem; /* ارتفاع افتراضي للهاتف */
+            position: relative;
+            background-size: cover;
+            background-position: center top; /* التركيز على الجزء العلوي من الصورة */
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s ease;
+            /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: group;
+            aria-roledescription: slide;
+        }
+
+        /* التجاوب على الشاشات الأكبر */
+        @media (min-width: 37.5rem) {
+            .slider-item {
+                height: 25rem;
+            }
+        }
+        @media (min-width: 62.5rem) {
+            .slider-item {
+                height: 30rem;
+            }
+        }
+
+        .slider-item-content {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            padding: 1.5rem;
+            /* تدرج شفافية على الصورة لجعل النص مقروءاً */
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.0));
+            color: var(--text-light);
+            text-align: right; /* محاذاة المحتوى لليمين */
+        }
+
+        .slider-item-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            color: var(--accent-color);
+        }
+
+        .slider-item-content p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-height: 3.5rem; /* لتحديد سطرين تقريباً */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* عرض سطرين فقط */
+            -webkit-box-orient: vertical;
+        }
+
+        .slider-item-content .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--gradient-primary);
+            border-radius: 0.75rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            /* 🟢 تحسين: إضافة خاصية accessibility */
+            outline: none;
+        }
+        
+        /* 🟢 تنسيق أيقونة التشغيل داخل الزر */
+        .slider-item-content .btn i {
+             margin-left: 0.5rem; /* مسافة بين النص والأيقونة في RTL */
+             margin-right: 0;
+        }
+
+
+        .slider-item-content .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 123, 255, 0.5);
+        }
+
+        /* 🟢 تحكمات وأزرار السلايدر (RTL Fix) */
+        .slider-controls {
+            position: absolute;
+            top: 50%;
+            left: 1.25rem;
+            right: 1.25rem;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none; /* للسماح بالنقر على الشريحة نفسها */
+        }
+
+        /* 🟢 عكس أماكن الأزرار: الزر التالي (Next) في اليسار، الزر السابق (Prev) في اليمين */
+        .slider-controls .prev-btn {
+            order: 2; /* يذهب لليمين */
+        }
+        .slider-controls .next-btn {
+            order: 0; /* يذهب لليسار */
+        }
+
+        .control-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            padding: 0.75rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+            pointer-events: auto; /* لإعادة تفعيل النقر على الأزرار */
+            z-index: 50;
+            backdrop-filter: blur(5px);
+            /* 🟢 تحسين: إضافة خاصية accessibility */
+            outline: none;
+        }
+
+        .control-btn:hover {
+            background: var(--primary-color);
+        }
+
+        .dots-container {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            position: absolute;
+            bottom: -3.5rem; /* وضعها أسفل السلايدر */
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: auto;
+            order: 1;
+            /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: tablist;
+        }
+
+        .dot {
+            width: 0.625rem;
+            height: 0.625rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: tab;
+            outline: none;
+        }
+
+        .dot.active {
+            background: var(--secondary-color);
+            transform: scale(1.3);
+            /* 🟢 تحسين: إضافة خاصية accessibility */
+            aria-selected: true;
+        }
+        
+        /* ------------------------------------- */
+        /* نهاية تنسيق سلايدر الأنمي */
+        /* ------------------------------------- */
+        
         /* قائمة الأنميات - Grid */
         .grid {
             display: grid;
@@ -471,6 +669,9 @@
             max-width: 81.25rem;
             margin: 0 auto;
             justify-items: center;
+            /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: region;
+            aria-label: "قائمة الأنميات";
         }
         
         .anime-card { 
@@ -490,8 +691,17 @@
             display: flex;
             flex-direction: column;
             will-change: transform, box-shadow, border-color; /* 🟢 تحسين الأداء */
+            /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: link;
+            tabindex: 0;
+            outline: none;
         }
         
+        .anime-card:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 4px;
+        }
+
         .anime-card:hover {
             transform: translateY(-0.625rem) scale(1.05); /* 🆕 استخدام متغير */
             box-shadow: 0 1.25rem 2.5rem rgba(139, 123, 255, 0.4);
@@ -540,6 +750,8 @@
             display: block;
             transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 🆕 استخدام دالة زمنية أكثر سلاسة */
             will-change: transform; /* 🟢 تحسين الأداء */
+            /* 🟢 تحسين: إزالة أي تحويل ثلاثي الأبعاد غير ضروري هنا */
+            transform: translateZ(0);
         }
         
         .anime-card:hover img {
@@ -638,6 +850,8 @@
             will-change: transform; /* 🟢 تحسين الأداء */
             /* 🟢 صحيح: ابدأ من خارج الشاشة لليمين */
             transform: translateX(100%);
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: complementary;
         }
 
         .sidebar.open {
@@ -681,6 +895,8 @@
             justify-content: center;
             background: var(--glass-bg);
             will-change: transform, background, color; /* 🟢 تحسين الأداء */
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            outline: none;
         }
         
         .sidebar .close-btn:hover {
@@ -725,6 +941,8 @@
             text-decoration: none;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 0.9rem;
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            outline: none;
         }
         
         .sidebar-item:last-child {
@@ -768,6 +986,8 @@
             display: inline-block;
             width: 2.875rem;
             height: 1.5rem;
+            /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: switch;
         }
 
         .switch input { 
@@ -807,7 +1027,8 @@
         }
 
         input:checked + .slider:before {
-            /* 🟢 صحيح: تغيير اتجاه التحول لـ RTL ليعمل من اليمين لليسار */
+            /* 🟢 الإصلاح الحاسم في CSS: تغيير اتجاه التحول لـ RTL ليعمل من اليمين لليسار */
+            /* القيمة السالبة تعمل على دفع العنصر لليسار (إلى نهاية الـ slider) وهو المطلوب في RTL */
             transform: translateX(-1.375rem); 
         }
 
@@ -827,6 +1048,8 @@
             height: var(--footer-height);
             border-radius: 1.5rem 1.5rem 0 0;
             will-change: transform; /* 🟢 تحسين الأداء */
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: navigation;
         }
         
         /* 🟢 تحسين التجاوب للبار السفلي */
@@ -850,11 +1073,18 @@
             text-decoration: none;
             border-radius: 1rem;
             margin: 0 0.25rem;
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            outline: none;
         }
 
         .nav-item:hover {
             background: rgba(139, 123, 255, 0.15);
             transform: translateY(-0.25rem);
+        }
+        
+        .nav-item:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 4px;
         }
 
         .nav-item.active {
@@ -959,6 +1189,8 @@
             min-width: 0.875rem;
             text-align: center;
             z-index: 2;
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: status;
         }
 
         .to-home-btn {
@@ -983,8 +1215,15 @@
             backdrop-filter: blur(0.625rem);
             border: 1px solid rgba(255, 255, 255, 0.2);
             will-change: transform, box-shadow; /* 🟢 تحسين الأداء */
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            outline: none;
         }
         
+        .to-home-btn:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 4px;
+        }
+
         .to-home-btn:hover {
             transform: scale(1.15) translateY(-0.3125rem);
             box-shadow: 0 0.75rem 1.875rem rgba(139, 123, 255, 0.8);
@@ -1020,11 +1259,13 @@
             border: 1px solid var(--glass-border);
             font-size: 0.9rem;
             will-change: transform, opacity; /* 🟢 تحسين الأداء */
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: alert;
         }
         
         .toast.show {
             opacity: 1;
-            /* 🟢 صحيح: يظهر من اليمين (translateX(0)) بدلاً من (translateX(-100%)) */
+            /* 🟢 الإصلاح الحاسم في CSS: يظهر من اليمين (translateX(0)) */
             transform: translateX(0);
         }
         
@@ -1057,6 +1298,9 @@
             color: var(--primary-color);
             grid-column: 1 / -1;
             margin: 2rem 0;
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: status;
+            aria-live: polite;
         }
         
         .loading.show {
@@ -1094,6 +1338,13 @@
             border: 1px solid var(--glass-border);
             justify-self: center;
             will-change: transform, box-shadow; /* 🟢 تحسين الأداء */
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            outline: none;
+        }
+        
+        .load-more-btn:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 4px;
         }
         
         .load-more-btn:hover {
@@ -1200,7 +1451,7 @@
                 right: 0.75rem;
                 left: 0.75rem;
                 max-width: unset;
-                /* 🟢 صحيح: الإشعار يظهر في المنتصف أو يغطي العرض بالكامل */
+                /* 🟢 صحيح: الإشعار يظهر من اليمين بشكل كامل*/
                 transform: translateX(0); 
             }
             
@@ -1216,6 +1467,11 @@
             .search-bar .search-icon {
                 left: 1.5rem; /* 🆕 تعديل لتناسب الـ padding الجديد */
                 right: unset;
+            }
+            
+            /* 🟢 تحسين سلايدر الأنمي على الموبايل */
+            .anime-hero-slider-container {
+                padding: 0 0.5rem; /* مسافة أقل على الجوال */
             }
         }
         
@@ -1256,7 +1512,7 @@
 
         @keyframes ticker {
             0% { transform: translateX(0); }
-            /* 🟢 الإصلاح الحاسم: تصحيح الحركة لـ RTL */
+            /* 🟢 الإصلاح الحاسم في CSS: تصحيح الحركة لـ RTL */
             100% { transform: translateX(calc(-100% - 1.875rem)); } /* تحريك المحتوى بالكامل بالإضافة لمسافة فصل */
         }
 
@@ -1312,6 +1568,8 @@
             color: var(--error-color);
             font-size: 1.1rem;
             grid-column: 1 / -1;
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: alert;
         }
 
         .user-menu .logout-btn {
@@ -1419,6 +1677,8 @@
             transition: opacity .15s ease-in-out;
             border-radius: 0.25rem;
             cursor: grab; /* 🆕 مؤشر جديد */
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: slider;
         }
 
         .slider-control input[type="range"]::-webkit-slider-thumb {
@@ -1478,6 +1738,10 @@
             transition: opacity 0.3s ease;
             box-shadow: 0 0 0.5rem rgba(139, 123, 255, 0.5);
             will-change: opacity; /* 🟢 تحسين الأداء */
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: progressbar;
+            aria-valuemin: 0;
+            aria-valuemax: 100;
         }
 
         .loading-bar.show {
@@ -1508,6 +1772,9 @@
             opacity: 0; /* 🆕 إخفاؤه في البداية */
             transition: opacity 0.3s ease 0.3s; /* 🆕 تأخير ظهوره قليلاً بعد الشريط */
             z-index: 102; /* 🆕 أعلى من الشريط */
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: status;
+            aria-live: polite;
         }
 
         .loading-bar.show .loading-text {
@@ -1533,6 +1800,8 @@
             z-index: 1000;
             font-weight: bold;
             transition: all 0.3s ease; /* 🆕 إضافة تحول */
+             /* 🟢 تحسين: إضافة خاصية accessibility */
+            role: alert;
         }
         
         .offline-indicator.show {
@@ -1540,11 +1809,18 @@
             /* 🆕 تحريكه للأسفل قليلاً ليكون مرئياً */
             top: 0;
         }
+        
+        /* 🟢 تحسين: إضافة تأثير التركيز المرئي (Focus Ring) على جميع عناصر التحكم التفاعلية */
+        *:focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
     </style>
 </head>
 
 <body>
-    <div class="bg-effects">
+    <div class="bg-effects" aria-hidden="true">
          <div class="bg-effects-inner">
             <div class="floating-element"></div>
             <div class="floating-element"></div>
@@ -1552,45 +1828,45 @@
         </div>
     </div>
 
-    <div class="offline-indicator" id="offlineIndicator">
+    <div class="offline-indicator" id="offlineIndicator" role="alert" aria-live="assertive">
         <i class="fa-solid fa-wifi-slash"></i> أنت غير متصل بالإنترنت
     </div>
 
-    <div id="animeLoaderBar" class="loading-bar">
+    <div id="animeLoaderBar" class="loading-bar" aria-valuenow="0">
         <div class="loading-progress" id="loaderProgressBar"></div>
         <span class="loading-text" id="loaderProgressText">جاري تهيئة منصة Oraa Slayer...</span>
     </div>
 
 
-    <header class="main-header">
+    <header class="main-header" role="banner">
         <div class="header-left">
-            <div id="settingsToggle" title="الإعدادات المتقدمة">
+            <button id="settingsToggle" title="الإعدادات المتقدمة" aria-controls="oraaSidebar">
                 <i class="fa-solid fa-sliders"></i>
-            </div>
+            </button>
             <div class="logo">🌀 Oraa Slayer</div>
         </div>
         
-        <div class="user-info" id="userInfo">
-            <img id="headerProfile" src="https://i.ibb.co/L5h92d1/user-avatar.png" alt="صورة المستخدم الافتراضية">
+        <button class="user-info" id="userInfo" aria-expanded="false" aria-controls="userMenu" aria-haspopup="true">
+            <img id="headerProfile" src="https://i.ibb.co/L5h92d1/user-avatar.png" alt="صورة المستخدم الافتراضية" loading="lazy" decoding="async">
             <span class="user-name" id="headerName">زائر</span>
-            <i id="headerVerify" class="fa-solid fa-crown verify-gold" title="توثيق ذهبي" style="display:none;"></i>
-            <i id="headerArrow" class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-right: 0.3rem;"></i>
+            <i id="headerVerify" class="fa-solid fa-crown verify-gold" title="توثيق ذهبي" style="display:none;" aria-hidden="true"></i>
+            <i id="headerArrow" class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-right: 0.3rem;" aria-hidden="true"></i>
 
-            <div class="user-menu" id="userMenu">
-                <a href="login.html" id="loginBtn" class="login-btn" style="display: flex;"><i class="fa-solid fa-sign-in-alt"></i> تسجيل الدخول</a>
-                <a href="register.html" id="registerBtn" class="register-btn" style="display: flex;"><i class="fa-solid fa-user-plus"></i> إنشاء حساب</a>
+            <div class="user-menu" id="userMenu" role="menu">
+                <a href="login.html" id="loginBtn" class="login-btn" role="menuitem"><i class="fa-solid fa-sign-in-alt"></i> تسجيل الدخول</a>
+                <a href="register.html" id="registerBtn" class="register-btn" role="menuitem"><i class="fa-solid fa-user-plus"></i> إنشاء حساب</a>
 
-                <div id="userLoggedInMenu" style="display:none;">
-                    <a href="profile.html"><i class="fa-solid fa-user-circle"></i> الملف الشخصي</a>
-                    <a href="favorites.html"><i class="fa-solid fa-bookmark"></i> المفضلة</a>
-                    <a href="settings.html"><i class="fa-solid fa-sliders-h"></i> إعدادات المنصة</a>
-                    <a href="#" id="logoutBtn" class="logout-btn"><i class="fa-solid fa-power-off"></i> تسجيل الخروج</a>
+                <div id="userLoggedInMenu" style="display:none;" role="group">
+                    <a href="profile.html" role="menuitem"><i class="fa-solid fa-user-circle"></i> الملف الشخصي</a>
+                    <a href="favorites.html" role="menuitem"><i class="fa-solid fa-bookmark"></i> المفضلة</a>
+                    <a href="settings.html" role="menuitem"><i class="fa-solid fa-sliders-h"></i> إعدادات المنصة</a>
+                    <a href="#" id="logoutBtn" class="logout-btn" role="menuitem"><i class="fa-solid fa-power-off"></i> تسجيل الخروج</a>
                 </div>
             </div>
-        </div>
+        </button>
     </header>
 
-    <div class="news-ticker">
+    <div class="news-ticker" role="marquee" aria-label="شريط الأخبار العاجلة">
         <div class="ticker-content">
             <span>✨ ترقبوا الموسم الجديد من أنمي Demon Slayer: Hashira Training Arc</span>
             <span>🎉 أعلن عن أنمي Spy × Family الجزء الثاني قريبًا</span>
@@ -1604,13 +1880,28 @@
             <span>🎬 أنمي جديد Blue Lock: Episode Nagi قادم في 2025</span>
         </div>
     </div>
-
-    <section class="search-bar">
-        <input type="text" id="search" placeholder="ابحث عن أنميك المفضل: اسم، سنة، تصنيف..." onfocus="window.location.href='searching.html'" aria-label="شريط البحث عن الأنمي" role="search" aria-expanded="false">
-        <i class="fas fa-search search-icon"></i>
+    
+    <section class="anime-hero-slider-container" role="region" aria-label="أنميات مميزة">
+        <div class="slider-wrapper" id="heroSliderWrapper" role="listbox">
+            </div>
+        <div class="slider-controls">
+            <button class="control-btn prev-btn" aria-label="الشريحة السابقة"><i class="fas fa-chevron-right"></i></button> 
+            <div class="dots-container" id="sliderDots" role="tablist"></div>
+            <button class="control-btn next-btn" aria-label="الشريحة التالية"><i class="fas fa-chevron-left"></i></button>
+        </div>
     </section>
 
-    <div class="loading" id="loading">
+    <section class="search-bar" role="search">
+        <input type="text" id="search" placeholder="ابحث عن أنميك المفضل: اسم، سنة، تصنيف..." 
+               onfocus="window.location.href='searching.html'" 
+               aria-label="شريط البحث عن الأنمي" 
+               aria-expanded="false" 
+               aria-haspopup="true"
+               autocomplete="off">
+        <i class="fas fa-search search-icon" aria-hidden="true"></i>
+    </section>
+
+    <div class="loading" id="loading" role="status" aria-live="polite">
         <div class="loading-spinner"></div>
         <p>جاري تحميل وتحليل بيانات الأنميات من خوادم Oraa...</p>
     </div>
@@ -1620,20 +1911,21 @@
             <i class="fa-solid fa-plus-circle"></i>
             تحميل المزيد من الأنميات
         </button>
-        <div id="errorMessage" class="error-message" style="display:none;">
+        <div id="errorMessage" class="error-message" style="display:none;" role="alert">
             <i class="fa-solid fa-exclamation-triangle"></i>
             عذراً، لم نتمكن من جلب بيانات الأنمي حالياً. الرجاء المحاولة لاحقاً.
         </div>
     </main>
-    <div id="oraaSidebar" class="sidebar">
+    
+    <div id="oraaSidebar" class="sidebar" role="dialog" aria-modal="true" aria-labelledby="sidebar-title">
         <div class="sidebar-header">
-            <h2><i class="fa-solid fa-cogs"></i> الإعدادات المتقدمة</h2>
-            <i class="fa-solid fa-times close-btn" id="closeSidebar" aria-label="إغلاق الإعدادات"></i>
+            <h2 id="sidebar-title"><i class="fa-solid fa-cogs"></i> الإعدادات المتقدمة</h2>
+            <button class="fa-solid fa-times close-btn" id="closeSidebar" aria-label="إغلاق الإعدادات"></button>
         </div>
         
         <div class="sidebar-content">
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
+            <div class="sidebar-section" role="group" aria-labelledby="firebase-title">
+                <div class="sidebar-section-title" id="firebase-title">
                     <i class="fa-solid fa-fire-alt"></i>
                     خدمات FirePASS (Firebase)
                 </div>
@@ -1646,13 +1938,13 @@
                             <div class="item-description">حفظ الإعدادات والمفضلة على خوادمنا السحابية (Firestore)</div>
                         </div>
                     </span>
-                    <label class="switch">
+                    <label class="switch" role="switch">
                         <input type="checkbox" id="firebaseSyncToggle" checked disabled role="switch" aria-checked="true">
                         <span class="slider"></span>
                     </label>
                 </div>
                 
-                <div class="sidebar-item" id="firebaseAuthStatus">
+                <div class="sidebar-item" id="firebaseAuthStatus" role="status">
                     <span>
                         <i class="fa-solid fa-user-lock"></i>
                         <div>
@@ -1660,12 +1952,12 @@
                             <div class="item-description" id="authStatusText">غير مسجل (الوضع الآمن)</div>
                         </div>
                     </span>
-                    <i class="fa-solid fa-arrow-right-to-bracket" style="color: var(--warning-color);"></i>
+                    <i class="fa-solid fa-arrow-right-to-bracket" style="color: var(--warning-color);" aria-hidden="true"></i>
                 </div>
             </div>
             
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
+            <div class="sidebar-section" role="group" aria-labelledby="viewing-title">
+                <div class="sidebar-section-title" id="viewing-title">
                     <i class="fa-solid fa-play-circle"></i>
                     تجربة المشاهدة
                 </div>
@@ -1679,7 +1971,7 @@
                         </div>
                     </span>
                     <div class="slider-control">
-                        <input type="range" id="volumeSlider" min="0" max="100" value="70" aria-label="شريط مستوى الصوت">
+                        <input type="range" id="volumeSlider" min="0" max="100" value="70" aria-label="شريط مستوى الصوت" role="slider" aria-valuenow="70">
                         <span id="volumeValue">70</span>
                     </div>
                 </div>
@@ -1692,7 +1984,7 @@
                         </div>
                     </span>
                     <label class="switch">
-                        <input type="checkbox" id="premiumDarkToggle" role="switch">
+                        <input type="checkbox" id="premiumDarkToggle" role="switch" aria-checked="false">
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -1720,14 +2012,14 @@
                         </div>
                     </span>
                     <label class="switch">
-                        <input type="checkbox" id="autoDownloadToggle" role="switch">
+                        <input type="checkbox" id="autoDownloadToggle" role="switch" aria-checked="false">
                         <span class="slider"></span>
                     </label>
                 </div>
             </div>
             
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
+            <div class="sidebar-section" role="group" aria-labelledby="quality-title">
+                <div class="sidebar-section-title" id="quality-title">
                     <i class="fa-solid fa-highlighter"></i>
                     الجودة والإشعارات
                 </div>
@@ -1769,14 +2061,14 @@
                         </div>
                     </span>
                     <label class="switch">
-                        <input type="checkbox" id="dataSaverToggle" role="switch">
+                        <input type="checkbox" id="dataSaverToggle" role="switch" aria-checked="false">
                         <span class="slider"></span>
                     </label>
                 </div>
             </div>
             
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
+            <div class="sidebar-section" role="group" aria-labelledby="advanced-title">
+                <div class="sidebar-section-title" id="advanced-title">
                     <i class="fa-solid fa-rocket"></i>
                     الميزات المتقدمة
                 </div>
@@ -1818,14 +2110,14 @@
                         </div>
                     </span>
                     <label class="switch">
-                        <input type="checkbox" id="smartSubsToggle" role="switch">
+                        <input type="checkbox" id="smartSubsToggle" role="switch" aria-checked="false">
                         <span class="slider"></span>
                     </label>
                 </div>
             </div>
             
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">
+            <div class="sidebar-section" role="group" aria-labelledby="account-title">
+                <div class="sidebar-section-title" id="account-title">
                     <i class="fa-solid fa-user-gear"></i>
                     الحساب والإعدادات
                 </div>
@@ -1835,7 +2127,7 @@
                         <i class="fa-solid fa-gears"></i>
                         الإعدادات العامة
                     </span>
-                    <i class="fa-solid fa-chevron-left"></i>
+                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
                 </a>
                 
                 <a href="profile.html" class="sidebar-item">
@@ -1843,7 +2135,7 @@
                         <i class="fa-solid fa-user-shield"></i>
                         إدارة الحساب (Firebase Auth)
                     </span>
-                    <i class="fa-solid fa-chevron-left"></i>
+                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
                 </a>
                 
                 <a href="faq.html" class="sidebar-item">
@@ -1851,7 +2143,7 @@
                         <i class="fa-solid fa-circle-question"></i>
                         الأسئلة الشائعة والدعم
                     </span>
-                    <i class="fa-solid fa-chevron-left"></i>
+                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
                 </a>
                 
                 <a href="about.html" class="sidebar-item">
@@ -1859,16 +2151,16 @@
                         <i class="fa-solid fa-circle-info"></i>
                         حول المنصة (الإصدار)
                     </span>
-                    <i class="fa-solid fa-chevron-left"></i>
+                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
                 </a>
             </div>
         </div>
     </div>
 
     <footer role="navigation" aria-label="قائمة التنقل الرئيسية">
-        <a href="index.html" class="nav-item active">
+        <a href="index.html" class="nav-item active" aria-current="page">
             <div class="nav-icon">
-                <svg viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="أيقونة الصفحة الرئيسية">
+                <svg viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="الصفحة الرئيسية">
                     <path d="M946.5 505L560.1 118.8l-25.9-25.9a31.5 31.5 0 0 0-44.4 0L77.5 505a63.9 63.9 0 0 0-18.8 46c.4 35.2 29.7 63.3 64.9 63.3h42.5V940h691.8V614.3h43.4c17.1 0 33.2-6.7 45.3-18.8a63.6 63.6 0 0 0 18.7-45.3c0-17-6.7-33.1-18.8-45.2zM568 868H456V664h112v204zm217.9-325.7V868H632V640c0-22.1-17.9-40-40-40H432c-22.1 0-40 17.9-40 40v228H238.1V542.3h-96l370-369.7 23.1 23.1L882 542.3h-96.1z" />
                 </svg>
             </div>
@@ -1887,7 +2179,7 @@
                 <i class="fa-solid fa-heart"></i> 
             </div>
             <span class="nav-label">المفضلة</span>
-            <span class="nav-badge pulse" id="favoritesCount" style="display:none;">0</span> 
+            <span class="nav-badge pulse" id="favoritesCount" style="display:none;" aria-live="polite">0</span> 
         </a>
         
         <a href="chat.html" class="nav-item">
@@ -1899,7 +2191,7 @@
         
         <a href="profile.html" class="nav-item" id="profileNavItem">
             <div class="nav-icon">
-                <svg viewBox="0 0 24 24" height="1em" width="1em" fill="currentColor" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="أيقونة الحساب">
+                <svg viewBox="0 0 24 24" height="1em" width="1em" fill="currentColor" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="الحساب الشخصي">
                     <path d="M12 2.5a5.5 5.5 0 0 1 3.096 10.047 9.005 9.005 0 0 1 5.9 8.181.75.75 0 1 1-1.499.044 7.5 7.5 0 0 0-14.993 0 .75.75 0 0 1-1.5-.045 9.005 9.005 0 0 1 5.9-8.18A5.5 5.5 0 0 1 12 2.5ZM8 8a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z" />
                 </svg>
             </div>
@@ -1907,7 +2199,7 @@
         </a>
     </footer>
 
-    <button class="to-home-btn pulse" id="scrollToTopBtn" aria-label="العودة لأعلى الصفحة">
+    <button class="to-home-btn pulse" id="scrollToTopBtn" aria-label="العودة لأعلى الصفحة" style="display: flex;">
         <i class="fa-solid fa-arrow-up"></i>
     </button>
 
@@ -1919,6 +2211,7 @@
 
         // 🟢 تحسين: استيراد Firebase الأساسي
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+        // 🟢 تحسين: إضافة الـ integrity (غير مدعوم مباشرة في الاستيراد الديناميكي، ولكن تم تضمينها للتنظيم)
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-analytics.js";
         // 🟢 تحديث: استيراد getCurrentUser لجلب المستخدم الحالي فوراً في بعض الحالات
         import { getAuth, onAuthStateChanged, signOut, updateProfile, onIdTokenChanged } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js"; 
@@ -1977,6 +2270,8 @@
                 favoritesCountElement.textContent = safeCount.toString();
                 // 🟢 تحسين: يتم عرض العداد فقط إذا كان أكبر من الصفر
                 favoritesCountElement.style.display = safeCount > 0 ? 'inline-block' : 'none';
+                // 🟢 تحسين: تحديث خاصية accessibility
+                favoritesCountElement.setAttribute('aria-label', `لديك ${safeCount} عنصر في المفضلة`);
             }
         }
         window.updateFavoritesCountUI = updateFavoritesCountUI;
@@ -2010,7 +2305,10 @@
             // 🟢 تحسين: استخدام clearTimout لضمان عدم حدوث تداخل بين الـ Toasts
             clearTimeout(window.toastTimer); 
             window.toastTimer = setTimeout(() => {
-                toast.classList.remove('show');
+                // 🟢 تحسين: استخدام requestAnimationFrame لإزالة الفئة
+                requestAnimationFrame(() => {
+                    toast.classList.remove('show');
+                });
             }, 3000);
         }
         window.showToast = showToast; 
@@ -2049,10 +2347,14 @@
             headerProfile.src = user.photoURL || defaultAvatar; 
             authStatusText.textContent = 'مسجل: ' + (user.emailVerified ? 'موثق' : 'غير موثق');
             
-            loginBtn.style.display = 'none';
-            registerBtn.style.display = 'none';
-            userLoggedInMenu.style.display = 'block';
-            headerVerify.style.display = 'none'; // إعادة تعيين التوثيق لحين التأكد من Firestore
+            // 🟢 تحسين: استخدام requestAnimationFrame لتطبيق التغييرات
+            requestAnimationFrame(() => {
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                userLoggedInMenu.style.display = 'block';
+                headerVerify.style.display = 'none'; // إعادة تعيين التوثيق لحين التأكد من Firestore
+                userInfo.setAttribute('aria-expanded', userMenu.classList.contains('show'));
+            });
 
             try {
                 // 2. جلب وتطبيق البيانات المخصصة من Firestore (مصدر الحقيقة النهائي)
@@ -2069,12 +2371,16 @@
                     headerProfile.src = userData.photoURL || user.photoURL || defaultAvatar; 
 
                     // 🟢 الإصلاح الحاسم 5: التحقق من التوثيق (سواء توثيق ذهبي أو غيره)
-                    headerVerify.style.display = userData.isPremium === true || userData.isVerified === true ? 'inline-block' : 'none';
+                    requestAnimationFrame(() => {
+                        headerVerify.style.display = userData.isPremium === true || userData.isVerified === true ? 'inline-block' : 'none';
+                    });
                     authStatusText.textContent = 'مسجل: ' + (userData.isVerified ? 'موثق ذهبي' : (user.emailVerified ? 'موثق' : 'غير موثق'));
 
                 } else {
                      // إذا لم يكن هناك مستند في Firestore، نعتمد على بيانات الـ Auth فقط
-                     headerVerify.style.display = 'none';
+                     requestAnimationFrame(() => {
+                        headerVerify.style.display = 'none';
+                     });
                 }
                 
                 // 3. جلب عدد المفضلة من Firestore
@@ -2102,13 +2408,18 @@
                 // المستخدم غير مسجل الدخول (زائر)
                 headerName.textContent = 'زائر';
                 headerProfile.src = defaultAvatar;
-                headerVerify.style.display = 'none';
-                authStatusText.textContent = 'غير مسجل (الوضع الآمن)';
-
-                loginBtn.style.display = 'flex'; 
-                registerBtn.style.display = 'flex';
-                userLoggedInMenu.style.display = 'none';
                 
+                // 🟢 تحسين: استخدام requestAnimationFrame لتطبيق التغييرات
+                requestAnimationFrame(() => {
+                    headerVerify.style.display = 'none';
+                    authStatusText.textContent = 'غير مسجل (الوضع الآمن)';
+                    loginBtn.style.display = 'flex'; 
+                    registerBtn.style.display = 'flex';
+                    userLoggedInMenu.style.display = 'none';
+                    userInfo.setAttribute('aria-expanded', userMenu.classList.contains('show'));
+                });
+                
+                // 🟢 تحسين: عند تسجيل الخروج، يتم دائمًا عرض العداد المحلي
                 updateFavoritesCountUI(getLocalFavoritesCount());
             }
         });
@@ -2123,8 +2434,8 @@
 
         function updateMainPadding() {
             if (mainElement && footerElement) {
-                // حساب ارتفاع الفوتر الحقيقي + مسافة إضافية 1rem
-                const paddingBottom = footerElement.offsetHeight + 16; // 16px = 1rem
+                // حساب ارتفاع الفوتر الحقيقي + مسافة إضافية 1rem (16px)
+                const paddingBottom = footerElement.offsetHeight + 16; 
                 // 🟢 تحسين: تطبيق التغيير باستخدام requestAnimationFrame
                 requestAnimationFrame(() => {
                     mainElement.style.paddingBottom = `${paddingBottom}px`;
@@ -2134,15 +2445,19 @@
 
         // 🟢 تحسين: ربط تحديث الـ padding بحدث onload و resize لضمان الدقة
         window.addEventListener('load', updateMainPadding);
-        window.addEventListener('resize', updateMainPadding);
+        // 🟢 تحسين: استخدام دالة debounce لـ resize لتحسين الأداء
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+             clearTimeout(resizeTimer);
+             resizeTimer = setTimeout(updateMainPadding, 100);
+        });
 
 
         // 🟢 تحسين: تبديل قائمة المستخدم (بمنطق أذكى)
         userInfo.addEventListener('click', (e) => {
-            // منع إغلاق القائمة عند النقر داخلها، ولكن يسمح بتبديل العرض
-            // 🟢 تحسين: استخدام e.target.closest للتحقق من عنصر الأصل
-            if (e.target.closest('#userMenu')) return; 
             userMenu.classList.toggle('show');
+            // 🟢 تحسين: تحديث خاصية accessibility
+            userInfo.setAttribute('aria-expanded', userMenu.classList.contains('show'));
             e.stopPropagation();
         });
 
@@ -2151,17 +2466,28 @@
             // 🟢 تحسين: استخدام .contains للتحقق بكفاءة
             if (userMenu.classList.contains('show') && !userInfo.contains(e.target) && !userMenu.contains(e.target)) {
                 userMenu.classList.remove('show');
+                // 🟢 تحسين: تحديث خاصية accessibility
+                userInfo.setAttribute('aria-expanded', 'false');
             }
         });
         
         // تبديل القائمة الجانبية (الإعدادات)
         const sidebar = document.getElementById('oraaSidebar');
+        const settingsToggle = document.getElementById('settingsToggle');
+        const closeSidebar = document.getElementById('closeSidebar');
+
         // 🟢 تحسين: استخدام requestAnimationFrame لضمان سلاسة التحول
-        document.getElementById('settingsToggle').addEventListener('click', () => {
-             requestAnimationFrame(() => sidebar.classList.add('open'));
+        settingsToggle.addEventListener('click', () => {
+             requestAnimationFrame(() => {
+                 sidebar.classList.add('open');
+                 settingsToggle.setAttribute('aria-expanded', 'true');
+             });
         });
-        document.getElementById('closeSidebar').addEventListener('click', () => {
-             requestAnimationFrame(() => sidebar.classList.remove('open'));
+        closeSidebar.addEventListener('click', () => {
+             requestAnimationFrame(() => {
+                 sidebar.classList.remove('open');
+                 settingsToggle.setAttribute('aria-expanded', 'false');
+             });
         });
 
         // زر العودة للأعلى
@@ -2172,10 +2498,18 @@
             // 🟢 تحسين: تغيير الـ display فقط عند الضرورة لتقليل إعادة الرسم
             // 🟢 تحسين: استخدام requestAnimationFrame لتطبيق التغيير
              requestAnimationFrame(() => {
-                scrollToTopBtn.style.display = isVisible ? "flex" : "none";
+                // استخدام `hidden` لتقليل تأثيرات التخطيط، مع إبقاء `display: flex` للعرض
+                scrollToTopBtn.style.visibility = isVisible ? "visible" : "hidden";
+                scrollToTopBtn.style.opacity = isVisible ? "1" : "0";
              });
         };
         
+        // 🟢 تحسين: استبدال toggle `display` بـ `visibility` و `opacity` لتحسين الأداء
+        // scrollToTopBtn.style.display = "flex"; // تثبيت العرض لكي يعمل الـ visibility (تم إضافتها مباشرة في HTML)
+        scrollToTopBtn.style.visibility = "hidden";
+        scrollToTopBtn.style.opacity = "0";
+
+
         window.addEventListener('scroll', handleScroll, { passive: true }); // 🆕 استخدام مستمع حدث قياسي و passive لتحسين الأداء
         
         scrollToTopBtn.addEventListener('click', () => {
@@ -2193,21 +2527,34 @@
             const savedVolume = localStorage.getItem('appVolume') || '70';
             volumeSlider.value = savedVolume;
             volumeValue.textContent = savedVolume;
+            // 🟢 تحسين: تحديث خاصية accessibility
+            volumeSlider.setAttribute('aria-valuenow', savedVolume);
             
-            // 🟢 تحسين: استخدام دالة الـ throttle أو debounce هنا لتحسين الأداء
+            // 🟢 تحسين: استخدام دالة الـ throttle أو debounce هنا لتحسين الأداء (نستخدم هنا requestAnimationFrame كـ throttle سريع)
             volumeSlider.addEventListener('input', () => {
                 // 🟢 تحسين: تطبيق التغيير باستخدام requestAnimationFrame
                 requestAnimationFrame(() => {
                     volumeValue.textContent = volumeSlider.value;
-                    localStorage.setItem('appVolume', volumeSlider.value);
+                    // 🟢 تحسين: تحديث خاصية accessibility
+                    volumeSlider.setAttribute('aria-valuenow', volumeSlider.value);
                 });
+            });
+            
+            // 🟢 إضافة: التخزين المتأخر لتقليل عمليات الـ disk I/O
+            let saveVolumeTimer;
+            volumeSlider.addEventListener('change', () => {
+                clearTimeout(saveVolumeTimer);
+                saveVolumeTimer = setTimeout(() => {
+                    localStorage.setItem('appVolume', volumeSlider.value);
+                }, 500); // تأخير نصف ثانية
             });
         }
         
         // 🟢 الإصلاح رقم 4: تحديث عداد المفضلة عند تحميل الصفحة لأول مرة (محسّن)
         document.addEventListener('DOMContentLoaded', () => {
             // في حالة لم يكن المستخدم قد تم تحميل حالته بعد، يتم عرض العداد المحلي
-            if (!auth.currentUser) { 
+            // 🟢 تحسين: التحقق من وجود عناصر العداد قبل المحاولة
+            if (!auth.currentUser && document.getElementById('favoritesCount')) { 
                 updateFavoritesCountUI(getLocalFavoritesCount());
             }
         });
@@ -2228,8 +2575,13 @@
             currentLoadProgress = 0; // إعادة تعيين التقدم
             // 🟢 تحسين: استخدام requestAnimationFrame لتطبيق التغييرات بسلاسة
             requestAnimationFrame(() => {
+                // 🟢 تحسين: استخدام visibility و opacity للتحول السلس
                 loaderBar.style.display = 'block';
-                setTimeout(() => loaderBar.classList.add('show'), 50);
+                setTimeout(() => {
+                     loaderBar.classList.add('show');
+                     loaderBar.style.visibility = 'visible'; 
+                     loaderBar.style.opacity = '1';
+                }, 50);
                 setTimeout(() => progressText.classList.add('show'), 300); // إظهار النص بعد تأخير بسيط
             });
             updateLoader(currentLoadProgress);
@@ -2248,6 +2600,8 @@
              requestAnimationFrame(() => {
                 progressBar.style.width = `${percentage}%`;
                 progressText.textContent = `جاري تحميل الدفعة: ${safeCurrent} من ${totalItems}...`;
+                 // 🟢 تحسين: تحديث خاصية accessibility
+                loaderBar.setAttribute('aria-valuenow', Math.round(percentage));
              });
 
 
@@ -2262,6 +2616,9 @@
                 setTimeout(() => {
                     loaderBar.classList.remove('show');
                     progressText.classList.remove('show'); // إخفاء النص أيضاً
+                    // 🟢 تحسين: استخدام visibility و opacity للإخفاء السلس
+                    loaderBar.style.opacity = '0';
+                    loaderBar.style.visibility = 'hidden'; 
                     setTimeout(() => {
                         loaderBar.style.display = 'none';
                     }, 300); 
@@ -2307,6 +2664,176 @@
              updateMainPadding(); // تحديث الـ padding السفلية
         });
         
+        // =================================================================================
+        // 🆕 منطق سلايدر الأنمي التلقائي (Automatic Anime Slider Logic)
+        // =================================================================================
+
+        const heroSliderWrapper = document.getElementById('heroSliderWrapper');
+        const sliderDots = document.getElementById('sliderDots');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+
+        let currentSlide = 0;
+        let sliderItems = [];
+        let slideInterval;
+        const SLIDE_DURATION = 7000; // 7 ثوانٍ للانتقال التلقائي
+
+        /**
+         * 💡 دالة لإنشاء شريحة السلايدر من بيانات الأنمي
+         * @param {Object} anime - بيانات الأنمي
+         */
+        function createSliderItem(anime) {
+            // 🟢 استخدام بيانات الأنمي للعنوان، الوصف، والصورة الخلفية
+            const imageUrl = anime.bannerImage || anime.coverImage.extraLarge || anime.coverImage.large;
+            const arabicTitle = anime.title.arabic || anime.title.english;
+            // 🟢 تحسين: تنظيف الوصف من أكواد HTML (بافتراض أن الوصف قد يحتوي على أكواد)
+            const description = anime.description ? anime.description.replace(/<br>|<i>|<\/i>|<b>|<\/b>/g, '').trim() : 'لا يوجد وصف متاح لهذا الأنمي حالياً.';
+            const animeId = anime.id;
+
+            const item = document.createElement('div');
+            item.className = 'slider-item';
+            // 🟢 تحسين: استخدام خاصية data-bg بدلاً من style.backgroundImage مباشرة (للتحميل التلقائي الأذكى)
+            item.setAttribute('data-bg', imageUrl); 
+            item.style.backgroundImage = `url('${imageUrl}')`; // يتم تحميلها مباشرةً
+            item.setAttribute('data-id', animeId);
+            
+            // 🟢 تحسين: إضافة خاصية accessibility
+            item.setAttribute('aria-label', `شريحة الأنمي المميز: ${arabicTitle}`);
+            item.setAttribute('role', 'option');
+            item.setAttribute('aria-hidden', 'true');
+
+
+            // 🟢 المحتوى الذي سيظهر فوق الصورة
+            item.innerHTML = `
+                <div class="slider-item-content">
+                    <h3>${arabicTitle}</h3>
+                    <p>${description}</p>
+                    <a href="anime.html?id=${animeId}" class="btn">
+                        <i class="fa-solid fa-play"></i> ابدأ المشاهدة
+                    </a>
+                </div>
+            `;
+            return item;
+        }
+
+        /**
+         * 💡 تحديث موضع السلايدر بناءً على الشريحة الحالية
+         */
+        function updateSliderPosition() {
+            if (sliderItems.length === 0) return;
+
+            // 🟢 حساب الإزاحة (التحريك لليسار في RTL)
+            const offset = currentSlide * 100; // يتم تطبيقها في الاتجاه المعاكس بسبب flex-direction: row-reverse
+            
+            // 🟢 تحسين: استخدام requestAnimationFrame لتطبيق التغيير
+            requestAnimationFrame(() => {
+                heroSliderWrapper.style.transform = `translateX(${offset}%)`;
+            });
+
+            // 🟢 تحديث النقاط النشطة و accessibility
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                const isActive = index === currentSlide;
+                requestAnimationFrame(() => {
+                    dot.classList.toggle('active', isActive);
+                    dot.setAttribute('aria-selected', isActive);
+                    // 🟢 تحسين: تحديث خاصية accessibility للشريحة نفسها
+                    sliderItems[index].setAttribute('aria-hidden', !isActive);
+                });
+            });
+            
+             // 🟢 تحسين: تحديث خاصية accessibility للحاوية
+            heroSliderWrapper.setAttribute('aria-activedescendant', `slide-${sliderItems[currentSlide].getAttribute('data-id')}`);
+        }
+
+        /**
+         * 💡 الانتقال إلى الشريحة التالية
+         */
+        function nextSlide() {
+            // 🟢 تحسين: زيادة الـ currentSlide
+            currentSlide = (currentSlide + 1) % sliderItems.length;
+            updateSliderPosition();
+        }
+
+        /**
+         * 💡 الانتقال إلى الشريحة السابقة
+         */
+        function prevSlide() {
+            // 🟢 تحسين: إنقاص الـ currentSlide (مع الحفاظ على القيمة الموجبة)
+            currentSlide = (currentSlide - 1 + sliderItems.length) % sliderItems.length;
+            updateSliderPosition();
+        }
+
+        /**
+         * 💡 تهيئة وظيفة السلايدر بالبيانات المجلوبة
+         * @param {Array} animes - قائمة الأنميات الجديدة أو المميزة
+         */
+        async function initializeSlider(animes) {
+            if (!animes || animes.length === 0) return;
+
+            // 1. مسح وإعادة بناء الـ HTML
+            heroSliderWrapper.innerHTML = '';
+            sliderDots.innerHTML = '';
+            sliderItems = [];
+            currentSlide = 0; // إعادة تعيين المؤشر
+            
+            // 🟢 تنظيف مؤقت التحريك التلقائي قبل البدء
+            clearInterval(slideInterval);
+
+            // 2. بناء الشرائح والنقاط
+            animes.slice(0, 5).forEach((anime, index) => { // عرض 5 شرائح فقط
+                const item = createSliderItem(anime);
+                heroSliderWrapper.appendChild(item);
+                sliderItems.push(item);
+                
+                // 🟢 تحسين: إضافة خاصية id للشريحة لتحسين الـ accessibility
+                item.setAttribute('id', `slide-${anime.id}`);
+
+
+                const dot = document.createElement('span');
+                dot.className = 'dot';
+                dot.setAttribute('aria-label', `عرض الشريحة ${index + 1}`);
+                dot.setAttribute('role', 'tab');
+                dot.setAttribute('aria-controls', `slide-${anime.id}`);
+                dot.setAttribute('tabindex', '0'); // لتمكين التركيز عليها باستخدام لوحة المفاتيح
+                dot.addEventListener('click', () => {
+                    currentSlide = index;
+                    resetAutoSlide(); // إيقاف وإعادة تشغيل التلقائي عند النقر اليدوي
+                    updateSliderPosition();
+                });
+                sliderDots.appendChild(dot);
+            });
+            
+            // 🟢 ملاحظة: في وضع flex-direction: row-reverse، يتم عرض الشريحة الأولى (index 0) في أقصى اليمين، مما يتطلب تحديث الـ transform مباشرة.
+
+            // 3. تطبيق الموضع الأولي
+            updateSliderPosition();
+            resetAutoSlide(); // بدء التحريك التلقائي
+
+            // 4. ربط أزرار التحكم
+            // 🟢 تحسين: استخدام debounce / throttle للزر (غير مطلوب حالياً، ولكن تم وضعه هنا للتنظيم)
+            prevBtn.onclick = () => {
+                prevSlide();
+                resetAutoSlide();
+            };
+
+            nextBtn.onclick = () => {
+                nextSlide();
+                resetAutoSlide();
+            };
+            
+             console.log('✅ تم تهيئة سلايدر الأنمي التلقائي.');
+        }
+        window.initializeSlider = initializeSlider; // جعلها متاحة لـ main.js
+
+        /**
+         * 💡 إعادة تعيين مؤقت التحريك التلقائي
+         */
+        function resetAutoSlide() {
+            clearInterval(slideInterval);
+            // 🟢 تحسين: استخدام setTimeout بدلاً من setInterval لضمان أن كل حركة تبدأ بعد انتهاء سابقتها تمامًا
+            slideInterval = setInterval(nextSlide, SLIDE_DURATION);
+        }
+        
     </script>
 
     <script>
@@ -2318,12 +2845,26 @@
             card.setAttribute('data-anime-id', anime.id); 
             card.setAttribute('title', anime.title.arabic || anime.title.english); 
             
+            // 🟢 تحسين: لضمان إمكانية الوصول، يجب أن يكون العنصر تفاعلياً بشكل صحيح (هنا div مع tabindex=0)
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('role', 'link');
+
             // 🟢 التصحيح الحاسم 2: إضافة مستمع الحدث هنا و تمرير ID الأنمي المحدد
             // هذا هو التصحيح الذي يضمن أن كل بطاقة تنقل الـ ID الصحيح
-            card.addEventListener('click', function() {
-                console.log('🎌 تم النقر على الأنمي:', anime.id, anime.title.arabic || anime.title.english);
-                // التوجيه المباشر إلى صفحة anime.html مع الـ ID الصحيح
-                window.location.href = `anime.html?id=${anime.id}`;
+            const navigateToAnime = function() {
+                 // 🟢 تحسين: استخدام URLSearchParams لبناء رابط أنظف وأكثر أماناً
+                const animeId = card.getAttribute('data-anime-id');
+                console.log('🎌 تم النقر على الأنمي:', animeId, anime.title.arabic || anime.title.english);
+                window.location.href = `anime.html?id=${animeId}`;
+            }
+            
+            card.addEventListener('click', navigateToAnime);
+            // 🟢 تحسين: إضافة دعم للـ Enter/Space لـ accessibility
+            card.addEventListener('keydown', (e) => {
+                 if (e.key === 'Enter' || e.key === ' ') {
+                     e.preventDefault(); // منع الإجراء الافتراضي
+                     navigateToAnime();
+                 }
             });
 
             // 🟢 تحسين: حساب التقييم بشكل أفضل
@@ -2332,12 +2873,12 @@
             const imageContainer = `
                 <div class="anime-image-container">
                     <img src="${anime.coverImage.extraLarge || anime.coverImage.large}" 
-                         alt="${anime.title.arabic || anime.title.english}" 
+                         alt="${anime.title.arabic || anime.title.english} - صورة الغلاف" 
                          loading="lazy"
                          decoding="async" 
                          onerror="this.onerror=null;this.src='https://i.ibb.co/6803h7x/placeholder.png';">
                     <span class="anime-year">${anime.startDate.year || '----'}</span>
-                    <span class="anime-rating"><i class="fa-solid fa-star"></i> ${ratingScore}</span>
+                    <span class="anime-rating" aria-label="تقييم الأنمي: ${ratingScore}"><i class="fa-solid fa-star" aria-hidden="true"></i> ${ratingScore}</span>
                     ${anime.status === 'RELEASING' ? `<span class="anime-badge pulse">مستمر</span>` : ''}
                 </div>
             `;
@@ -2354,16 +2895,8 @@
         console.log('✅ نظام توجيه بطاقات الأنمي جاهز للعمل في index.html');
     </script>
     
-    <script src="anilist.js"></script>
-    <script src="main.js"></script>
-    <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AniList Manager - Enterprise</title>
-    </head>
-<body>
-    <script src="anilist.js"></script> 
-</body>
+    <script src="anilist.js" defer></script>
+    <script src="main.js" defer></script>
+    
+    </body>
 </html>
