@@ -2,1884 +2,1219 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title id="pageTitle">🎬 مشاهدة الحلقة</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" defer>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" defer>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    /* 🎯 1. الأساسيات وتكييف مقياس الخط (rem) */
+    /* 🎨 متغيرات التصميم المحسنة */
     :root {
-      /* Base font size: 16px (1rem = 16px) */
-      --base-font-size: 16px; 
       --primary-color: #6C63FF;
+      --primary-dark: #5A52D5;
       --secondary-color: #FF6584;
       --accent-color: #36D1DC;
       --bg-dark: #0F0F1A;
       --bg-card: #1A1A2E;
       --text-light: #F0F0F0;
-      /* استخدام rem للظلال */
-      --glass-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.3); 
+      --text-muted: #A0A0B0;
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
     
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      -webkit-tap-highlight-color: transparent; 
+      -webkit-tap-highlight-color: transparent;
     }
     
     html {
-        /* تعيين حجم الخط الأساسي للـ rem */
-        font-size: var(--base-font-size); 
+      font-size: 16px;
     }
     
     body {
       font-family: 'Cairo', sans-serif;
       background: var(--bg-dark);
       color: var(--text-light);
-      text-align: center;
-      overflow-x: hidden;
       line-height: 1.6;
       min-height: 100vh;
-      /* استخدام rem للتباعد السفلي */
-      padding-bottom: 3rem; 
-    }
-    
-    /* 🎨 فئات عامة (مستخدمة بوحدات rem) */
-    .flex, .nav-buttons, .controls, .episode-stats, #playerControlsContainer, .server-switch-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+      overflow-x: hidden;
+      padding-bottom: 0;
     }
 
-    .alt {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: var(--text-light);
-        transition: background 0.3s ease;
-    }
-    
-    .btn {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        /* تم تحويلها إلى rem */
-        padding: 0.75rem 1.75rem; /* 12px 28px */
-        border-radius: 0.875rem; /* 14px */
-        font-size: 1rem;
-        gap: 0.5rem; /* 8px */
-        cursor: pointer;
-        border: none;
-        background: var(--primary-color);
-        color: white;
-        text-decoration: none;
-        transition: transform 0.2s, opacity 0.2s;
-    }
-    
-    .btn:hover:not(:disabled) {
-        transform: translateY(-0.1rem);
-    }
-    
-    .btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+    /* 🎯 تصميم متجاوب محسن للهواتف */
+    .mobile-optimized {
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
     }
 
-    .video-wrapper {
-      position: relative;
-      /* استخدام الـ % للعرض ليتكيف مع الشاشة */
-      width: 95%; 
-      max-width: 75rem; /* 1200px */
-      /* تم تحويلها إلى rem */
-      margin: 1.875rem auto 1.25rem; /* 30px auto 20px */
-      border-radius: 1.25rem; /* 20px */
-      overflow: hidden;
-      box-shadow: var(--glass-shadow);
-      background: var(--bg-card);
-      z-index: 10; 
-      transition: all 0.5s ease;
-    }
-    
-    /* 🌟 وضع ملء الشاشة المخصص (إصلاح رئيسي لاستقرار الهاتف) */
-    .video-wrapper.fullscreen-active {
-        position: fixed;
-        top: 0;
-        left: 0;
-        /* استخدام vw و vh لضمان تغطية كاملة لل viewport على الهاتف */
-        width: 100vw !important; 
-        max-width: none !important;
-        height: 100vh !important; /* إضافة !important لضمان تجاوز الارتفاع المحتمل */
-        z-index: 9999;
-        margin: 0 !important;
-        border-radius: 0 !important;
-    }
-
-    /* 🆕 ضمان أن حاوية الفيديو تملأ المساحة الجديدة في وضع ملء الشاشة */
-    .video-wrapper.fullscreen-active .video-container {
-        width: 100%;
-        height: 100%;
-        padding-bottom: 0 !important; /* إلغاء نسبة الـ 16:9 */
-    }
-    
-    .video-wrapper.fullscreen-active iframe, 
-    .video-wrapper.fullscreen-active video {
-        width: 100%;
-        height: 100%;
-    }
-
-    /* 🎯 2. تكييف مقياس الهواتف الصغيرة (< 480px) */
-    @media (max-width: 480px) {
-        html {
-            /* تقليل حجم الخط الأساسي ليتناسب مع الشاشات الصغيرة (14px بدلاً من 16px) */
-            font-size: 14px; 
-        }
-    }
-    
-    /* 🎯 3. تصميم العناصر بوحدات REM و % */
-
-    /* ⚙️ شريط التحكم العلوي */
+    /* 🔝 شريط التنقل العلوي المحسن */
     .top-bar {
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        /* تم تحويلها إلى rem */
-        padding: 1rem 1.25rem; /* 16px 20px */
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: rgba(15, 15, 26, 0.9);
-        backdrop-filter: blur(5px);
-        box-shadow: var(--glass-shadow);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 15, 26, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    .top-bar .title-group {
-        text-align: right;
+    .title-group {
+      flex: 1;
+      text-align: right;
+      padding-left: 1rem;
     }
 
     .top-bar h1 {
-        /* تم تحويلها إلى rem */
-        font-size: 1.4rem; 
-        font-weight: 700;
-        margin: 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     
-    .top-bar .server-info {
-        /* تم تحويلها إلى rem */
-        font-size: 0.8rem;
-        margin-top: 0.25rem;
-        opacity: 0.7;
+    .server-info {
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+      opacity: 0.7;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     
-    /* ⏪ التحكم في التنقل */
+    /* 🔙 أزرار التنقل المحسنة للهواتف */
     .nav-buttons {
-        /* تم تحويلها إلى rem */
-        gap: 0.625rem; /* 10px */
+      display: flex;
+      gap: 0.5rem;
+      flex-shrink: 0;
     }
     
-    .nav-buttons .btn {
-        /* تم تحويلها إلى rem */
-        padding: 0.625rem 1rem; /* 10px 16px */
-        border-radius: 0.75rem; /* 12px */
-        min-width: 7.5rem; /* 120px */
-        font-size: 0.9rem;
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-light);
+      padding: 0.75rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      min-width: 44px;
+      min-height: 44px;
+      transition: all 0.3s ease;
     }
-
-    /* 🎥 حاوية الفيديو */
+    
+    .nav-btn:active {
+      transform: scale(0.95);
+      background: rgba(108, 99, 255, 0.3);
+    }
+    
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .nav-btn span {
+      display: none;
+    }
+    
+    /* 🎥 حاوية الفيديو المحسنة للهواتف */
+    .video-section {
+      position: relative;
+      width: 100%;
+      background: #000;
+      overflow: hidden;
+    }
+    
     .video-container {
-        position: relative;
-        width: 100%;
-        /* نسبة عرض إلى ارتفاع 16:9 */
-        padding-bottom: 56.25%; 
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 56.25%; /* نسبة 16:9 */
+      background: #000;
     }
     
-    .video-container iframe, .video-container video {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-        display: block;
-        background: black;
+    .video-container iframe,
+    .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #000;
     }
     
-    /* 🆕 زر ملء الشاشة المخصص لـ IFRAME */
-    .fullscreen-btn {
-        position: absolute;
-        /* تم تحويلها إلى rem */
-        top: 0.9375rem; /* 15px */
-        right: 0.9375rem; /* 15px */
-        z-index: 50;
-        background: rgba(0, 0, 0, 0.5);
-        color: white;
-        border: none;
-        cursor: pointer;
-        /* تم تحويلها إلى rem */
-        padding: 0.625rem 0.9375rem; /* 10px 15px */
-        border-radius: 0.5rem; /* 8px */
-        font-size: 1rem;
-        display: none; /* يتم التحكم بها بالـ JS */
-        transition: background 0.2s ease;
+    /* 🎛️ عناصر التحكم في الفيديو */
+    .video-controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 50;
     }
     
-    .fullscreen-btn:hover {
-        background: rgba(0, 0, 0, 0.8);
+    .video-container:hover .video-controls,
+    .video-container:active .video-controls {
+      opacity: 1;
     }
     
-    /* 🖼️ شاشة التحميل المخصصة */
-    .custom-loader {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background: var(--bg-card);
-        color: var(--text-light);
-        z-index: 60;
-        opacity: 1;
-        transition: opacity 0.3s ease;
-    }
-
-    .custom-loader.hidden {
-        display: none;
+    .control-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
     }
     
-    .custom-loader .spinner {
-        border: 0.3125rem solid rgba(255, 255, 255, 0.3); /* 5px */
-        border-top: 0.3125rem solid var(--primary-color); /* 5px */
-        border-radius: 50%;
-        /* تم تحويلها إلى rem */
-        width: 3.75rem; /* 60px */
-        height: 3.75rem; /* 60px */
-        animation: spin 1s linear infinite;
-        margin-bottom: 0.9375rem; /* 15px */
+    .control-btn:active {
+      transform: scale(0.9);
+      background: rgba(108, 99, 255, 0.6);
     }
-
+    
+    .progress-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .time-display {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      min-width: 40px;
+      text-align: center;
+    }
+    
+    .progress-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .progress-fill {
+      position: absolute;
+      height: 100%;
+      background: var(--primary-color);
+      border-radius: 2px;
+      transition: width 0.1s linear;
+    }
+    
+    .progress-thumb {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    
+    .progress-bar:hover .progress-thumb {
+      opacity: 1;
+    }
+    
+    /* 📱 شاشة التحميل المحسنة */
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      transition: opacity 0.3s ease;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    
     @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
     
-    .custom-loader p {
-        /* تم تحويلها إلى rem */
-        font-size: 1rem;
-        opacity: 0.8;
+    .loading-text {
+      color: var(--text-light);
+      font-size: 1rem;
+      text-align: center;
     }
     
-    /* 💾 رسالة استئناف المشاهدة */
-    #resumeMessage {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        z-index: 55;
-        /* تم تحويلها إلى rem */
-        padding: 0.75rem 1.25rem; /* 12px 20px */
-        border-radius: 0.75rem; /* 12px */
-        transition: opacity 0.3s ease;
+    /* 🔄 أزرار تبديل السيرفرات */
+    .servers-section {
+      padding: 1rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    #resumeMessage.hidden {
-        opacity: 0;
+    .servers-title {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-muted);
     }
     
-    #resumeMessage button {
-        background: var(--secondary-color);
-        color: white;
-        border: none;
-        cursor: pointer;
-        /* تم تحويلها إلى rem */
-        padding: 0.5rem 0.9375rem; /* 8px 15px */
-        border-radius: 0.5rem; /* 8px */
-        margin-right: 0.9375rem; /* 15px */
-        font-weight: bold;
-    }
-
-    /* ⬇️ أزرار الإجراءات المحسنة */
-    .controls {
-      /* تم تحويلها إلى rem */
-      margin: 1.5625rem 0 2.5rem; /* 25px 0 40px */
-      gap: 0.9375rem; /* 15px */
-      flex-wrap: wrap;
+    .servers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.5rem;
     }
     
-    #playerControlsContainer {
-        /* تم تحويلها إلى rem */
-        gap: 0.9375rem; /* 15px */
-        margin-bottom: 1.25rem; /* 20px */
-        padding: 0 1rem;
-        /* السماح بالتمرير الأفقي للهواتف */
-        overflow-x: auto; 
+    .server-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+      padding: 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      text-align: center;
+      transition: all 0.2s ease;
     }
     
-    /* 💡 منطقة لمس كبيرة (Touch Target) - تم زيادتها إلى 48px للتحسين */
-    .player-control-btn {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        /* تم تحويلها إلى rem */
-        padding: 0.625rem 1.25rem; /* 10px 20px */
-        border-radius: 0.75rem; /* 12px */
-        font-size: 1rem;
-        min-height: 3rem; /* 🆕 48px */
-        min-width: 3rem; /* 🆕 48px */
-        flex-shrink: 0;
+    .server-btn:active {
+      transform: scale(0.98);
     }
-
-    /* 📊 معلومات إضافية */
+    
+    .server-btn.active {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      font-weight: 600;
+    }
+    
+    /* ℹ️ معلومات الحلقة */
     .episode-info {
-        background: var(--bg-card);
-        box-shadow: var(--glass-shadow);
-        /* تم تحويلها إلى rem */
-        padding: 1.25rem; /* 20px */
-        margin: 1.25rem auto; /* 20px auto */
-        border-radius: 0.9375rem; /* 15px */
-        max-width: 90%;
-        width: 100%;
-        text-align: right;
+      padding: 1.5rem 1rem;
+      background: var(--bg-card);
     }
     
-    .episode-info h3 {
-        /* تم تحويلها إلى rem */
-        margin-bottom: 0.9375rem; /* 15px */
-        font-size: 1.2rem;
-        color: var(--primary-color);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 0.5rem;
+    .episode-title {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--text-light);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.5rem;
     }
     
     .episode-stats {
-        /* تم تحويلها إلى rem */
-        gap: 1.5625rem; /* 25px */
-        flex-wrap: wrap;
-        justify-content: flex-end;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
     }
     
     .stat {
-        display: flex;
-        align-items: center;
-        /* تم تحويلها إلى rem */
-        gap: 0.5rem; /* 8px */
-        font-size: 0.9rem;
-        color: var(--accent-color);
-        background: rgba(54, 209, 220, 0.1);
-        /* تم تحويلها إلى rem */
-        padding: 0.5rem 0.9375rem; /* 8px 15px */
-        border-radius: 0.625rem; /* 10px */
-    }
-    
-    /* ⚡ شريط التقدم المرئي */
-    #progress-bar-container {
-        width: 90%;
-        max-width: 50rem; /* 800px */
-        background: rgba(255, 255, 255, 0.1);
-        /* تم تحويلها إلى rem */
-        height: 0.625rem; /* 10px */
-        border-radius: 0.3125rem; /* 5px */
-        /* تم تحويلها إلى rem */
-        margin: 0.9375rem auto; /* 15px auto */
-        overflow: hidden;
-        transition: opacity 0.3s;
-    }
-    
-    #progress-bar {
-        height: 100%;
-        width: 0%;
-        background-color: var(--secondary-color);
-        transition: width 0.4s ease;
-    }
-    
-    footer {
-      background: var(--bg-card);
-      /* تم تحويلها إلى rem */
-      margin-top: 3.125rem; /* 50px */
-      padding: 1.875rem 1.25rem; /* 30px 20px */
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
       font-size: 0.9rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .stat i {
+      color: var(--primary-color);
+      width: 16px;
+    }
+    
+    /* 🎛️ أزرار التحكم الرئيسية */
+    .controls-section {
+      padding: 1rem;
+      background: var(--bg-card);
+    }
+    
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    
+    .control-main-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+      padding: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      min-height: 54px;
+    }
+    
+    .control-main-btn:active {
+      transform: scale(0.98);
+      background: rgba(108, 99, 255, 0.1);
+    }
+    
+    .control-main-btn.primary {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      font-weight: 600;
+    }
+    
+    /* 📥 قائمة التحميل والجودة */
+    .dropdown-menu {
+      position: relative;
+    }
+    
+    .dropdown-content {
+      position: absolute;
+      bottom: 100%;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 0.5rem 0;
+      min-width: 160px;
+      box-shadow: var(--glass-shadow);
+      display: none;
+      z-index: 1000;
+    }
+    
+    .dropdown-menu.active .dropdown-content {
+      display: block;
+    }
+    
+    .dropdown-item {
+      padding: 0.75rem 1rem;
+      color: var(--text-light);
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      font-size: 0.9rem;
+    }
+    
+    .dropdown-item:active {
+      background: rgba(108, 99, 255, 0.1);
     }
     
     /* 🔔 الإشعارات */
     .toast {
       position: fixed;
-      z-index: 2000;
-      /* تم تحويلها إلى rem */
-      bottom: 1.25rem; /* 20px */
-      right: 1.25rem; /* 20px */
-      background-color: var(--bg-card);
+      bottom: 1rem;
+      right: 1rem;
+      left: 1rem;
+      background: var(--bg-card);
       color: var(--text-light);
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: var(--glass-shadow);
+      border-right: 4px solid var(--primary-color);
+      transform: translateY(100px);
       opacity: 0;
-      visibility: hidden;
-      transform: translateY(1rem);
-      transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
-      /* تم تحويلها إلى rem */
-      padding: 0.9375rem 1.5625rem; /* 15px 25px */
-      border-radius: 0.75rem; /* 12px */
-      max-width: 22rem; /* 350px */
-      border-left: 0.25rem solid; /* 4px */
+      transition: all 0.3s ease;
+      z-index: 2000;
+      text-align: center;
     }
     
-    .toast.info { border-color: var(--accent-color); }
-    .toast.success { border-color: #4CAF50; }
-    .toast.error { border-color: var(--secondary-color); }
-    .toast.warning { border-color: #FFC107; }
-
     .toast.show {
-      opacity: 1;
-      visibility: visible;
       transform: translateY(0);
-    }
-
-    /* 🎛️ القوائم المنسدلة */
-    .dropdown {
-        position: relative;
-        display: inline-block;
+      opacity: 1;
     }
     
-    .dropdown-content {
-        position: absolute;
-        bottom: 100%; /* تظهر فوق الزر */
-        right: 0;
-        background-color: var(--bg-card);
-        box-shadow: var(--glass-shadow);
-        z-index: 10;
-        display: none;
-        /* تم تحويلها إلى rem */
-        min-width: 12.5rem; /* 200px */
-        border-radius: 0.75rem; /* 12px */
-        margin-bottom: 0.625rem; /* 10px */
-        overflow: hidden;
-        text-align: right;
-    }
-
-    .dropdown-content.active {
-        display: block;
+    .toast.success {
+      border-right-color: #10B981;
     }
     
-    .dropdown-item {
-        color: var(--text-light);
-        /* تم تحويلها إلى rem */
-        padding: 0.75rem 1rem; /* 12px 16px */
-        text-decoration: none;
-        display: block;
-        cursor: pointer;
-        transition: background-color 0.2s;
+    .toast.error {
+      border-right-color: var(--secondary-color);
     }
     
-    .dropdown-item:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+    .toast.warning {
+      border-right-color: #F59E0B;
     }
     
-    /* 🔄 قائمة تبديل السيرفرات السريعة */
-    .server-switch-container {
-        /* تم تحويلها إلى rem */
-        gap: 0.625rem; /* 10px */
-        margin: 1.25rem auto; /* 20px auto */
-        padding: 0.625rem; /* 10px */
-        border-radius: 0.9375rem; /* 15px */
-        max-width: 90%;
-        overflow-x: auto;
-    }
-    
-    .server-switch-btn {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid transparent;
-        color: var(--text-light);
-        cursor: pointer;
-        /* تم تحويلها إلى rem */
-        padding: 0.5rem 0.9375rem; /* 8px 15px */
-        border-radius: 0.625rem; /* 10px */
-        font-size: 0.9rem;
-        flex-shrink: 0;
-        transition: all 0.2s;
-    }
-    
-    .server-switch-btn.active {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        font-weight: bold;
-    }
-
-    /* 🆕 شريط التحكم المتكامل (Overlay) */
-    .player-controls-overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.5);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 50;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        pointer-events: none; /* لا يتداخل مع الـ iframe/video */
-        /* تم تحويلها إلى rem */
-        padding: 1.25rem; /* 20px */
-        gap: 0.9375rem; /* 15px */
-    }
-    
-    .player-controls-overlay.active {
-        opacity: 1;
-        pointer-events: auto; /* عند التفعيل يتفاعل مع اللمس/الماوس */
-    }
-
-    .controls-top, .controls-bottom, .controls-center, .controls-right, .progress-container {
-        display: flex;
-        align-items: center;
-    }
-    
-    .controls-top {
-        justify-content: flex-end;
-    }
-    
-    .video-title {
-        /* تم تحويلها إلى rem */
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--text-light);
-    }
-    
-    .controls-center {
-        justify-content: center;
-        /* تم تحويلها إلى rem */
-        gap: 1.875rem; /* 30px */
-    }
-    
-    .control-btn {
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
-        color: white;
-        border-radius: 50%;
-        cursor: pointer;
-        /* تم تحويلها إلى rem */
-        width: 3.125rem; /* 50px */
-        height: 3.125rem; /* 50px */
-        font-size: 1rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: background 0.2s, transform 0.1s;
-    }
-    
-    .control-btn.large {
-        /* تم تحويلها إلى rem */
-        width: 3.75rem; /* 60px */
-        height: 3.75rem; /* 60px */
-        font-size: 1.3rem;
-    }
-    
-    .controls-bottom {
-        justify-content: space-between;
-        /* تم تحويلها إلى rem */
-        gap: 0.9375rem; /* 15px */
-    }
-    
-    .progress-container {
-        flex-grow: 1;
-        gap: 0.5rem;
-    }
-    
-    .time-current,
-    .time-duration {
-        /* تم تحويلها إلى rem */
-        font-size: 0.9rem;
-        min-width: 2.8125rem; /* 45px */
-        text-align: center;
-    }
-    
-    .progress-bar-full {
-        flex-grow: 1;
-        position: relative;
-        background: rgba(255, 255, 255, 0.3);
-        cursor: pointer;
-        /* تم تحويلها إلى rem */
-        height: 0.375rem; /* 6px */
-        border-radius: 0.1875rem; /* 3px */
-    }
-    
-    .progress-track {
-        position: absolute;
-        height: 100%;
-        width: 0%;
-        background: var(--primary-color);
-        border-radius: inherit;
-    }
-    
-    .progress-thumb {
-        position: absolute;
-        top: 50%;
-        right: 0;
-        transform: translate(50%, -50%);
-        background: white;
-        /* تم تحويلها إلى rem */
-        width: 0.75rem; /* 12px */
-        height: 0.75rem; /* 12px */
-        border-radius: 50%;
-        pointer-events: none;
-    }
-    
-    .controls-right {
-        gap: 0.5rem;
-    }
-    
-    .settings-container {
-        position: relative;
-    }
-
-    .settings-menu {
-        position: absolute;
-        left: 0;
-        /* تم تحويلها إلى rem */
-        bottom: 3.75rem; /* 60px */
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(5px);
-        box-shadow: var(--glass-shadow);
-        display: none;
-        /* تم تحويلها إلى rem */
-        border-radius: 0.75rem; /* 12px */
-        padding: 0.625rem 0; /* 10px 0 */
-        /* تم تحويلها إلى rem */
-        min-width: 9.375rem; /* 150px */
-        text-align: right;
-    }
-    
-    .settings-menu.active {
-        display: block;
-    }
-    
-    .settings-item {
-        /* تم تحويلها إلى rem */
-        padding: 0.625rem 0.9375rem; /* 10px 15px */
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-    }
-    
-    .settings-item:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
-    
-    .quality-badge {
-        position: absolute;
-        /* تم تحويلها إلى rem */
-        top: 0.9375rem; /* 15px */
-        left: 0.9375rem; /* 15px */
-        z-index: 50;
-        background: var(--secondary-color);
-        color: white;
-        /* تم تحويلها إلى rem */
-        padding: 0.3125rem 0.625rem; /* 5px 10px */
-        border-radius: 0.375rem; /* 6px */
-        font-size: 0.8rem;
-        font-weight: bold;
-    }
-    
-    .blur-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-size: cover;
-        background-position: center;
-        filter: blur(50px) brightness(0.4);
-        z-index: -1;
-    }
-
-    /* 📱 التصميم المتجاوب المحسن (الآن يعمل على مقياس أصغر بفضل الـ rem) */
-    @media (max-width: 768px) {
-      /* تصغير الأزرار والشريط العلوي قليلاً */
-      .top-bar { padding: 1rem 0.75rem; gap: 0.625rem; flex-wrap: wrap; }
-      .top-bar h1 { font-size: 1.1rem; }
-      .nav-buttons { margin-top: 0.75rem; width: 100%; justify-content: space-around; }
-      .nav-buttons .btn { min-width: 6.875rem; padding: 0.625rem 0.875rem; font-size: 0.8rem; }
-      .btn { font-size: 0.9rem; padding: 0.625rem 1.25rem; }
-      .video-wrapper { width: 98%; border-radius: 0.9375rem; margin: 1.25rem auto 0.9375rem; }
-      .controls { gap: 0.625rem; }
-      
-      /* إرسال الـ toast لأسفل الشاشة وتوسيطه */
-      .toast { 
-          bottom: 4.375rem; 
-          right: 50%; 
-          transform: translateX(50%) translateY(1rem); 
-          left: auto; 
-          max-width: 90%; 
-          margin-left: 0; 
-          margin-right: 0;
+    /* 📱 تحسينات للشاشات الصغيرة جداً */
+    @media (max-width: 360px) {
+      html {
+        font-size: 14px;
       }
-      .toast.show { transform: translateX(50%) translateY(0); }
       
-      /* تحسين عرض أزرار التحكم السفلية (التمرير الأفقي) */
-      #playerControlsContainer { flex-wrap: nowrap; overflow-x: auto; padding: 0 0.625rem; justify-content: flex-start; }
-      /* يتم تغطية حجم الأزرار في CSS العام الآن (min-height/width: 3rem) */
+      .top-bar {
+        padding: 0.75rem;
+      }
       
-      /* تحسين شريط التحكم المتكامل للهواتف */
-      .player-controls-overlay { padding: 0.9375rem 0.625rem; }
-      .control-btn.large { width: 3.125rem; height: 3.125rem; font-size: 1.1rem; }
-      .controls-center { gap: 1.25rem; }
-      .controls-bottom { flex-direction: column; gap: 0.625rem; }
-      .progress-container { width: 100%; }
-      .controls-right { justify-content: space-between; width: 100%; }
+      .nav-btn {
+        padding: 0.5rem;
+        min-width: 40px;
+        min-height: 40px;
+      }
+      
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .episode-stats {
+        grid-template-columns: 1fr;
+      }
     }
     
-    @media (max-width: 480px) {
-        /* تم بالفعل تصغير حجم الخط الأساسي في بداية الـ CSS */
-        .nav-buttons { flex-direction: column; width: 100%; margin-top: 1rem; }
-        .nav-buttons .btn { width: 100%; max-width: none; }
-        .controls { flex-direction: column; align-items: center; }
-        .btn { width: 90%; max-width: 17.5rem; } /* 280px */
-        
-        /* تحسين إضافي للهواتف الصغيرة جداً */
-        .control-btn { width: 2.5rem; height: 2.5rem; }
-        .control-btn.large { width: 2.8125rem; height: 2.8125rem; }
-        .episode-info { padding: 1rem; }
-        .server-switch-container { flex-wrap: nowrap; justify-content: flex-start; }
-        .episode-stats { justify-content: center; }
+    /* 📱 تحسينات للشاشات المتوسطة */
+    @media (min-width: 768px) {
+      .mobile-optimized {
+        max-width: 800px;
+      }
+      
+      .nav-btn span {
+        display: inline;
+        margin: 0 0.25rem;
+      }
+      
+      .servers-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+      
+      .controls-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    /* 🎨 تأثيرات إضافية */
+    .quality-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      z-index: 40;
+      backdrop-filter: blur(10px);
+    }
+    
+    .fullscreen-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 40;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+    }
+    
+    .fullscreen-btn:active {
+      transform: scale(0.9);
+      background: rgba(108, 99, 255, 0.6);
+    }
+    
+    /* 🖼️ خلفية ضبابية */
+    .blur-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      filter: blur(30px) brightness(0.3);
+      z-index: -1;
+      opacity: 0.6;
     }
   </style>
 </head>
 <body>
+  <!-- خلفية ضبابية -->
   <div class="blur-bg" id="blurBg"></div>
   
-  <div class="top-bar">
-    <div class="title-group">
-        <h1 id="mainTitle">جارٍ التحميل...</h1>
-        <p class="server-info" id="serverInfo">
-            <i class="fas fa-server"></i>
-            <span>جاري تحميل معلومات السيرفر...</span>
-        </p>
-    </div>
-    <div class="nav-buttons">
-        <button id="prevEpBtn" class="btn alt">
-            <i class="fa-solid fa-backward-step"></i>
-            <span>الحلقة السابقة</span>
-        </button>
-        <button id="nextEpBtn" class="btn alt">
-            <span>الحلقة التالية</span>
-            <i class="fa-solid fa-forward-step"></i>
-        </button>
-    </div>
-  </div>
-
-  <div id="progress-bar-container">
-    <div id="progress-bar"></div>
-  </div>
-
-  <div class="video-wrapper">
-    <div class="quality-badge" id="qualityBadge">HD</div>
-    <button class="fullscreen-btn" id="iframeFullscreenBtn" title="ملء الشاشة">
-        <i class="fas fa-expand"></i>
-    </button>
-    <div class="video-container" id="videoContainer">
-        </div>
+  <!-- الهيكل الرئيسي المحسن للهواتف -->
+  <div class="mobile-optimized">
     
-    <div class="player-controls-overlay" id="playerControlsOverlay">
-        <div class="controls-top">
-            <div class="video-title" id="overlayVideoTitle">جارٍ التحميل...</div>
-        </div>
-        
-        <div class="controls-center">
-            <button class="control-btn large rewind-10" id="overlayRewindBtn">
-                <i class="fas fa-backward"></i>
-            </button>
-            <button class="control-btn large play-pause" id="overlayPlayPauseBtn">
-                <i class="fas fa-play"></i>
-            </button>
-            <button class="control-btn large forward-10" id="overlayForwardBtn">
-                <i class="fas fa-forward"></i>
-            </button>
-        </div>
-        
-        <div class="controls-bottom">
-            <div class="progress-container">
-                <span class="time-current" id="currentTime">0:00</span>
-                <div class="progress-bar-full" id="overlayProgressBar">
-                    <div class="progress-track" id="progressTrack"></div>
-                    <div class="progress-thumb" id="progressThumb"></div>
-                </div>
-                <span class="time-duration" id="durationTime">0:00</span>
-            </div>
-            
-            <div class="controls-right">
-                <button class="control-btn volume-control" id="volumeBtn">
-                    <i class="fas fa-volume-up" id="volumeIcon"></i>
-                </button>
-                <div class="settings-container">
-                    <button class="control-btn settings-btn" id="settingsBtn">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                    <div class="settings-menu" id="settingsMenu">
-                        <div class="settings-item" data-speed="0.5">
-                            <span>0.5x</span>
-                            <i class="fas fa-check" style="display: none;"></i>
-                        </div>
-                        <div class="settings-item" data-speed="1.0">
-                            <span>1.0x</span>
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="settings-item" data-speed="1.5">
-                            <span>1.5x</span>
-                            <i class="fas fa-check" style="display: none;"></i>
-                        </div>
-                        <div class="settings-item" data-speed="2.0">
-                            <span>2.0x</span>
-                            <i class="fas fa-check" style="display: none;"></i>
-                        </div>
-                    </div>
-                </div>
-                <button class="control-btn fullscreen-btn" id="overlayFullscreenBtn">
-                    <i class="fas fa-expand"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="custom-loader hidden" id="customLoader">
-        <div class="spinner"></div>
-        <p id="loaderMessage">جاري تجهيز المشغل وتحميل السيرفر...</p>
-    </div>
-    <div id="resumeMessage" class="hidden"></div>
-  </div>
-  
-  <div id="playerControlsContainer">
-      <button id="rewindBtn" class="player-control-btn" style="display: none;">
-          <i class="fas fa-undo"></i>
-          <span>-10 ثواني</span>
-      </button>
-      <button id="playPauseBtn" class="player-control-btn" style="display: none;">
-          <i class="fas fa-play"></i>
-          <span>تشغيل / إيقاف</span>
-      </button>
-      <button id="forwardBtn" class="player-control-btn" style="display: none;">
-          <span>+10 ثواني</span>
-          <i class="fas fa-redo"></i>
-      </button>
-  </div>
-  
-  <div class="server-switch-container" id="serverSwitchContainer">
+    <!-- 🔝 شريط التنقل العلوي -->
+    <div class="top-bar">
+      <div class="nav-buttons">
+        <button class="nav-btn" id="prevEpBtn" title="الحلقة السابقة">
+          <i class="fas fa-chevron-right"></i>
+          <span>السابقة</span>
+        </button>
+        <button class="nav-btn" id="nextEpBtn" title="الحلقة التالية">
+          <span>التالية</span>
+          <i class="fas fa-chevron-left"></i>
+        </button>
       </div>
-
-  <div class="episode-info">
-    <h3 id="episodeTitle">معلومات الحلقة</h3>
-    <div class="episode-stats">
-        <div class="stat">
-            <i class="fas fa-play-circle"></i>
-            <span id="viewsCount">جاري التحميل...</span>
+      
+      <div class="title-group">
+        <h1 id="mainTitle">جارٍ التحميل...</h1>
+        <div class="server-info" id="serverInfo">
+          <i class="fas fa-server"></i>
+          <span>جاري تحميل معلومات السيرفر...</span>
         </div>
-        <div class="stat">
-            <i class="fas fa-clock"></i>
-            <span id="episodeDuration">--:--</span>
-        </div>
-        <div class="stat">
-            <i class="fas fa-calendar"></i>
-            <span id="uploadDate">غير معروف</span>
-        </div>
-        <div class="stat">
-            <i class="fas fa-chart-line"></i>
-            <span id="progressStat">لم تبدأ المشاهدة</span>
-        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="controls">
-    <button class="btn" onclick="goBackToDetails()">
-        <i class="fas fa-info-circle"></i>
-        <span>تفاصيل الأنمي</span>
-    </button>
-    
-    <div class="dropdown" id="downloadDropdown">
-        <button id="downloadBtn" class="btn alt" style="display: none;">
+    <!-- 🎥 قسم الفيديو المحسن -->
+    <section class="video-section">
+      <div class="video-container" id="videoContainer">
+        <!-- شارة الجودة -->
+        <div class="quality-badge" id="qualityBadge">HD</div>
+        
+        <!-- زر ملء الشاشة -->
+        <button class="fullscreen-btn" id="fullscreenBtn" title="ملء الشاشة">
+          <i class="fas fa-expand"></i>
+        </button>
+        
+        <!-- عناصر التحكم في الفيديو -->
+        <div class="video-controls">
+          <button class="control-btn" id="playPauseBtn" title="تشغيل/إيقاف">
+            <i class="fas fa-play"></i>
+          </button>
+          
+          <div class="progress-container">
+            <span class="time-display" id="currentTime">0:00</span>
+            <div class="progress-bar" id="progressBar">
+              <div class="progress-fill" id="progressFill"></div>
+              <div class="progress-thumb" id="progressThumb"></div>
+            </div>
+            <span class="time-display" id="durationTime">0:00</span>
+          </div>
+          
+          <button class="control-btn" id="volumeBtn" title="الصوت">
+            <i class="fas fa-volume-up"></i>
+          </button>
+        </div>
+        
+        <!-- شاشة التحميل -->
+        <div class="loading-overlay" id="loadingOverlay">
+          <div class="loading-spinner"></div>
+          <div class="loading-text" id="loadingText">جاري تحميل الفيديو...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 🔄 أزرار تبديل السيرفرات -->
+    <section class="servers-section">
+      <h3 class="servers-title"><i class="fas fa-sync-alt"></i> تبديل السيرفر</h3>
+      <div class="servers-grid" id="serversGrid">
+        <!-- سيتم ملؤها بالجافاسكريبت -->
+      </div>
+    </section>
+
+    <!-- ℹ️ معلومات الحلقة -->
+    <section class="episode-info">
+      <h2 class="episode-title" id="episodeTitle">معلومات الحلقة</h2>
+      <div class="episode-stats">
+        <div class="stat">
+          <i class="fas fa-play-circle"></i>
+          <span id="viewsCount">جاري التحميل...</span>
+        </div>
+        <div class="stat">
+          <i class="fas fa-clock"></i>
+          <span id="episodeDuration">--:--</span>
+        </div>
+        <div class="stat">
+          <i class="fas fa-calendar"></i>
+          <span id="uploadDate">غير معروف</span>
+        </div>
+        <div class="stat">
+          <i class="fas fa-chart-line"></i>
+          <span id="progressStat">لم تبدأ المشاهدة</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 🎛️ أزرار التحكم الرئيسية -->
+    <section class="controls-section">
+      <div class="controls-grid">
+        <button class="control-main-btn" onclick="goBackToDetails()">
+          <i class="fas fa-arrow-right"></i>
+          <span>العودة</span>
+        </button>
+        
+        <div class="dropdown-menu" id="downloadMenu">
+          <button class="control-main-btn">
             <i class="fas fa-download"></i>
-            <span>تحميل الحلقة</span>
+            <span>تحميل</span>
             <i class="fas fa-chevron-down"></i>
-        </button>
-        <div class="dropdown-content" id="downloadOptions">
-            </div>
-    </div>
-    
-    <div class="dropdown" id="qualityDropdown">
-        <button id="qualityBtn" class="btn alt" style="display: none;">
+          </button>
+          <div class="dropdown-content" id="downloadOptions">
+            <!-- سيتم ملؤها بالجافاسكريبت -->
+          </div>
+        </div>
+        
+        <div class="dropdown-menu" id="qualityMenu">
+          <button class="control-main-btn">
             <i class="fas fa-cog"></i>
-            <span>جودة الفيديو</span>
+            <span>الجودة</span>
             <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-content" id="qualityOptions">
+            <!-- سيتم ملؤها بالجافاسكريبت -->
+          </div>
+        </div>
+        
+        <button class="control-main-btn primary" id="favoriteBtn">
+          <i class="far fa-heart"></i>
+          <span>المفضلة</span>
         </button>
-        <div class="dropdown-content" id="qualityOptions">
-            </div>
-    </div>
-    
-    <button id="favoriteBtn" class="btn alt">
-        <i class="far fa-heart"></i>
-        <span>المفضلة</span>
-    </button>
+      </div>
+    </section>
   </div>
 
-  <footer>
-    <p>© 2025 Oraa Anime | 🎬 تجربة مشاهدة استثنائية</p>
-    <p style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.7;">
-        تم التطوير بتقنيـات حديثة لتجربة مشاهدة فريدة
-    </p>
-  </footer>
-
+  <!-- 🔔 الإشعارات -->
   <div class="toast" id="toast"></div>
 
   <script>
-    // 💡 الثوابت والمتغيرات العامة
-    const LOGGED_IN_EMAIL = localStorage.getItem("loggedInUser");
-    const IS_LOGGED_IN = !!LOGGED_IN_EMAIL;
-    const USERS_STORAGE_KEY = 'oraaAnimeUsers';
-    const WATCH_HISTORY_KEY = 'oraaWatchHistory';
-    const EPISODE_SERVERS_KEY = 'episodeServers'; 
+    // 💡 البيانات والمتغيرات العامة
+    let ANIME_DATA, EPISODE_DATA, CURRENT_SERVER;
+    let CURRENT_EPISODE = 1;
+    let TOTAL_EPISODES = 12;
+    let videoPlayer = null;
+    let isPlaying = false;
+    let isFullscreen = false;
 
-    let ANIME_DATA, EPISODE_DATA, SELECTED_SERVER;
-    let ALL_SERVERS_DATA = []; 
-    let currentEpisodeNumber, totalEpisodes, watchTimeKey;
-    let currentPlayer;
-    let watchStartTime;
-    let playerEventListeners = {};
-    let isControlsVisible = false;
-    let controlsTimeout;
-    let currentPlaybackSpeed = 1.0;
-    let isMuted = false;
-    
+    // 🎬 مصادر الفيديو الافتراضية
     const VIDEO_SOURCES = {
-        "هجوم_العمالقة": {
-            title: "هجوم العمالقة",
-            episodes: {
-                1: {
-                    sources: [
-                        { quality: "1080p", url: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4", type: "video/mp4", size: "150MB" },
-                        { quality: "720p", url: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4", type: "video/mp4", size: "80MB" }
-                    ]
-                }
-            }
-        },
+      "internal": {
+        name: "المشغل الداخلي",
+        quality: "720p",
+        type: "video",
+        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+      },
+      "server1": {
+        name: "سيرفر 1",
+        quality: "1080p",
+        type: "iframe",
+        url: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+      }
     };
-    
-    // ------------------------------------------------------------------
-    // 1. 🛠️ وظائف المساعدة والتحميل
-    // ------------------------------------------------------------------
-    
+
+    // 🛠️ تهيئة الصفحة
+    function initializePage() {
+      loadData();
+      setupVideoPlayer();
+      setupEventListeners();
+      updateUI();
+      showToast("🎬 جاهز للمشاهدة!", "success");
+    }
+
     function loadData() {
-        try {
-            ANIME_DATA = JSON.parse(localStorage.getItem("selectedAnime")) || { title: "هجوم العمالقة", totalEpisodes: 25, img: "https://via.placeholder.com/150/0F0F1A/6C63FF?text=AOT" };
-            EPISODE_DATA = JSON.parse(localStorage.getItem("selectedEpisode")) || { episodeNumber: 1 };
-            SELECTED_SERVER = JSON.parse(localStorage.getItem("selectedServer")) || { name: "المشغل الداخلي", quality: "720p", url: "internal" };
-            ALL_SERVERS_DATA = JSON.parse(localStorage.getItem(EPISODE_SERVERS_KEY)) || [
-                { name: "المشغل الداخلي", quality: "720p", url: "internal" },
-                { name: "Server A", quality: "HD", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" } 
-            ];
-
-            if (!ANIME_DATA.title || !EPISODE_DATA.episodeNumber) {
-                console.warn("استخدام بيانات احتياطية لعدم العثور على بيانات الأنمي/الحلقة.");
-            }
-            
-            return true;
-        } catch (error) {
-            console.error("خطأ في تحميل البيانات:", error);
-            return false;
-        }
-    }
-    
-    function showToast(msg, type = "info") {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.className = `toast ${type}`;
-      
-      setTimeout(() => { toast.classList.add('show'); }, 10);
-      setTimeout(() => { toast.classList.remove('show'); }, 4000);
-    }
-    
-    function formatTime(seconds) {
-        if (isNaN(seconds) || seconds < 0) return "--:--";
-        const m = Math.floor(seconds / 60);
-        const s = Math.floor(seconds % 60);
-        return `${m}:${s.toString().padStart(2, '0')}`;
-    }
-    
-    function goBackToDetails() {
-        if (currentPlayer && currentPlayer.currentTime && currentPlayer.nodeName === 'VIDEO') {
-            localStorage.setItem(watchTimeKey, currentPlayer.currentTime);
-        }
-        showToast("العودة لصفحة التفاصيل (محاكاة)", "info");
-    }
-    
-    // ------------------------------------------------------------------
-    // 2. ⚙️ تهيئة الصفحة المحسنة
-    // ------------------------------------------------------------------
-    function initialize() {
-        if (!loadData()) {
-            showError("⚠️ خطأ في تحميل البيانات. يرجى العودة لصفحة التفاصيل.");
-            return;
-        }
-
-        currentEpisodeNumber = EPISODE_DATA.episodeNumber || 1;
-        totalEpisodes = ANIME_DATA.totalEpisodes || 12; 
-        const safeTitle = ANIME_DATA.title.replace(/\s+/g, '_').replace(/[^\w\d]/g, '');
-        watchTimeKey = `watch_time_${safeTitle}_${currentEpisodeNumber}`;
-        watchStartTime = Date.now();
+      // تحميل البيانات من localStorage أو استخدام البيانات الافتراضية
+      try {
+        ANIME_DATA = JSON.parse(localStorage.getItem("selectedAnime")) || {
+          title: "أنمي تجريبي",
+          totalEpisodes: 12,
+          img: "https://via.placeholder.com/300/1A1A2E/6C63FF?text=Anime"
+        };
         
+        EPISODE_DATA = JSON.parse(localStorage.getItem("selectedEpisode")) || {
+          episodeNumber: 1,
+          title: "الحلقة الأولى"
+        };
+        
+        CURRENT_SERVER = JSON.parse(localStorage.getItem("selectedServer")) || VIDEO_SOURCES.internal;
+        
+      } catch (error) {
+        console.error("خطأ في تحميل البيانات:", error);
+        ANIME_DATA = { title: "أنمي تجريبي", totalEpisodes: 12 };
+        EPISODE_DATA = { episodeNumber: 1, title: "الحلقة الأولى" };
+        CURRENT_SERVER = VIDEO_SOURCES.internal;
+      }
+      
+      CURRENT_EPISODE = EPISODE_DATA.episodeNumber || 1;
+      TOTAL_EPISODES = ANIME_DATA.totalEpisodes || 12;
+    }
+
+    // 🎥 إعداد مشغل الفيديو
+    function setupVideoPlayer() {
+      const videoContainer = document.getElementById('videoContainer');
+      videoContainer.innerHTML = `
+        <div class="quality-badge" id="qualityBadge">${CURRENT_SERVER.quality}</div>
+        <button class="fullscreen-btn" id="fullscreenBtn" title="ملء الشاشة">
+          <i class="fas fa-expand"></i>
+        </button>
+        <div class="video-controls">
+          <button class="control-btn" id="playPauseBtn" title="تشغيل/إيقاف">
+            <i class="fas fa-play"></i>
+          </button>
+          <div class="progress-container">
+            <span class="time-display" id="currentTime">0:00</span>
+            <div class="progress-bar" id="progressBar">
+              <div class="progress-fill" id="progressFill"></div>
+              <div class="progress-thumb" id="progressThumb"></div>
+            </div>
+            <span class="time-display" id="durationTime">0:00</span>
+          </div>
+          <button class="control-btn" id="volumeBtn" title="الصوت">
+            <i class="fas fa-volume-up"></i>
+          </button>
+        </div>
+        <div class="loading-overlay" id="loadingOverlay">
+          <div class="loading-spinner"></div>
+          <div class="loading-text" id="loadingText">جاري تحميل الفيديو...</div>
+        </div>
+      `;
+
+      if (CURRENT_SERVER.type === 'video') {
+        createHTML5VideoPlayer();
+      } else {
+        createIframePlayer();
+      }
+    }
+
+    function createHTML5VideoPlayer() {
+      const videoContainer = document.getElementById('videoContainer');
+      const video = document.createElement('video');
+      video.id = 'videoPlayer';
+      video.src = CURRENT_SERVER.url;
+      video.controls = false;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      
+      video.addEventListener('loadedmetadata', function() {
+        document.getElementById('durationTime').textContent = formatTime(video.duration);
+        hideLoading();
+      });
+      
+      video.addEventListener('timeupdate', updateProgress);
+      video.addEventListener('play', () => {
+        isPlaying = true;
+        updatePlayButton();
+        hideControlsAuto();
+      });
+      
+      video.addEventListener('pause', () => {
+        isPlaying = false;
+        updatePlayButton();
+      });
+      
+      video.addEventListener('waiting', showLoading);
+      video.addEventListener('canplay', hideLoading);
+      video.addEventListener('ended', onVideoEnded);
+      
+      videoContainer.appendChild(video);
+      videoPlayer = video;
+      
+      // محاولة التشغيل التلقائي
+      video.play().catch(error => {
+        console.log("التشغيل التلقائي ممنوع:", error);
+        showToast("انقر على زر التشغيل لبدء المشاهدة", "info");
+      });
+    }
+
+    function createIframePlayer() {
+      const videoContainer = document.getElementById('videoContainer');
+      const iframe = document.createElement('iframe');
+      iframe.id = 'videoPlayer';
+      iframe.src = CURRENT_SERVER.url;
+      iframe.allowFullscreen = true;
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+      
+      videoContainer.appendChild(iframe);
+      videoPlayer = iframe;
+      hideLoading();
+      
+      // إخفاء عناصر التحكم الخاصة بنا للـ iframe
+      document.querySelector('.video-controls').style.display = 'none';
+    }
+
+    // 🎛️ إعداد مستمعي الأحداث
+    function setupEventListeners() {
+      // أزرار التنقل بين الحلقات
+      document.getElementById('prevEpBtn').addEventListener('click', goToPreviousEpisode);
+      document.getElementById('nextEpBtn').addEventListener('click', goToNextEpisode);
+      
+      // أزرار التحكم في الفيديو
+      document.getElementById('playPauseBtn').addEventListener('click', togglePlayPause);
+      document.getElementById('volumeBtn').addEventListener('click', toggleMute);
+      document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+      
+      // شريط التقدم
+      const progressBar = document.getElementById('progressBar');
+      progressBar.addEventListener('click', seekVideo);
+      progressBar.addEventListener('touchstart', handleTouchProgress);
+      
+      // القوائم المنسدلة
+      setupDropdownMenus();
+      
+      // أزرار السيرفرات
+      setupServerButtons();
+      
+      // إخفاء التحكمات تلقائياً
+      setupAutoHideControls();
+      
+      // أحداث لوحة المفاتيح
+      document.addEventListener('keydown', handleKeyboard);
+    }
+
+    function setupDropdownMenus() {
+      const dropdowns = document.querySelectorAll('.dropdown-menu');
+      dropdowns.forEach(dropdown => {
+        const button = dropdown.querySelector('.control-main-btn');
+        
+        button.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdown.classList.toggle('active');
+        });
+        
+        // إغلاق القوائم عند النقر خارجها
+        document.addEventListener('click', () => {
+          dropdown.classList.remove('active');
+        });
+      });
+      
+      // إعداد خيارات التحميل والجودة
+      setupDownloadOptions();
+      setupQualityOptions();
+    }
+
+    function setupServerButtons() {
+      const serversGrid = document.getElementById('serversGrid');
+      serversGrid.innerHTML = '';
+      
+      Object.entries(VIDEO_SOURCES).forEach(([key, server]) => {
+        const button = document.createElement('button');
+        button.className = `server-btn ${server === CURRENT_SERVER ? 'active' : ''}`;
+        button.textContent = `${server.name} (${server.quality})`;
+        button.addEventListener('click', () => switchServer(server));
+        serversGrid.appendChild(button);
+      });
+    }
+
+    // 🔄 وظائف التحكم في الفيديو
+    function togglePlayPause() {
+      if (videoPlayer && videoPlayer.tagName === 'VIDEO') {
+        if (videoPlayer.paused) {
+          videoPlayer.play();
+        } else {
+          videoPlayer.pause();
+        }
+      }
+    }
+
+    function updatePlayButton() {
+      const playBtn = document.getElementById('playPauseBtn');
+      const icon = playBtn.querySelector('i');
+      
+      if (isPlaying) {
+        icon.className = 'fas fa-pause';
+        playBtn.title = 'إيقاف مؤقت';
+      } else {
+        icon.className = 'fas fa-play';
+        playBtn.title = 'تشغيل';
+      }
+    }
+
+    function toggleMute() {
+      if (videoPlayer && videoPlayer.tagName === 'VIDEO') {
+        videoPlayer.muted = !videoPlayer.muted;
+        const volumeBtn = document.getElementById('volumeBtn');
+        const icon = volumeBtn.querySelector('i');
+        icon.className = videoPlayer.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+        volumeBtn.title = videoPlayer.muted ? 'تفعيل الصوت' : 'كتم الصوت';
+      }
+    }
+
+    function toggleFullscreen() {
+      const videoContainer = document.getElementById('videoContainer');
+      
+      if (!isFullscreen) {
+        if (videoContainer.requestFullscreen) {
+          videoContainer.requestFullscreen();
+        } else if (videoContainer.webkitRequestFullscreen) {
+          videoContainer.webkitRequestFullscreen();
+        } else if (videoContainer.msRequestFullscreen) {
+          videoContainer.msRequestFullscreen();
+        }
+        isFullscreen = true;
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+        isFullscreen = false;
+      }
+    }
+
+    function updateProgress() {
+      if (videoPlayer && videoPlayer.tagName === 'VIDEO') {
+        const currentTime = videoPlayer.currentTime;
+        const duration = videoPlayer.duration;
+        
+        if (duration > 0) {
+          const progress = (currentTime / duration) * 100;
+          document.getElementById('progressFill').style.width = `${progress}%`;
+          document.getElementById('currentTime').textContent = formatTime(currentTime);
+          document.getElementById('durationTime').textContent = formatTime(duration);
+        }
+      }
+    }
+
+    function seekVideo(e) {
+      if (videoPlayer && videoPlayer.tagName === 'VIDEO') {
+        const progressBar = document.getElementById('progressBar');
+        const rect = progressBar.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        videoPlayer.currentTime = percent * videoPlayer.duration;
+      }
+    }
+
+    function handleTouchProgress(e) {
+      e.preventDefault();
+      seekVideo(e.touches[0]);
+    }
+
+    // 📱 وظائف خاصة بالهواتف
+    function setupAutoHideControls() {
+      let controlsTimeout;
+      const videoContainer = document.getElementById('videoContainer');
+      const controls = document.querySelector('.video-controls');
+      
+      function showControls() {
+        controls.style.opacity = '1';
+        clearTimeout(controlsTimeout);
+        controlsTimeout = setTimeout(() => {
+          if (isPlaying) {
+            controls.style.opacity = '0';
+          }
+        }, 3000);
+      }
+      
+      videoContainer.addEventListener('touchstart', showControls);
+      videoContainer.addEventListener('mousemove', showControls);
+      
+      showControls(); // إظهار التحكمات في البداية
+    }
+
+    function handleKeyboard(e) {
+      if (e.target.tagName === 'INPUT') return;
+      
+      switch(e.key) {
+        case ' ':
+          e.preventDefault();
+          togglePlayPause();
+          break;
+        case 'ArrowLeft':
+          if (videoPlayer && videoPlayer.tagName === 'VIDEO') {
+            videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
+            showToast("⏪ رجوع 10 ثواني");
+          }
+          break;
+        case 'ArrowRight':
+          if (videoPlayer && videoPlayer.tagName === 'VIDEO') {
+            videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
+            showToast("⏩ تقدم 10 ثواني");
+          }
+          break;
+        case 'f':
+        case 'F':
+          toggleFullscreen();
+          break;
+        case 'm':
+        case 'M':
+          toggleMute();
+          break;
+      }
+    }
+
+    // 🔄 وظائف التنقل
+    function goToPreviousEpisode() {
+      if (CURRENT_EPISODE > 1) {
+        CURRENT_EPISODE--;
+        loadEpisode(CURRENT_EPISODE);
+      } else {
+        showToast("❌ هذه هي الحلقة الأولى", "warning");
+      }
+    }
+
+    function goToNextEpisode() {
+      if (CURRENT_EPISODE < TOTAL_EPISODES) {
+        CURRENT_EPISODE++;
+        loadEpisode(CURRENT_EPISODE);
+      } else {
+        showToast("❌ هذه هي الحلقة الأخيرة", "warning");
+      }
+    }
+
+    function loadEpisode(episodeNumber) {
+      showLoading();
+      CURRENT_EPISODE = episodeNumber;
+      
+      // محاكاة تحميل الحلقة الجديدة
+      setTimeout(() => {
         updateUI();
-        setupPlayer(SELECTED_SERVER); 
-        setupNavigation();
-        loadStatistics();
-        setupFavorite();
-        setupQualityOptions();
-        setupDownloadOptions();
-        setupServerSwitchButtons(); 
-        startWatchTracking();
-        setupDropdownToggle();
-        setupPlayerControlsOverlay();
+        setupVideoPlayer();
+        showToast(`🎬 تم تحميل الحلقة ${episodeNumber}`, "success");
+      }, 1000);
+    }
+
+    function switchServer(server) {
+      showLoading();
+      CURRENT_SERVER = server;
+      
+      setTimeout(() => {
+        setupVideoPlayer();
+        setupServerButtons();
+        showToast(`🔄 تم التبديل إلى ${server.name}`, "info");
+      }, 500);
+    }
+
+    // 🛠️ وظائف مساعدة
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return "0:00";
+      
+      const minutes = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${minutes}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function showLoading(message = "جاري التحميل...") {
+      const overlay = document.getElementById('loadingOverlay');
+      const text = document.getElementById('loadingText');
+      
+      text.textContent = message;
+      overlay.style.display = 'flex';
+    }
+
+    function hideLoading() {
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.style.display = 'none';
+    }
+
+    function showToast(message, type = "info") {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
     }
 
     function updateUI() {
-        document.getElementById("pageTitle").textContent = `🎬 ${ANIME_DATA.title} - الحلقة ${currentEpisodeNumber}`;
-        document.getElementById("mainTitle").textContent = `${ANIME_DATA.title} - حلقة ${currentEpisodeNumber}`;
-        document.getElementById("episodeTitle").textContent = `${ANIME_DATA.title} - الحلقة ${currentEpisodeNumber}`;
-        document.getElementById("overlayVideoTitle").textContent = `${ANIME_DATA.title} - الحلقة ${currentEpisodeNumber}`;
-        
-        document.getElementById("serverInfo").innerHTML = `<i class="fas fa-server"></i><span>السيرفر: ${SELECTED_SERVER.name || 'مباشر'} | جودة: ${SELECTED_SERVER.quality || 'HD'}</span>`;
-
-        const blurBg = document.getElementById("blurBg");
-        if (ANIME_DATA.img) {
-            blurBg.style.backgroundImage = `url('${ANIME_DATA.img}')`;
-        } else {
-             blurBg.style.backgroundImage = 'none';
-        }
-        
-        if (SELECTED_SERVER.quality) {
-            document.getElementById("qualityBadge").textContent = SELECTED_SERVER.quality;
-        }
-    }
-    
-    function cleanupPlayerEvents() {
-        const videoElement = document.getElementById("player");
-        if (videoElement && videoElement.nodeName === 'VIDEO' && playerEventListeners['VIDEO']) {
-            const events = playerEventListeners['VIDEO'];
-            for (const type in events) {
-                videoElement.removeEventListener(type, events[type]);
-            }
-        }
-        
-        const rewindBtn = document.getElementById('rewindBtn');
-        const forwardBtn = document.getElementById('forwardBtn');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        
-        if (rewindBtn) rewindBtn.onclick = null;
-        if (forwardBtn) forwardBtn.onclick = null;
-        if (playPauseBtn) playPauseBtn.onclick = null;
-        
-        playerEventListeners = {};
-        currentPlayer = null; 
+      // تحديث العناوين والمعلومات
+      document.getElementById('pageTitle').textContent = `${ANIME_DATA.title} - الحلقة ${CURRENT_EPISODE}`;
+      document.getElementById('mainTitle').textContent = `${ANIME_DATA.title} - الحلقة ${CURRENT_EPISODE}`;
+      document.getElementById('episodeTitle').textContent = `${ANIME_DATA.title} - الحلقة ${CURRENT_EPISODE}`;
+      
+      document.getElementById('serverInfo').innerHTML = `
+        <i class="fas fa-server"></i>
+        <span>${CURRENT_SERVER.name} | ${CURRENT_SERVER.quality}</span>
+      `;
+      
+      // تحديث خلفية الصورة
+      const blurBg = document.getElementById('blurBg');
+      if (ANIME_DATA.img) {
+        blurBg.style.backgroundImage = `url('${ANIME_DATA.img}')`;
+      }
+      
+      // تحديث الإحصائيات
+      updateStatistics();
     }
 
-    // ------------------------------------------------------------------
-    // 3. 🎥 إعداد المشغل
-    // ------------------------------------------------------------------
-    function setupPlayer(serverData) {
-        showLoading(true, `جاري تشغيل ${serverData.name || 'المشغل الداخلي'}...`);
-        cleanupPlayerEvents(); 
-        
-        const serverUrl = serverData.url;
-        SELECTED_SERVER = serverData; 
-        
-        let playerElement;
-
-        const videoContainer = document.getElementById("videoContainer");
-        videoContainer.innerHTML = '';
-        
-        const iframeFullscreenBtn = document.getElementById('iframeFullscreenBtn');
-        const playerControlsContainer = document.getElementById('playerControlsContainer');
-        
-        const resumeMessageEl = document.getElementById("resumeMessage");
-        resumeMessageEl.classList.add('hidden');
-        resumeMessageEl.style.display = 'none';
-
-        if (serverUrl && serverUrl !== 'internal') {
-            playerElement = createIframePlayer(serverUrl);
-            setupIframeFeatures();
-            iframeFullscreenBtn.style.display = 'block'; 
-            
-            playerControlsContainer.style.display = 'none';
-            document.getElementById('progress-bar-container').style.display = 'none';
-            document.getElementById('playerControlsOverlay').style.display = 'none';
-            
-            videoContainer.appendChild(playerElement); 
-            currentPlayer = playerElement; 
-            setTimeout(() => showLoading(false), 2500); 
-
-        } else {
-            const animeKey = ANIME_DATA.title.toLowerCase().replace(/\s+/g, '_').replace(/[^\w\d]/g, '');
-            const episodeSources = VIDEO_SOURCES[ANIME_DATA.title]?.episodes?.[currentEpisodeNumber] || VIDEO_SOURCES[animeKey]?.episodes?.[currentEpisodeNumber];
-            
-            if (episodeSources && episodeSources.sources && episodeSources.sources.length > 0) {
-                playerElement = createVideoPlayer(episodeSources.sources);
-                videoContainer.appendChild(playerElement); 
-                currentPlayer = playerElement;
-                setupVideoFeatures(playerElement);
-            } else {
-                showError("⚠️ لم يتم العثور على مصدر فيديو لهذا الخيار.", true);
-                return;
-            }
-            
-             showLoading(false); 
-             iframeFullscreenBtn.style.display = 'none'; 
-             
-             playerControlsContainer.style.display = 'flex';
-             document.getElementById('progress-bar-container').style.display = 'block';
-             document.getElementById('playerControlsOverlay').style.display = 'flex';
-             
-             addPlayerControls(playerElement);
-        }
-        
-        updateUI(); 
-        updateActiveServerButton(serverData.name); 
-    }
-    
-    function addPlayerControls(videoElement) {
-        if (videoElement.nodeName !== 'VIDEO') return; 
-        
-        const rewindBtn = document.getElementById('rewindBtn');
-        const forwardBtn = document.getElementById('forwardBtn');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const playPauseIcon = playPauseBtn.querySelector('i');
-        const playPauseText = playPauseBtn.querySelector('span');
-        
-        const overlayPlayPauseBtn = document.getElementById('overlayPlayPauseBtn');
-        const overlayPlayPauseIcon = overlayPlayPauseBtn.querySelector('i');
-        
-        const updatePlayPauseButton = () => {
-            if (videoElement.paused) {
-                playPauseIcon.className = 'fas fa-play';
-                playPauseText.textContent = 'تشغيل';
-                overlayPlayPauseIcon.className = 'fas fa-play';
-            } else {
-                playPauseIcon.className = 'fas fa-pause';
-                playPauseText.textContent = 'إيقاف مؤقت';
-                overlayPlayPauseIcon.className = 'fas fa-pause';
-            }
-        };
-
-        const rewindHandler = () => {
-            if (videoElement.currentTime) {
-                videoElement.currentTime = Math.max(0, videoElement.currentTime - 10);
-                showToast("-10 ثواني", "info");
-            }
-        };
-
-        const forwardHandler = () => {
-            if (videoElement.currentTime) {
-                videoElement.currentTime = Math.min(videoElement.duration, videoElement.currentTime + 10);
-                showToast("+10 ثواني", "info");
-            }
-        };
-
-        const playPauseHandler = () => {
-             if (videoElement.paused) {
-                 videoElement.play();
-             } else {
-                 videoElement.pause();
-             }
-        };
-        
-        rewindBtn.onclick = rewindHandler;
-        forwardBtn.onclick = forwardHandler;
-        playPauseBtn.onclick = playPauseHandler;
-
-        playerEventListeners['VIDEO'] = {
-            ...(playerEventListeners['VIDEO'] || {}), 
-            'play': updatePlayPauseButton,
-            'pause': updatePlayPauseButton,
-            'loadedmetadata': updatePlayPauseButton 
-        };
-        videoElement.addEventListener('play', playerEventListeners['VIDEO']['play']);
-        videoElement.addEventListener('pause', playerEventListeners['VIDEO']['pause']);
-        videoElement.addEventListener('loadedmetadata', playerEventListeners['VIDEO']['loadedmetadata']); 
-        
-        updatePlayPauseButton(); 
-        
-        document.getElementById('overlayRewindBtn').onclick = rewindHandler;
-        document.getElementById('overlayForwardBtn').onclick = forwardHandler;
-        document.getElementById('overlayPlayPauseBtn').onclick = playPauseHandler;
-        
-        rewindBtn.style.display = 'flex';
-        forwardBtn.style.display = 'flex';
-        playPauseBtn.style.display = 'flex';
-    }
-
-    function createIframePlayer(url) {
-        const iframe = document.createElement("iframe");
-        iframe.setAttribute("id", "player");
-        iframe.setAttribute("allowfullscreen", "true");
-        iframe.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture");
-        iframe.setAttribute("src", url); 
-        iframe.setAttribute("loading", "eager");
-        iframe.setAttribute("referrerpolicy", "no-referrer");
-        iframe.onerror = () => showError("❌ فشل تحميل السيرفر الخارجي. قد يكون محظوراً أو غير متوفر.");
-        return iframe;
-    }
-
-    function createVideoPlayer(sources) {
-        const video = document.createElement("video");
-        video.setAttribute("id", "player");
-        video.setAttribute("controls", "false"); // إزالة تحكمات المتصفح الافتراضية 
-        video.setAttribute("autoplay", "true");
-        video.setAttribute("preload", "auto");
-        video.setAttribute("playsinline", "true"); 
-        
-        sources.forEach(source => {
-            const sourceElement = document.createElement("source");
-            sourceElement.src = source.url;
-            sourceElement.type = source.type;
-            sourceElement.setAttribute('data-quality', source.quality);
-            video.appendChild(sourceElement);
-        });
-        return video;
-    }
-
-    function setupIframeFeatures() {
-        document.getElementById("downloadBtn").style.display = 'none';
-        document.getElementById("qualityBtn").style.display = 'none';
-        document.getElementById("progress-bar-container").style.display = 'none'; 
-        document.getElementById('playerControlsOverlay').style.display = 'none';
-
-        document.getElementById('iframeFullscreenBtn').onclick = toggleCustomFullscreen;
-    }
-
-    function setupVideoFeatures(videoElement) {
-        document.getElementById("downloadBtn").style.display = 'flex';
-        document.getElementById("qualityBtn").style.display = 'flex';
-        document.getElementById("progress-bar-container").style.display = 'block';
-        document.getElementById('playerControlsOverlay').style.display = 'flex';
-
-        const savedTime = localStorage.getItem(watchTimeKey);
-        const resumeMessageEl = document.getElementById("resumeMessage");
-        
-        if (savedTime && parseFloat(savedTime) > 5) {
-            const timeInSeconds = Math.floor(parseFloat(savedTime));
-            resumeMessageEl.innerHTML = `
-                <i class="fas fa-play-circle"></i> استئناف من: ${formatTime(timeInSeconds)} 
-                <button onclick="resumePlayback(${timeInSeconds})">استئناف</button>
-            `;
-            resumeMessageEl.style.display = 'block';
-            resumeMessageEl.classList.remove('hidden'); 
-        } else {
-            resumeMessageEl.style.display = 'none';
-            resumeMessageEl.classList.add('hidden'); 
-        }
-        
-        const onLoadedMetadata = () => {
-            document.getElementById("episodeDuration").textContent = formatTime(videoElement.duration);
-            document.getElementById("durationTime").textContent = formatTime(videoElement.duration);
-            updateProgressDisplay();
-            videoElement.playbackRate = currentPlaybackSpeed;
-        };
-        
-        const onTimeUpdate = function() {
-            if (Math.floor(videoElement.currentTime) % 5 === 0) { 
-                localStorage.setItem(watchTimeKey, videoElement.currentTime);
-                updateProgressStats(videoElement);
-            }
-            
-            if (videoElement.duration) {
-                const progressPercent = (videoElement.currentTime / videoElement.duration) * 100;
-                document.getElementById("progressTrack").style.width = `${progressPercent}%`;
-                document.getElementById("progressThumb").style.left = `calc(${progressPercent}% - 6px)`; 
-                document.getElementById("currentTime").textContent = formatTime(videoElement.currentTime);
-            }
-        };
-        
-        const onEnded = function() {
-            markEpisodeAsCompleted();
-            showCompletionMessage();
-        };
-        
-        const onDoubleClick = toggleFullscreen;
-
-        playerEventListeners['VIDEO'] = {
-            ...(playerEventListeners['VIDEO'] || {}), 
-            'loadedmetadata': onLoadedMetadata,
-            'timeupdate': onTimeUpdate,
-            'ended': onEnded,
-            'dblclick': onDoubleClick
-        };
-
-        videoElement.addEventListener('loadedmetadata', onLoadedMetadata);
-        videoElement.addEventListener('timeupdate', onTimeUpdate);
-        videoElement.addEventListener('ended', onEnded);
-        videoElement.addEventListener('dblclick', onDoubleClick); 
-    }
-    
-    function toggleFullscreen() {
-        const video = currentPlayer;
-        if (video && video.nodeName === 'VIDEO') {
-            if (!document.fullscreenElement) {
-                if (video.requestFullscreen) {
-                    video.requestFullscreen();
-                } else if (video.webkitRequestFullscreen) { 
-                    video.webkitRequestFullscreen();
-                } else if (video.msRequestFullscreen) { 
-                    video.msRequestFullscreen();
-                }
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) { 
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) { 
-                    document.msExitFullscreen();
-                }
-            }
-        }
-    }
-    
-    // دالة ملء الشاشة المخصصة (تم تحسينها لتفاعلية أفضل)
-    function toggleCustomFullscreen() {
-        const wrapper = document.querySelector('.video-wrapper');
-        const isFullscreen = wrapper.classList.toggle('fullscreen-active');
-        
-        // إخفاء/إظهار جميع عناصر الصفحة عدا المشغل
-        document.querySelector('.top-bar').style.display = isFullscreen ? 'none' : 'flex';
-        document.querySelector('footer').style.display = isFullscreen ? 'none' : 'block';
-        document.getElementById("serverSwitchContainer").style.display = isFullscreen ? 'none' : 'flex';
-        document.querySelector('.controls').style.display = isFullscreen ? 'none' : 'flex';
-        
-        // إظهار/إخفاء أزرار التحكم السفلية بناءً على نوع المشغل
-        document.getElementById('playerControlsContainer').style.display = isFullscreen ? 'none' : (currentPlayer && currentPlayer.nodeName === 'VIDEO' ? 'flex' : 'none');
-
-        if (isFullscreen) {
-            // إضافة فئة للجسم لإخفاء أي أشرطة تمرير غير مرغوبة
-            document.body.style.overflow = 'hidden';
-            showToast("وضع ملء الشاشة مفعّل. لتدوير الشاشة، قم بتدوير جهازك يدوياً.", "info");
-        } else {
-            document.body.style.overflow = 'auto';
-            showToast("الخروج من وضع ملء الشاشة.", "info");
-        }
-    }
-    
-    function resumePlayback(timeInSeconds) {
-        if (currentPlayer && currentPlayer.nodeName === 'VIDEO') {
-            currentPlayer.currentTime = timeInSeconds;
-            currentPlayer.play();
-            document.getElementById("resumeMessage").classList.add('hidden'); 
-            document.getElementById("resumeMessage").style.display = 'none';
-            showToast("▶️ استئناف المشاهدة.", "success");
-        }
-    }
-    
-    function showLoading(show, message = "جاري التحميل...") {
-        const loader = document.getElementById("customLoader");
-        if (show) {
-            loader.classList.remove('hidden');
-            loader.style.opacity = '1';
-            loader.style.pointerEvents = 'auto'; 
-            document.getElementById("loaderMessage").textContent = message;
-        } else {
-            loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.classList.add('hidden');
-            }, 300); 
-        }
-    }
-    
-    // ------------------------------------------------------------------
-    // 4. 🔄 تبديل السيرفرات السريع
-    // ------------------------------------------------------------------
-    function setupServerSwitchButtons() {
-        const container = document.getElementById("serverSwitchContainer");
-        container.innerHTML = '';
-        
-        if (ALL_SERVERS_DATA.length > 1) {
-            ALL_SERVERS_DATA.forEach(server => {
-                const button = document.createElement("button");
-                button.className = "server-switch-btn";
-                button.textContent = `${server.name} (${server.quality})`;
-                button.setAttribute('data-server-name', server.name);
-
-                if (server.name === SELECTED_SERVER.name) {
-                    button.classList.add('active');
-                }
-                
-                button.addEventListener('click', () => {
-                    if (currentPlayer && currentPlayer.currentTime && currentPlayer.nodeName === 'VIDEO') {
-                        localStorage.setItem(watchTimeKey, currentPlayer.currentTime);
-                    }
-                    localStorage.setItem("selectedServer", JSON.stringify(server));
-                    setupPlayer(server);
-                });
-                container.appendChild(button);
-            });
-            container.style.display = 'flex';
-        } else {
-            container.style.display = 'none';
-        }
-    }
-    
-    function updateActiveServerButton(serverName) {
-        document.querySelectorAll('.server-switch-btn').forEach(btn => {
-            if (btn.getAttribute('data-server-name') === serverName) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-    }
-
-    // ------------------------------------------------------------------
-    // 5. ⏪ التنقل واختصارات لوحة المفاتيح
-    // ------------------------------------------------------------------
-    function setupNavigation() {
-        const prevEpBtn = document.getElementById("prevEpBtn");
-        const nextEpBtn = document.getElementById("nextEpBtn");
-        
-        prevEpBtn.disabled = (currentEpisodeNumber <= 1);
-        nextEpBtn.disabled = (currentEpisodeNumber >= totalEpisodes);
-        
-        prevEpBtn.addEventListener('click', () => navigateEpisode(currentEpisodeNumber - 1));
-        nextEpBtn.addEventListener('click', () => navigateEpisode(currentEpisodeNumber + 1));
-        
-        document.removeEventListener('keydown', handleKeyboardNavigation); 
-        document.addEventListener('keydown', handleKeyboardNavigation);
-    }
-
-    function handleKeyboardNavigation(e) {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        
-        if (currentPlayer && currentPlayer.nodeName === 'IFRAME') return;
-
-        switch(e.key) {
-            case 'ArrowLeft':
-                if (e.shiftKey) { 
-                    if (!document.getElementById("prevEpBtn").disabled) navigateEpisode(currentEpisodeNumber - 1);
-                } else if (currentPlayer && currentPlayer.nodeName === 'VIDEO' && currentPlayer.currentTime) { 
-                    currentPlayer.currentTime = Math.max(0, currentPlayer.currentTime - 10);
-                    showToast("-10 ثواني", "info");
-                }
-                break;
-            case 'ArrowRight':
-                if (e.shiftKey) { 
-                    if (!document.getElementById("nextEpBtn").disabled) navigateEpisode(currentEpisodeNumber + 1);
-                } else if (currentPlayer && currentPlayer.nodeName === 'VIDEO' && currentPlayer.currentTime) { 
-                    currentPlayer.currentTime = Math.min(currentPlayer.duration, currentPlayer.currentTime + 10);
-                    showToast("+10 ثواني", "info");
-                }
-                break;
-            case ' ': 
-                if (currentPlayer && currentPlayer.nodeName === 'VIDEO' && currentPlayer.pause) {
-                    currentPlayer.paused ? currentPlayer.play() : currentPlayer.pause();
-                }
-                e.preventDefault();
-                break;
-            case 'f': 
-            case 'F':
-                if (currentPlayer && (currentPlayer.requestFullscreen || document.getElementById('iframeFullscreenBtn').style.display === 'block')) {
-                    if (currentPlayer.nodeName === 'IFRAME') {
-                         toggleCustomFullscreen();
-                    } else {
-                         toggleFullscreen();
-                    }
-                }
-                break;
-            case 'm': 
-            case 'M':
-                if (currentPlayer && currentPlayer.nodeName === 'VIDEO' && currentPlayer.muted !== undefined) {
-                    currentPlayer.muted = !currentPlayer.muted;
-                    document.getElementById('volumeIcon').className = currentPlayer.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up'; 
-                    showToast(currentPlayer.muted ? "🔇 كتم الصوت" : "🔊 تفعيل الصوت", "info");
-                }
-                break;
-            case 'Escape':
-                if (document.fullscreenElement) {
-                    toggleFullscreen();
-                } else if (document.querySelector('.video-wrapper.fullscreen-active')) {
-                    toggleCustomFullscreen();
-                } else {
-                    goBackToDetails();
-                }
-                break;
-        }
-    }
-
-    function navigateEpisode(newEpisodeNumber) {
-        if (currentPlayer && currentPlayer.currentTime && currentPlayer.nodeName === 'VIDEO') {
-            localStorage.setItem(watchTimeKey, currentPlayer.currentTime);
-        }
-
-        localStorage.setItem("selectedEpisode", JSON.stringify({
-            animeTitle: ANIME_DATA.title,
-            episodeNumber: newEpisodeNumber
-        }));
-
-        showToast(`🔄 جارٍ تحميل الحلقة ${newEpisodeNumber}...`, "info");
-        
-        setTimeout(() => {
-            showToast("تم محاكاة التنقل للحلقة الجديدة.", "success");
-            EPISODE_DATA.episodeNumber = newEpisodeNumber;
-            localStorage.setItem("selectedServer", JSON.stringify({ name: "المشغل الداخلي", quality: "720p", url: "internal" }));
-            initialize();
-        }, 800);
-    }
-    
-    // ------------------------------------------------------------------
-    // 6. 📊 الإحصائيات وشريط التقدم
-    // ------------------------------------------------------------------
-    function loadStatistics() {
-        const baseViews = Math.floor(Math.random() * 50000) + 10000;
-        document.getElementById("viewsCount").textContent = `${(baseViews).toLocaleString()} مشاهدة`;
-        
-        const uploadDays = Math.floor(Math.random() * 30) + 1;
-        const uploadDateObj = new Date();
-        uploadDateObj.setDate(uploadDateObj.getDate() - uploadDays);
-        document.getElementById("uploadDate").textContent = uploadDateObj.toLocaleDateString('ar-EG');
-        
-        updateProgressDisplay();
-    }
-
-    function updateProgressStats(video) {
-        if (video.duration > 0) {
-            const progress = (video.currentTime / video.duration) * 100;
-            document.getElementById("progressStat").textContent = `${Math.round(progress)}% مكتمل`;
-            document.getElementById("progress-bar").style.width = `${progress}%`;
-        }
-    }
-
-    function updateProgressDisplay() {
-        const savedTime = localStorage.getItem(watchTimeKey);
-        
-        if (savedTime && currentPlayer && currentPlayer.duration && currentPlayer.nodeName === 'VIDEO') {
-            const progress = (parseFloat(savedTime) / currentPlayer.duration) * 100;
-            document.getElementById("progressStat").textContent = `${Math.round(progress)}% مكتمل`;
-            document.getElementById("progress-bar").style.width = `${progress}%`;
-        } else if (SELECTED_SERVER.url && SELECTED_SERVER.url !== 'internal') {
-            document.getElementById("progressStat").textContent = `يعتمد على السيرفر الخارجي`;
-            document.getElementById("progress-bar").style.width = `0%`;
-            document.getElementById("episodeDuration").textContent = "غير معروف";
-        } else {
-             document.getElementById("progressStat").textContent = `لم تبدأ المشاهدة`;
-             document.getElementById("progress-bar").style.width = `0%`;
-             document.getElementById("episodeDuration").textContent = "--:--";
-        }
-    }
-
-    // ------------------------------------------------------------------
-    // 7. 🎛️ الجودة والتحميل والمفضلة
-    // ------------------------------------------------------------------
-    
-    function setupDropdownToggle() {
-        const dropdowns = document.querySelectorAll('.dropdown');
-        dropdowns.forEach(dropdown => {
-            const button = dropdown.querySelector('.btn');
-            const content = dropdown.querySelector('.dropdown-content');
-            
-            button.addEventListener('click', (e) => {
-                e.stopPropagation(); 
-                if (button.style.display === 'none') return; 
-                
-                const isActive = content.classList.contains('active');
-                
-                document.querySelectorAll('.dropdown-content.active').forEach(openContent => {
-                    if (openContent !== content) {
-                        openContent.classList.remove('active');
-                    }
-                });
-                
-                content.classList.toggle('active', !isActive);
-            });
-            
-            document.addEventListener('click', (e) => {
-                if (!dropdown.contains(e.target)) {
-                    content.classList.remove('active');
-                }
-            });
-            
-            content.addEventListener('click', (e) => {
-                if (e.target.classList.contains('dropdown-item')) {
-                    content.classList.remove('active');
-                }
-            });
-        });
-    }
-
-    function setupQualityOptions() {
-        const qualityOptions = document.getElementById("qualityOptions");
-        qualityOptions.innerHTML = '';
-        const animeKey = ANIME_DATA.title.toLowerCase().replace(/\s+/g, '_').replace(/[^\w\d]/g, '');
-        const episodeSources = VIDEO_SOURCES[ANIME_DATA.title]?.episodes?.[currentEpisodeNumber] || VIDEO_SOURCES[animeKey]?.episodes?.[currentEpisodeNumber];
-        
-        if (episodeSources && episodeSources.sources) {
-            episodeSources.sources.forEach(source => {
-                const option = document.createElement("div");
-                option.className = "dropdown-item";
-                option.innerHTML = `<i class="fas fa-video"></i> ${source.quality} (${source.size})`;
-                option.addEventListener('click', () => changeQuality(source));
-                qualityOptions.appendChild(option);
-            });
-        }
-    }
-    
-    function changeQuality(source) {
-        if (currentPlayer && currentPlayer.nodeName === 'VIDEO') {
-            const video = currentPlayer;
-            const currentTime = video.currentTime;
-            const isPaused = video.paused;
-            
-            // البحث عن مصدر الفيديو الجديد داخل عناصر <source>
-            const newSourceElement = Array.from(video.querySelectorAll('source')).find(s => s.getAttribute('data-quality') === source.quality);
-            
-            if (newSourceElement) {
-                const newSrc = newSourceElement.src;
-                
-                // التحقق من الجودة الحالية (مقارنة بالعنصر النشط)
-                const currentQuality = video.querySelector('source[src="'+video.currentSrc+'"]')?.getAttribute('data-quality');
-
-                if (currentQuality === source.quality) {
-                     showToast(`✅ أنت بالفعل تشاهد بجودة ${source.quality}.`, "info");
-                     return;
-                }
-                
-                video.pause();
-                
-                // إعادة تعيين الـ src للـ video عنصر نفسه إذا كان المتصفح لا يدعم التبديل التلقائي
-                // بعض المتصفحات (وخاصة على الموبايل) لا تتفاعل مع تغيير عنصر <source>، بل تحتاج تغيير الـ src لـ <video>
-                video.src = newSrc;
-                video.load();
-                
-                video.onloadeddata = () => {
-                    video.currentTime = currentTime;
-                    if (!isPaused) video.play();
-                    showToast(`✅ تم التبديل إلى جودة ${source.quality}`, "success");
-                    document.getElementById("qualityBadge").textContent = source.quality;
-                    video.onloadeddata = null; 
-                };
-                
-            } else {
-                 showToast(`⚠️ لا يمكن العثور على مصدر لجودة ${source.quality} حالياً.`, "warning");
-            }
-        } else {
-            showToast("⚠️ تغيير الجودة متاح فقط للمشغل الداخلي (HTML5).", "warning");
-        }
+    function updateStatistics() {
+      const views = Math.floor(Math.random() * 50000) + 10000;
+      document.getElementById('viewsCount').textContent = `${views.toLocaleString()} مشاهدة`;
+      
+      const uploadDate = new Date();
+      uploadDate.setDate(uploadDate.getDate() - Math.floor(Math.random() * 30));
+      document.getElementById('uploadDate').textContent = uploadDate.toLocaleDateString('ar-EG');
     }
 
     function setupDownloadOptions() {
-        const downloadOptions = document.getElementById("downloadOptions");
-        downloadOptions.innerHTML = '';
-        const animeKey = ANIME_DATA.title.toLowerCase().replace(/\s+/g, '_').replace(/[^\w\d]/g, '');
-        const episodeSources = VIDEO_SOURCES[ANIME_DATA.title]?.episodes?.[currentEpisodeNumber] || VIDEO_SOURCES[animeKey]?.episodes?.[currentEpisodeNumber];
-        
-        if (episodeSources && episodeSources.sources) {
-            episodeSources.sources.forEach(source => {
-                const option = document.createElement("div");
-                option.className = "dropdown-item";
-                option.innerHTML = `<i class="fas fa-download"></i> تحميل ${source.quality} (${source.size})`;
-                option.addEventListener('click', () => downloadVideo(source));
-                downloadOptions.appendChild(option);
-            });
-        }
+      const options = document.getElementById('downloadOptions');
+      options.innerHTML = `
+        <div class="dropdown-item" onclick="downloadVideo('720p')">
+          <i class="fas fa-download"></i> تحميل 720p (150MB)
+        </div>
+        <div class="dropdown-item" onclick="downloadVideo('1080p')">
+          <i class="fas fa-download"></i> تحميل 1080p (300MB)
+        </div>
+      `;
     }
 
-    function downloadVideo(source) {
-        showToast(`⏳ جاري تجهيز تحميل ${source.quality}...`, "info");
-        
-        setTimeout(() => {
-            const safeDownloadUrl = source.url || "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4";
-            
-            const a = document.createElement("a");
-            a.href = safeDownloadUrl;
-            a.download = `${ANIME_DATA.title.replace(/\s+/g, "_")}_E${currentEpisodeNumber}_${source.quality}.mp4`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            
-            logDownloadActivity(source.quality);
-            showToast(`✅ بدأ تحميل ${source.quality} بنجاح!`, "success");
-        }, 1000);
-    }
-    
-    // ------------------------------------------------------------------
-    // 8. 🆕 شريط التحكم المتكامل (إصلاح تفاعلية اللمس)
-    // ------------------------------------------------------------------
-    
-    function setupPlayerControlsOverlay() {
-        const overlay = document.getElementById('playerControlsOverlay');
-        const videoWrapper = document.querySelector('.video-wrapper');
-        
-        // إزالة المستمعين القدامى لضمان عدم تكرار الأحداث
-        videoWrapper.removeEventListener('mousemove', showControls);
-        videoWrapper.removeEventListener('touchstart', showControls);
-        videoWrapper.removeEventListener('touchend', hideControlsAfterDelay); // 🆕 تحديث لإزالة مستمع touchend
-        videoWrapper.removeEventListener('mouseleave', hideControlsAfterDelay);
-        
-        // إضافة المستمعين الجدد
-        videoWrapper.addEventListener('mousemove', showControls);
-        // استخدام passive: true لتحسين الأداء على الموبايل
-        videoWrapper.addEventListener('touchstart', showControls, { passive: true }); 
-        // 🆕 إضافة مستمع اللمس النهائي لتشغيل مؤقت الإخفاء
-        videoWrapper.addEventListener('touchend', hideControlsAfterDelay); 
-        videoWrapper.addEventListener('mouseleave', hideControlsAfterDelay);
-        
-        document.getElementById('overlayFullscreenBtn').onclick = () => {
-            if (currentPlayer && currentPlayer.nodeName === 'VIDEO') {
-                toggleFullscreen();
-            } else if (currentPlayer && currentPlayer.nodeName === 'IFRAME') {
-                toggleCustomFullscreen();
-            }
-        };
-        
-        document.getElementById('volumeBtn').onclick = () => {
-            if (currentPlayer && currentPlayer.nodeName === 'VIDEO') {
-                isMuted = !currentPlayer.muted; 
-                currentPlayer.muted = isMuted;
-                document.getElementById('volumeIcon').className = isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
-                showToast(isMuted ? "🔇 كتم الصوت" : "🔊 تفعيل الصوت", "info");
-            }
-        };
-        
-        document.getElementById('settingsBtn').onclick = (e) => {
-            e.stopPropagation();
-            const settingsMenu = document.getElementById('settingsMenu');
-            settingsMenu.classList.toggle('active');
-        };
-        
-        // التأكد من إزالة المستمع القديم قبل إضافة الجديد لتجنب التكرار
-        document.removeEventListener('click', closeSettingsMenu); 
-        document.addEventListener('click', closeSettingsMenu);
-        
-        document.querySelectorAll('.settings-item').forEach(item => {
-            // إزالة المستمع القديم (إذا كان موجوداً)
-            const oldHandler = item.onclick;
-            if (oldHandler) item.onclick = null;
-            
-            const newHandler = (e) => {
-                e.stopPropagation();
-                const speed = parseFloat(item.getAttribute('data-speed'));
-                changePlaybackSpeed(speed);
-                document.getElementById('settingsMenu').classList.remove('active');
-            };
-            item.onclick = newHandler; 
-        });
-        
-        document.getElementById('overlayProgressBar').onclick = (e) => {
-            if (currentPlayer && currentPlayer.nodeName === 'VIDEO') {
-                const progressBar = e.currentTarget;
-                const rect = progressBar.getBoundingClientRect();
-                const clickPosition = e.clientX - rect.left;
-                const progressBarWidth = rect.width;
-                const percent = clickPosition / progressBarWidth;
-                currentPlayer.currentTime = percent * currentPlayer.duration;
-            }
-        };
-    }
-    
-    function closeSettingsMenu() {
-         document.getElementById('settingsMenu').classList.remove('active');
-    }
-    
-    function showControls() {
-        if (currentPlayer && currentPlayer.nodeName !== 'VIDEO') return;
-        
-        const overlay = document.getElementById('playerControlsOverlay');
-        overlay.classList.add('active');
-        isControlsVisible = true;
-        
-        clearTimeout(controlsTimeout);
-        controlsTimeout = setTimeout(hideControls, 3000);
-    }
-    
-    function hideControls() {
-        const overlay = document.getElementById('playerControlsOverlay');
-        overlay.classList.remove('active');
-        isControlsVisible = false;
-        document.getElementById('settingsMenu').classList.remove('active');
-    }
-    
-    function hideControlsAfterDelay() {
-        clearTimeout(controlsTimeout);
-        controlsTimeout = setTimeout(hideControls, 1000);
-    }
-    
-    function changePlaybackSpeed(speed) {
-        if (currentPlayer && currentPlayer.nodeName === 'VIDEO') {
-            currentPlayer.playbackRate = speed;
-            currentPlaybackSpeed = speed;
-            
-            document.querySelectorAll('.settings-item').forEach(item => {
-                const itemSpeed = parseFloat(item.getAttribute('data-speed'));
-                const checkIcon = item.querySelector('.fa-check');
-                if (checkIcon) {
-                   checkIcon.style.display = (itemSpeed === speed) ? 'inline' : 'none';
-                }
-            });
-            
-            showToast(`سرعة التشغيل: ${speed}x`, "info");
-        }
-    }
-    
-    function checkFavoriteStatus() { 
-        // منطق التحقق من حالة المفضلة
-    }
-    function toggleFavorite() {
-        // منطق تبديل حالة المفضلة
-        showToast("تم إضافة/إزالة الحلقة من المفضلة (محاكاة)", "info");
-    }
-    document.getElementById("favoriteBtn").addEventListener('click', toggleFavorite);
-    
-    function updateFavoriteButton(isFav) { 
-        // منطق تحديث شكل زر المفضلة
-    }
-    function startWatchTracking() { 
-        // منطق بدء تتبع المشاهدة
-    }
-    function markEpisodeAsCompleted() { 
-        // منطق وضع علامة "مكتمل"
-    }
-    function logDownloadActivity(quality) { 
-        // منطق تسجيل نشاط التحميل
-    }
-    function showCompletionMessage() {
-        showToast("🎉 انتهت المشاهدة! تم وضع علامة 'مكتمل'.", "success");
-        setTimeout(() => {
-            if (!document.getElementById("nextEpBtn").disabled) {
-                showToast("هل تريد الانتقال للحلقة التالية؟ اضغط زر (الحلقة التالية)!", "info");
-            }
-        }, 2000);
-    }
-    
-    function showError(message, hidePlayer = false) {
-        if (hidePlayer) {
-            showLoading(false);
-            // استخدام div بدلاً من إطار الفيديو ليحل محله
-            document.getElementById("videoContainer").innerHTML = `
-                <div style="position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; padding: 50px; text-align: center; color: var(--secondary-color); background: var(--bg-card);">
-                    <div style="max-width: 90%;">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 20px;"></i>
-                        <p style="font-size: 1.2rem;">${message}</p>
-                    </div>
-                </div>
-            `;
-            document.getElementById("serverSwitchContainer").style.display = 'flex'; 
-            document.getElementById('playerControlsContainer').style.display = 'none';
-            document.getElementById("downloadBtn").style.display = 'none';
-            document.getElementById("qualityBtn").style.display = 'none';
-            document.getElementById('playerControlsOverlay').style.display = 'none'; 
-
-            showToast(message, "error");
-        } else {
-            // هذه الحالة تظهر عند فشل التحميل الأولي للبيانات
-            document.body.innerHTML = `
-                <div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; gap: 20px; padding: 20px; text-align: center;">
-                    <div style="font-size: 4rem; color: var(--secondary-color);">😥</div>
-                    <h2 style="color: var(--primary-color);">${message}</h2>
-                    <button class="btn" onclick="goBackToDetails()">العودة للتفاصيل</button>
-                </div>
-            `;
-        }
+    function setupQualityOptions() {
+      const options = document.getElementById('qualityOptions');
+      options.innerHTML = `
+        <div class="dropdown-item" onclick="changeQuality('480p')">
+          <i class="fas fa-video"></i> 480p
+        </div>
+        <div class="dropdown-item" onclick="changeQuality('720p')">
+          <i class="fas fa-video"></i> 720p
+        </div>
+        <div class="dropdown-item" onclick="changeQuality('1080p')">
+          <i class="fas fa-video"></i> 1080p
+        </div>
+      `;
     }
 
-    document.addEventListener('DOMContentLoaded', initialize);
+    function downloadVideo(quality) {
+      showToast(`⏳ جاري تجهيز تحميل ${quality}...`, "info");
+      // محاكاة التحميل
+      setTimeout(() => {
+        showToast(`✅ بدأ تحميل ${quality} بنجاح!`, "success");
+      }, 2000);
+    }
+
+    function changeQuality(quality) {
+      showToast(`🔄 جاري التبديل إلى جودة ${quality}...`, "info");
+      document.getElementById('qualityBadge').textContent = quality;
+      // في التطبيق الحقيقي، هنا سيتم تغيير مصدر الفيديو
+    }
+
+    function goBackToDetails() {
+      showToast("العودة لصفحة التفاصيل (محاكاة)", "info");
+      // في التطبيق الحقيقي: window.history.back() أو التوجيه لصفحة التفاصيل
+    }
+
+    function onVideoEnded() {
+      showToast("🎉 انتهت الحلقة! هل تريد مشاهدة الحلقة التالية؟", "success");
+    }
+
+    // بدء التطبيق عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', initializePage);
   </script>
 </body>
 </html>
