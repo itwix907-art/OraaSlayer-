@@ -100,17 +100,31 @@
       transition: all 0.5s ease;
     }
     
-    /* 🌟 وضع ملء الشاشة المخصص */
+    /* 🌟 وضع ملء الشاشة المخصص (إصلاح رئيسي لاستقرار الهاتف) */
     .video-wrapper.fullscreen-active {
         position: fixed;
         top: 0;
         left: 0;
-        width: 100% !important;
+        /* استخدام vw و vh لضمان تغطية كاملة لل viewport على الهاتف */
+        width: 100vw !important; 
         max-width: none !important;
-        height: 100vh;
+        height: 100vh !important; /* إضافة !important لضمان تجاوز الارتفاع المحتمل */
         z-index: 9999;
         margin: 0 !important;
         border-radius: 0 !important;
+    }
+
+    /* 🆕 ضمان أن حاوية الفيديو تملأ المساحة الجديدة في وضع ملء الشاشة */
+    .video-wrapper.fullscreen-active .video-container {
+        width: 100%;
+        height: 100%;
+        padding-bottom: 0 !important; /* إلغاء نسبة الـ 16:9 */
+    }
+    
+    .video-wrapper.fullscreen-active iframe, 
+    .video-wrapper.fullscreen-active video {
+        width: 100%;
+        height: 100%;
     }
 
     /* 🎯 2. تكييف مقياس الهواتف الصغيرة (< 480px) */
@@ -304,7 +318,7 @@
         overflow-x: auto; 
     }
     
-    /* 💡 منطقة لمس كبيرة (Touch Target) */
+    /* 💡 منطقة لمس كبيرة (Touch Target) - تم زيادتها إلى 48px للتحسين */
     .player-control-btn {
         display: flex;
         flex-direction: column;
@@ -313,8 +327,8 @@
         padding: 0.625rem 1.25rem; /* 10px 20px */
         border-radius: 0.75rem; /* 12px */
         font-size: 1rem;
-        min-height: 2.5rem; /* حوالي 40px */
-        min-width: 2.5rem; /* حوالي 40px */
+        min-height: 3rem; /* 🆕 48px */
+        min-width: 3rem; /* 🆕 48px */
         flex-shrink: 0;
     }
 
@@ -491,7 +505,7 @@
         font-weight: bold;
     }
 
-    /* 🆕 شريط التحكم المتكامل */
+    /* 🆕 شريط التحكم المتكامل (Overlay) */
     .player-controls-overlay {
         position: absolute;
         inset: 0;
@@ -502,7 +516,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        pointer-events: none; /* لا يتداخل مع الـ iframe */
+        pointer-events: none; /* لا يتداخل مع الـ iframe/video */
         /* تم تحويلها إلى rem */
         padding: 1.25rem; /* 20px */
         gap: 0.9375rem; /* 15px */
@@ -702,7 +716,7 @@
       
       /* تحسين عرض أزرار التحكم السفلية (التمرير الأفقي) */
       #playerControlsContainer { flex-wrap: nowrap; overflow-x: auto; padding: 0 0.625rem; justify-content: flex-start; }
-      .player-control-btn { min-width: 8.125rem; }
+      /* يتم تغطية حجم الأزرار في CSS العام الآن (min-height/width: 3rem) */
       
       /* تحسين شريط التحكم المتكامل للهواتف */
       .player-controls-overlay { padding: 0.9375rem 0.625rem; }
@@ -1323,19 +1337,26 @@
         }
     }
     
+    // دالة ملء الشاشة المخصصة (تم تحسينها لتفاعلية أفضل)
     function toggleCustomFullscreen() {
         const wrapper = document.querySelector('.video-wrapper');
         const isFullscreen = wrapper.classList.toggle('fullscreen-active');
         
+        // إخفاء/إظهار جميع عناصر الصفحة عدا المشغل
         document.querySelector('.top-bar').style.display = isFullscreen ? 'none' : 'flex';
         document.querySelector('footer').style.display = isFullscreen ? 'none' : 'block';
         document.getElementById("serverSwitchContainer").style.display = isFullscreen ? 'none' : 'flex';
         document.querySelector('.controls').style.display = isFullscreen ? 'none' : 'flex';
+        
+        // إظهار/إخفاء أزرار التحكم السفلية بناءً على نوع المشغل
         document.getElementById('playerControlsContainer').style.display = isFullscreen ? 'none' : (currentPlayer && currentPlayer.nodeName === 'VIDEO' ? 'flex' : 'none');
 
         if (isFullscreen) {
+            // إضافة فئة للجسم لإخفاء أي أشرطة تمرير غير مرغوبة
+            document.body.style.overflow = 'hidden';
             showToast("وضع ملء الشاشة مفعّل. لتدوير الشاشة، قم بتدوير جهازك يدوياً.", "info");
         } else {
+            document.body.style.overflow = 'auto';
             showToast("الخروج من وضع ملء الشاشة.", "info");
         }
     }
@@ -1679,22 +1700,25 @@
     }
     
     // ------------------------------------------------------------------
-    // 8. 🆕 شريط التحكم المتكامل
+    // 8. 🆕 شريط التحكم المتكامل (إصلاح تفاعلية اللمس)
     // ------------------------------------------------------------------
     
     function setupPlayerControlsOverlay() {
         const overlay = document.getElementById('playerControlsOverlay');
         const videoWrapper = document.querySelector('.video-wrapper');
         
-        // إزالة المستمعين القدامى
+        // إزالة المستمعين القدامى لضمان عدم تكرار الأحداث
         videoWrapper.removeEventListener('mousemove', showControls);
         videoWrapper.removeEventListener('touchstart', showControls);
+        videoWrapper.removeEventListener('touchend', hideControlsAfterDelay); // 🆕 تحديث لإزالة مستمع touchend
         videoWrapper.removeEventListener('mouseleave', hideControlsAfterDelay);
         
         // إضافة المستمعين الجدد
         videoWrapper.addEventListener('mousemove', showControls);
-        // استخدام touchstart لجعل التحكمات تظهر بلمسة واحدة
-        videoWrapper.addEventListener('touchstart', showControls); 
+        // استخدام passive: true لتحسين الأداء على الموبايل
+        videoWrapper.addEventListener('touchstart', showControls, { passive: true }); 
+        // 🆕 إضافة مستمع اللمس النهائي لتشغيل مؤقت الإخفاء
+        videoWrapper.addEventListener('touchend', hideControlsAfterDelay); 
         videoWrapper.addEventListener('mouseleave', hideControlsAfterDelay);
         
         document.getElementById('overlayFullscreenBtn').onclick = () => {
